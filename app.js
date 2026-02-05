@@ -46,14 +46,8 @@ map.on("click", e => {
     const snapped = snapToRoad(e.latlng);
     if (!snapped) return;
 
-    const type =
-        nodes.length === 0 ? "start" :
-        nodes.length === 1 ? "end" :
-        "turn";
-
     const node = {
         id: crypto.randomUUID(),
-        type,
         coordinates: snapped.coordinates,
         roadId: snapped.roadId
     };
@@ -75,8 +69,8 @@ function drawNode(node) {
         [node.coordinates[1], node.coordinates[0]],
         {
             radius: 7,
-            color: colors[node.type],
-            fillColor: colors[node.type],
+            color: "green",
+            fillColor: "green",
             fillOpacity: 1
         }
     ).addTo(map);
@@ -86,44 +80,15 @@ function drawRoute() {
   if (routeLine) map.removeLayer(routeLine);
   if (nodes.length < 2) return;
 
-  let routeCoords = [];
+  const latlngs = nodes.map(n => [
+    n.coordinates[1], // lat
+    n.coordinates[0]  // lng
+  ]);
 
-  for (let i = 0; i < nodes.length - 1; i++) {
-    const a = nodes[i];
-    const b = nodes[i + 1];
-
-    // Slice along the road where the first node exists
-    const road = roadsGeoJSON.features.find(r => r.properties.id === a.roadId);
-
-    let segmentCoords;
-
-    if (road) {
-      // Slice along road if possible
-      const start = turf.point(a.coordinates);
-      const end = turf.point(b.coordinates);
-
-      try {
-        const sliced = turf.lineSlice(start, end, road);
-        segmentCoords = sliced.geometry.coordinates;
-
-        // Avoid duplicate points when concatenating
-        if (i > 0) segmentCoords.shift();
-      } catch (err) {
-        // Fallback if slice fails
-        segmentCoords = [a.coordinates, b.coordinates];
-      }
-    } else {
-      // Fallback to straight line
-      segmentCoords = [a.coordinates, b.coordinates];
-    }
-
-    routeCoords.push(...segmentCoords);
-  }
-
-  routeLine = L.polyline(
-    routeCoords.map(c => [c[1], c[0]]),
-    { color: "orange", weight: 5 }
-  ).addTo(map);
+  routeLine = L.polyline(latlngs, {
+    color: "orange",
+    weight: 5
+  }).addTo(map);
 }
 
 map.on("mousemove", e => {
