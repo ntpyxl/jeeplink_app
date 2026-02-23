@@ -1,4 +1,5 @@
 import { buildGraph } from "./graphBuilder.js";
+import { dijkstra } from "./pathingAlgorithm.js";
 
 const map = L.map("map").setView([14.3272, 120.9404], 15);
 
@@ -6,33 +7,11 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-
-const roadsGeoJSON = await fetch("./dasmarinas-260216_roads_v2.geojson").then(r => r.json());
+const roadsGeoJSON = await fetch("./DasmaMapData/Dasma_LineStrings.geojson").then(r => r.json());
+// NOTE: Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
 });
-
-// NOTE: Debug Code
-function countGeometryType(geojsondata){
-    const counts = {};
-
-    geojsondata.features.forEach(feature => {
-        if (feature.geometry && feature.geometry.type) {
-                const type = feature.geometry.type;
-
-                if (counts[type]) {
-                    counts[type]++;
-                } else {
-                    counts[type] = 1;
-                }
-            }
-    });
-
-    return counts
-}
-
-console.log(countGeometryType(roadsGeoJSON));
-// NOTE: End of Debug Code
 
 const roadsLayer = L.geoJSON(roadsGeoJSON, {
     filter: function(feature) {
@@ -49,7 +28,6 @@ let nodes = [];
 let routeLine = null;
 const graph = buildGraph(roadsGeoJSON);
 // NOTE: graph.get(key) => [{ to, weight, coords }]
-//console.log(graph);
 
 function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
@@ -73,7 +51,7 @@ function snapToRoad(latlng) {
         point: snapped, // Turf point (important)
         coordinates: snapped.geometry.coordinates,
         roadId: closestRoad.properties.id
-        };
+    };
 }
 
 function snapToGraphNode(coord) {
@@ -107,7 +85,7 @@ function drawRoute() {
         const start = nodes[i].graphKey;
         const end = nodes[i + 1].graphKey;
 
-        const pathKeys = dijkstra(start, end);
+        const pathKeys = dijkstra(graph, start, end);
 
         const coords = pathKeys.map(k => {
             const [lng, lat] = k.split(",").map(Number);
@@ -142,49 +120,9 @@ function drawNode(node) {
     ).addTo(map);
 }
 
-function dijkstra(startKey, endKey) {
-    const distances = new Map();
-    const previous = new Map();
-    const queue = new Set(graph.keys());
 
-    for (const key of queue) distances.set(key, Infinity);
-    distances.set(startKey, 0);
 
-    while (queue.size) {
-        let current = null;
 
-        for (const k of queue) {
-            if (current === null || distances.get(k) < distances.get(current)) {
-                current = k;
-            }
-        }
-
-        if (current === endKey) break;
-
-        queue.delete(current);
-
-        for (const edge of graph.get(current)) {
-        const alt = distances.get(current) + edge.weight;
-            if (alt < distances.get(edge.to)) {
-                distances.set(edge.to, alt);
-                previous.set(edge.to, current);
-            }
-        }
-    }
-
-    // Reconstruct path
-    const path = [];
-    let cur = endKey;
-
-    while (cur) {
-        path.unshift(cur);
-        cur = previous.get(cur);
-    }
-
-    return path;
-}
-
-/*
 map.on("click", e => {
     $("#cursor_last_click_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
 
@@ -208,7 +146,7 @@ map.on("click", e => {
     console.log(nodes);
     console.log(routeLine);
 });
-*/
+
 
 map.on("mousemove", e => {
     $("#cursor_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
