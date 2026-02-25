@@ -7,15 +7,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("./DasmaMapData/Dasma_LineStrings.geojson").then(r => r.json());
-// NOTE: Assigns a road ID to each road
+const roadsGeoJSON = await fetch("vercel_api/getRoadsGeoJson.js").then(r => r.json());
+// Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
 });
 
+// TODO: maybe put this into an exported function as it's the same with roadEditorScript
 const roadsLayer = L.geoJSON(roadsGeoJSON, {
     filter: function(feature) {
-        return feature.geometry && feature.geometry.type === "LineString";
+        return feature.geometry && feature.geometry.type === "LineString" && !feature.properties.disabled;
     },
     style: {
         color: "#555",
@@ -26,7 +27,7 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
 
 let nodes = [];
 let routeLine = null;
-const graph = buildGraph(roadsGeoJSON);
+const graph = buildGraph(roadsGeoJSON, false);
 // NOTE: graph.get(key) => [{ to, weight, coords }]
 
 function snapToRoad(latlng) {
@@ -123,7 +124,7 @@ function drawNode(node) {
 
 
 
-map.on("click", e => {
+roadsLayer.on("click", e => {
     $("#cursor_last_click_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
 
     const snapped = snapToRoad(e.latlng);

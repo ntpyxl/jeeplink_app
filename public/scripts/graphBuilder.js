@@ -2,10 +2,11 @@ function coordKey(c) {
     return `${c[0]},${c[1]}`;
 }
 
-export function buildGraph(roads) {
+export function buildGraph(roads, showDisabledRoads) {
     const graph = new Map();
 
     roads.features.forEach(feature => {
+        if (!showDisabledRoads && feature.properties.disabled) return;
         const coords = feature.geometry.coordinates;
 
         for (let i = 0; i < coords.length - 1; i++) {
