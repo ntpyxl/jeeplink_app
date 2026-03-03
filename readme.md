@@ -25,16 +25,9 @@ cd JeepLink_App
 npm install
 ```
 
-3. Create environment variables
-   Create a file in the project root:
-
-```
-.env
-```
-
-> NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore
-
-Then ask me for tokens.
+3. Create environment variables<br/>
+   Create a file in the project root named `.env` <sub>NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore</sub><br/>
+   Then ask me for tokens.
 
 4. Run development server
 
