@@ -26,8 +26,11 @@ npm install
 ```
 
 3. Create environment variables<br/>
-   Create a file in the project root named `.env` <sub>NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore</sub><br/>
+   Create a file in the project root named `.env`<br/>
    Then ask me for tokens.
+
+    > [!CAUTION]
+    > NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore
 
 4. Run development server
 
