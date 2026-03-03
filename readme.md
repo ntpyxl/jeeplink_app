@@ -1,3 +1,33 @@
-## To test the web application, install [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in your Visual Studio Code, or at least set up the webpage so that the link/origin will be `http://127.0.0.1:5500`
+# JeepLink Website Application
 
-### Preview OpenStreetMap Providers [here](https://leaflet-extras.github.io/leaflet-providers/preview/)
+A navigation app to help commuters navigate Dasmariñas City, Cavite by providing available jeepney routes, traffic updates, route planning, and alerts based on data shared by its users.
+
+## Tech Stack
+
+- **Frontend**: HTML, CSS ([TailwindCSS](https://tailwindcss.com/)), and JavaScript ([JQuery](https://jquery.com/))
+- **Map Library**: [Leaflet](https://leafletjs.com/)
+- **Tiles**: [OpenStreetMap](https://www.openstreetmap.org/)
+- **Hosting & API**: [Vercel](https://vercel.com/)
+- **Storage**: [Vercel](https://vercel.com/), and _[Supabase](https://supabase.com/) to be implemented_
+
+## Setup
+
+1. Clone the repository
+
+```
+git clone https://github.com/ntpyxl/jeeplink_app.git
+cd JeepLink_App
+```
+
+2. Install dependencies
+   `npm install`
+
+3. Create environment variables
+   Create a file in the project root:
+   `.env`
+
+    > NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore
+    > Then ask me for tokens.
+
+4. Run development server
+   `vercel dev`
