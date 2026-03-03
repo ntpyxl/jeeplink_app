@@ -9,18 +9,23 @@ export default async function handler(req, res) {
         const geojson = req.body;
 
         const blob = await put(
-            "Dasma_LineStrings_modified.geojson",
-            JSON.stringify(geojson, null, 2),
+            "Dasma_LineStrings.geojson",
+            JSON.stringify(geojson),
             {
                 access: "private",
-                contentType: "application/json"
+                contentType: "application/json",
+                token: process.env.BLOB_READ_WRITE_TOKEN,
+                allowOverwrite: true
             }
         );
 
         return res.status(200).json({ url: blob.url });
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Failed to save file" });
+    } catch (err) {
+        console.error("Blob Saving Error:", err);
+        return res.status(500).json({ 
+            error: "Failed to save blob", 
+            details: err.message 
+        });
     }
 }

@@ -54,68 +54,27 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
 let graph = buildGraph(roadsGeoJSON, true);
 // NOTE: graph.get(key) => [{ to, weight, coords }]
 
-let selectedRoadLayer = null;
-let selectedRoadFeature = null;
-
-function selectRoad(feature, layer) {
-
-    // Reset previously selected road
-    if (selectedRoadLayer) {
-        selectedRoadLayer.setStyle({
-            color: "#555"
+$("#saveNewGeoJson").on("click", async function () {
+    // TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
+    // TODO: May also want to implement a progress bar and disable other actions after clicking the save button.
+    try {
+        const response = await fetch("/api/saveRoadsGeoJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(roadsGeoJSON)
         });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error);
+        }
+
+        alert("Successfully saved new GeoJson Road Data!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save GeoJSON Road Data.");
     }
-
-    selectedRoadLayer = layer;
-    selectedRoadFeature = feature;
-
-    layer.setStyle({
-        color: "red"
-    });
-
-    console.log("Selected:", feature.properties.id);
-}
-
-function deleteSelectedRoad() {
-    if (!selectedRoadLayer || !selectedRoadFeature) return;
-
-    // Remove from map
-    roadsLayer.removeLayer(selectedRoadLayer);
-
-    // Remove from GeoJSON
-    roadsGeoJSON.features = roadsGeoJSON.features.filter(
-        f => f.properties.id !== selectedRoadFeature.properties.id
-    );
-
-    // Rebuild graph
-    graph.clear();
-    const newGraph = buildGraph(roadsGeoJSON);
-
-    for (const [key, value] of newGraph) {
-        graph.set(key, value);
-    }
-
-    selectedRoadLayer = null;
-    selectedRoadFeature = null;
-
-    console.log("Road deleted and graph rebuilt");
-}
-
-$("#saveNewGeoJson").on("click", function(){
-    const dataStr = JSON.stringify(roadsGeoJSON, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Dasma_LineStrings_modified.geojson";
-    a.click();
-
-    URL.revokeObjectURL(url);
-    alert("Replace the currently fetched GeoJSON file with this new GeoJSON file.");
-});
-
-$("#disabledSelectedRoad").on("click", function(){
-    deleteSelectedRoad();
 });

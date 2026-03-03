@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         throw new Error("Blob stream is unavailable");
 
     } catch (err) {
-        console.error("Blob Error:", err);
+        console.error("Blob Getting Error:", err);
         return res.status(500).json({ 
             error: "Failed to read blob", 
             details: err.message 
