@@ -51,6 +51,18 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     }
 }).addTo(map);
 
+map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    let weight;
+
+    if (zoom <= 13) weight = 1;
+    else if (zoom <= 15) weight = 2;
+    else if (zoom <= 17) weight = 3;
+    else weight = 4;
+
+    roadsLayer.setStyle({ weight });
+});
+
 let graph = buildGraph(roadsGeoJSON, true);
 // NOTE: graph.get(key) => [{ to, weight, coords }]
 

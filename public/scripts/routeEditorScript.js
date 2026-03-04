@@ -1,7 +1,9 @@
 import { buildGraph } from "./graphBuilder.js";
 import { dijkstra } from "./pathingAlgorithm.js";
 
-const map = L.map("map").setView([14.3272, 120.9404], 15);
+const map = L.map("map", {
+    renderer: L.canvas()
+}).setView([14.3272, 120.9404], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -13,7 +15,6 @@ roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
 });
 
-// TODO: maybe put this into an exported function as it's the same with roadEditorScript
 const roadsLayer = L.geoJSON(roadsGeoJSON, {
     filter: function(feature) {
         return feature.geometry && feature.geometry.type === "LineString" && !feature.properties.disabled;
@@ -21,9 +22,21 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     style: {
         color: "#555",
         opacity: 1,
-        weight: map.getZoom()/3
+        weight: 2
     }
 }).addTo(map);
+
+map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    let weight;
+
+    if (zoom <= 13) weight = 1;
+    else if (zoom <= 15) weight = 2;
+    else if (zoom <= 17) weight = 3;
+    else weight = 4;
+
+    roadsLayer.setStyle({ weight });
+});
 
 let nodes = [];
 let routeLine = null;
