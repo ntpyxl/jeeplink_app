@@ -49,8 +49,6 @@ NEVER COMMIT THIS FILE. IT SHOULD ALREADY BE INCLUDED IN .gitignore!
 vercel dev
 ```
 
-This requires you to have Vercel installed and an account logged in. If you don't have Vercel yet, run `npm i -g vercel`, and then `vercel dev`, and login to your account.
-
 **4.1. First time local development server setup**<br/>
 Upon first executing `vercel dev`, you will be prompted to "Set up and develop" the current directory. Just follow these exact prompts for the following setup process:
 
