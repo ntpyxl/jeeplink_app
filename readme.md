@@ -12,6 +12,8 @@ A navigation app to help commuters navigate Dasmariñas City, Cavite by providin
 
 ## Setup
 
+This requires you to have Vercel installed and an account logged in. If you don't have Vercel yet, run `npm i -g vercel`, and then `vercel dev`, and login to your account.
+
 **1. Clone the repository**
 
 ```
@@ -34,7 +36,7 @@ npm install
 ```
 
 **3. Create environment variables**<br/>
-Create a file in the project root named `.env.local`, then ask me for tokens.
+Create a file in the project root named `.env.local`, then ask me for tokens. You also have to put the environment variables in the Vercel project you will create on your account in the next step.
 
 ```
 [CAUTION]
@@ -69,4 +71,5 @@ No framework detected. Default Project Settings:
 ? Detected a repository. Connect it to this project? no (or just type 'n', and press enter)
 ```
 
-When done succesfully, the local development server should now be available at http://localhost:3000
+When done succesfully, the local development server should now be available at http://localhost:3000.<br/>
+Remember to import the `.env.local` file to your Vercel project's environment variables.
