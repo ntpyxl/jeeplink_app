@@ -1,5 +1,4 @@
-const API_URL =
-    location.origin !== "https://jeeplink-app.vercel.app"
+const API_URL = "https://jeeplink-app.vercel.app"
         ? "http://127.0.0.1:8000"
         : "https://jeeplinkapi.vercel.app";
 

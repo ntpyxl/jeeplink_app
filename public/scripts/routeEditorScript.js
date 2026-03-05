@@ -89,28 +89,25 @@ function snapToGraphNode(coord) {
     return closestKey;
 }
 
-function drawRoute() {
-    if (routeLine) map.removeLayer(routeLine);
+// TODO: Routes are not fully connected to nodes sometimes.
+async function drawRoute() {
     if (nodes.length < 2) return;
 
-    let fullPath = [];
+    const response = await fetch("http://127.0.0.1:8000/multipoint_dijkstra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            waypoints: nodes.map(n => n.graphKey),
+            graph: Object.fromEntries(graph)
+        })
+    });
 
-    for (let i = 0; i < nodes.length - 1; i++) {
-        const start = nodes[i].graphKey;
-        const end = nodes[i + 1].graphKey;
+    const { path } = await response.json();
 
-        const pathKeys = dijkstra(graph, start, end);
+    const routePath = path.map(k => k.split(",").map(Number).reverse()); 
 
-        const coords = pathKeys.map(k => {
-            const [lng, lat] = k.split(",").map(Number);
-            return [lat, lng];
-        });
-
-        if (i > 0) coords.shift(); // avoid duplicates
-        fullPath.push(...coords);
-    }
-
-    routeLine = L.polyline(fullPath, {
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline(routePath, {
         color: "orange",
         weight: 5
     }).addTo(map);
@@ -137,7 +134,7 @@ function drawNode(node) {
 
 
 
-roadsLayer.on("click", e => {
+roadsLayer.on("click", async e => {
     $("#cursor_last_click_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
 
     const snapped = snapToRoad(e.latlng);
@@ -155,10 +152,7 @@ roadsLayer.on("click", e => {
     nodes.push(node);
 
     drawNode(node);
-    drawRoute();
-
-    console.log(nodes);
-    console.log(routeLine);
+    await drawRoute();
 });
 
 
