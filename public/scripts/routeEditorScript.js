@@ -1,5 +1,4 @@
 import { buildGraph } from "./graphBuilder.js";
-import { dijkstra } from "./pathingAlgorithm.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -26,6 +25,10 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     }
 }).addTo(map);
 
+let nodes = [];
+let routeLine = null;
+const graph = buildGraph(roadsGeoJSON, false); // NOTE: graph.get(key) => [{ to, weight, coords }]
+
 map.on("zoomend", () => {
     const zoom = map.getZoom();
     let weight;
@@ -38,10 +41,26 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-let nodes = [];
-let routeLine = null;
-const graph = buildGraph(roadsGeoJSON, false);
-// NOTE: graph.get(key) => [{ to, weight, coords }]
+roadsLayer.on("click", async e => {
+    const snapped = snapToRoad(e.latlng);
+    if (!snapped) return;
+
+    const graphNodeKey = insertTemporaryNode(snapped.coordinates);
+
+    const node = {
+        id: crypto.randomUUID(),
+        coordinates: snapped.coordinates,
+        roadId: snapped.roadId,
+        graphKey: graphNodeKey
+    };
+
+    nodes.push(node);
+
+    drawNode(node);
+    await drawRoute();
+});
+
+
 
 function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
@@ -62,7 +81,7 @@ function snapToRoad(latlng) {
     const snapped = turf.nearestPointOnLine(closestRoad, clicked);
 
     return {
-        point: snapped, // Turf point (important)
+        point: snapped,
         coordinates: snapped.geometry.coordinates,
         roadId: closestRoad.properties.id
     };
@@ -89,7 +108,48 @@ function snapToGraphNode(coord) {
     return closestKey;
 }
 
-// TODO: Routes are not fully connected to nodes sometimes.
+function insertTemporaryNode(coord) {
+    const key = coord.join(",");
+
+    if (graph.has(key)) return key;
+
+    let nearestA = null;
+    let nearestB = null;
+    let minA = Infinity;
+    let minB = Infinity;
+
+    for (const nodeKey of graph.keys()) {
+        const [lng, lat] = nodeKey.split(",").map(Number);
+
+        const dist = turf.distance(
+            turf.point(coord),
+            turf.point([lng, lat]),
+            { units: "meters" }
+        );
+
+        if (dist < minA) {
+            minB = minA;
+            nearestB = nearestA;
+
+            minA = dist;
+            nearestA = nodeKey;
+        } else if (dist < minB) {
+            minB = dist;
+            nearestB = nodeKey;
+        }
+    }
+
+    graph.set(key, []);
+
+    graph.get(key).push({ to: nearestA, weight: minA });
+    graph.get(key).push({ to: nearestB, weight: minB });
+
+    graph.get(nearestA).push({ to: key, weight: minA });
+    graph.get(nearestB).push({ to: key, weight: minB });
+
+    return key;
+}
+
 async function drawRoute() {
     if (nodes.length < 2) return;
 
@@ -114,6 +174,7 @@ async function drawRoute() {
 }
 
 function drawNode(node) {
+    // TODO: Soon, color code the nodes
     const colors = {
         start: "green",
         end: "red",
@@ -134,28 +195,3 @@ function drawNode(node) {
 
 
 
-roadsLayer.on("click", async e => {
-    $("#cursor_last_click_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
-
-    const snapped = snapToRoad(e.latlng);
-    if (!snapped) return;
-
-    const graphNodeKey = snapToGraphNode(snapped.coordinates);
-
-    const node = {
-        id: crypto.randomUUID(),
-        coordinates: snapped.coordinates,
-        roadId: snapped.roadId,
-        graphKey: graphNodeKey
-    };
-
-    nodes.push(node);
-
-    drawNode(node);
-    await drawRoute();
-});
-
-
-map.on("mousemove", e => {
-    $("#cursor_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
-})
