@@ -1,4 +1,5 @@
 import { buildGraph } from "./graphBuilder.js";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -108,6 +109,7 @@ function snapToGraphNode(coord) {
     return closestKey;
 }
 
+// TODO: Fix route jumping through roads.
 function insertTemporaryNode(coord) {
     const key = coord.join(",");
 
@@ -153,7 +155,7 @@ function insertTemporaryNode(coord) {
 async function drawRoute() {
     if (nodes.length < 2) return;
 
-    const response = await fetch("http://127.0.0.1:8000/multipoint_dijkstra", {
+    const response = await apiFetch("/multipoint_dijkstra", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -162,7 +164,7 @@ async function drawRoute() {
         })
     });
 
-    const { path } = await response.json();
+    const { path } = await response;
 
     const routePath = path.map(k => k.split(",").map(Number).reverse()); 
 

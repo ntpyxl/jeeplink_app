@@ -1,12 +1,10 @@
-const API_URL = "https://jeeplink-app.vercel.app"
-        ? "http://127.0.0.1:8000"
-        : "https://jeeplinkapi.vercel.app";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
 
-fetch(API_URL + "/").then(response => response.json())
+await apiFetch("/")
     .then(data => {
         document.getElementById("textHere").textContent = data.Hello;
     })
     .catch(error => {
-        console.error(error);
+        console.log(error);
         document.getElementById("textHere").textContent = "Error loading data";
     });
