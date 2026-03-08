@@ -1,0 +1,24 @@
+* {
+    font-family: 'Itim', cursive;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* Ensure placeholder is visible and inputs don't get unexpected decoration */
+.search-bar input::placeholder {
+    opacity: 1;
+}
+
+/* Keep the search button visible when positioned outside its container */
+.search-bar {
+    overflow: visible;
+}
+
+.hero-bg {
+    background-image: linear-gradient(to bottom, rgba(31,55,32,0.9), rgba(81,145,84,0.5)), url("../images/hero1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
