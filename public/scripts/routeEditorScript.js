@@ -1,7 +1,9 @@
 import { buildGraph } from "./graphBuilder.js";
-import { dijkstra } from "./pathingAlgorithm.js";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
 
-const map = L.map("map").setView([14.3272, 120.9404], 15);
+const map = L.map("map", {
+    renderer: L.canvas()
+}).setView([14.3272, 120.9404], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -13,7 +15,6 @@ roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
 });
 
-// TODO: maybe put this into an exported function as it's the same with roadEditorScript
 const roadsLayer = L.geoJSON(roadsGeoJSON, {
     filter: function(feature) {
         return feature.geometry && feature.geometry.type === "LineString" && !feature.properties.disabled;
@@ -21,14 +22,46 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     style: {
         color: "#555",
         opacity: 1,
-        weight: map.getZoom()/3
+        weight: 2
     }
 }).addTo(map);
 
 let nodes = [];
 let routeLine = null;
-const graph = buildGraph(roadsGeoJSON, false);
-// NOTE: graph.get(key) => [{ to, weight, coords }]
+const graph = buildGraph(roadsGeoJSON, false); // NOTE: graph.get(key) => [{ to, weight, coords }]
+
+map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    let weight;
+
+    if (zoom <= 13) weight = 1;
+    else if (zoom <= 15) weight = 2;
+    else if (zoom <= 17) weight = 3;
+    else weight = 4;
+
+    roadsLayer.setStyle({ weight });
+});
+
+roadsLayer.on("click", async e => {
+    const snapped = snapToRoad(e.latlng);
+    if (!snapped) return;
+
+    const graphNodeKey = insertTemporaryNode(snapped.coordinates);
+
+    const node = {
+        id: crypto.randomUUID(),
+        coordinates: snapped.coordinates,
+        roadId: snapped.roadId,
+        graphKey: graphNodeKey
+    };
+
+    nodes.push(node);
+
+    drawNode(node);
+    await drawRoute();
+});
+
+
 
 function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
@@ -49,7 +82,7 @@ function snapToRoad(latlng) {
     const snapped = turf.nearestPointOnLine(closestRoad, clicked);
 
     return {
-        point: snapped, // Turf point (important)
+        point: snapped,
         coordinates: snapped.geometry.coordinates,
         roadId: closestRoad.properties.id
     };
@@ -76,34 +109,74 @@ function snapToGraphNode(coord) {
     return closestKey;
 }
 
-function drawRoute() {
-    if (routeLine) map.removeLayer(routeLine);
-    if (nodes.length < 2) return;
+// TODO: Fix route jumping through roads.
+function insertTemporaryNode(coord) {
+    const key = coord.join(",");
 
-    let fullPath = [];
+    if (graph.has(key)) return key;
 
-    for (let i = 0; i < nodes.length - 1; i++) {
-        const start = nodes[i].graphKey;
-        const end = nodes[i + 1].graphKey;
+    let nearestA = null;
+    let nearestB = null;
+    let minA = Infinity;
+    let minB = Infinity;
 
-        const pathKeys = dijkstra(graph, start, end);
+    for (const nodeKey of graph.keys()) {
+        const [lng, lat] = nodeKey.split(",").map(Number);
 
-        const coords = pathKeys.map(k => {
-            const [lng, lat] = k.split(",").map(Number);
-            return [lat, lng];
-        });
+        const dist = turf.distance(
+            turf.point(coord),
+            turf.point([lng, lat]),
+            { units: "meters" }
+        );
 
-        if (i > 0) coords.shift(); // avoid duplicates
-        fullPath.push(...coords);
+        if (dist < minA) {
+            minB = minA;
+            nearestB = nearestA;
+
+            minA = dist;
+            nearestA = nodeKey;
+        } else if (dist < minB) {
+            minB = dist;
+            nearestB = nodeKey;
+        }
     }
 
-    routeLine = L.polyline(fullPath, {
+    graph.set(key, []);
+
+    graph.get(key).push({ to: nearestA, weight: minA });
+    graph.get(key).push({ to: nearestB, weight: minB });
+
+    graph.get(nearestA).push({ to: key, weight: minA });
+    graph.get(nearestB).push({ to: key, weight: minB });
+
+    return key;
+}
+
+async function drawRoute() {
+    if (nodes.length < 2) return;
+
+    const response = await apiFetch("/multipoint_dijkstra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            waypoints: nodes.map(n => n.graphKey),
+            graph: Object.fromEntries(graph)
+        })
+    });
+
+    const { path } = await response;
+
+    const routePath = path.map(k => k.split(",").map(Number).reverse()); 
+
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline(routePath, {
         color: "orange",
         weight: 5
     }).addTo(map);
 }
 
 function drawNode(node) {
+    // TODO: Soon, color code the nodes
     const colors = {
         start: "green",
         end: "red",
@@ -124,31 +197,3 @@ function drawNode(node) {
 
 
 
-roadsLayer.on("click", e => {
-    $("#cursor_last_click_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
-
-    const snapped = snapToRoad(e.latlng);
-    if (!snapped) return;
-
-    const graphNodeKey = snapToGraphNode(snapped.coordinates);
-
-    const node = {
-        id: crypto.randomUUID(),
-        coordinates: snapped.coordinates,
-        roadId: snapped.roadId,
-        graphKey: graphNodeKey
-    };
-
-    nodes.push(node);
-
-    drawNode(node);
-    drawRoute();
-
-    console.log(nodes);
-    console.log(routeLine);
-});
-
-
-map.on("mousemove", e => {
-    $("#cursor_pos_text").text(`(${e.latlng.lat}, ${e.latlng.lng})`);
-})
