@@ -3,8 +3,6 @@ import { get } from "@vercel/blob";
 export default async function handler(req, res) {
     try {
         const URL = "https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/Dasma_LineStrings.geojson";
-        
-        console.log("TOKEN:", process.env.BLOB_READ_WRITE_TOKEN);
 
         const blobResponse = await get(URL, {
             access: 'private',
