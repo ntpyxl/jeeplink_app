@@ -8,7 +8,7 @@ async function getAPIBase() {
 
     try {
         const controller = new AbortController();
-        setTimeout(() => controller.abort(), 500); // Modify 500 (ms) should it fail to connect to the local server despite it running.
+        setTimeout(() => controller.abort(), 5000); // Modify 5000 (ms) should it fail to connect to the local server despite it running.
 
         const res = await fetch(localAPI + "/", { method: "GET", signal: controller.signal });
         if (res.ok) {
