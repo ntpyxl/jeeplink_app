@@ -46,7 +46,7 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
                 });
             }
 
-            graph = buildGraph(roadsGeoJSON, true);
+            graph = buildGraph(roadsGeoJSON, true); // TODO: Double check if this is necessary
         });
     }
 }).addTo(map);
@@ -63,8 +63,7 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-let graph = buildGraph(roadsGeoJSON, true);
-// NOTE: graph.get(key) => [{ to, weight, coords }]
+let graph = buildGraph(roadsGeoJSON, true); // NOTE: graph.get(key) => [{ to, weight, coords }]
 
 $("#saveNewGeoJson").on("click", async function () {
     // TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
@@ -75,7 +74,10 @@ $("#saveNewGeoJson").on("click", async function () {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(roadsGeoJSON)
+            body: JSON.stringify({
+                roads: roadsGeoJSON,
+                graph: Object.fromEntries(graph)
+            })
         });
 
         const result = await response.json();

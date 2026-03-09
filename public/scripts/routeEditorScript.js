@@ -46,7 +46,14 @@ roadsLayer.on("click", async e => {
     const snapped = snapToRoad(e.latlng);
     if (!snapped) return;
 
-    const graphNodeKey = insertTemporaryNode(snapped.coordinates);
+    const graphNodeKey = snapToGraphNode(snapped.coordinates);
+    /*
+    const graphNodeKey = insertTemporaryNode(
+        snapped.coordinates,
+        snapped.segmentA,
+        snapped.segmentB
+    );
+    */
 
     const node = {
         id: crypto.randomUUID(),
@@ -67,24 +74,30 @@ function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
 
     let closestRoad = null;
+    let closestSnap = null;
     let minDist = Infinity;
 
     roadsGeoJSON.features.forEach(road => {
-        const dist = turf.pointToLineDistance(clicked, road, { units: "meters" });
+        const snap = turf.nearestPointOnLine(road, clicked);
+        const dist = snap.properties.dist;
+
         if (dist < minDist) {
             minDist = dist;
             closestRoad = road;
+            closestSnap = snap;
         }
     });
 
     if (!closestRoad) return null;
 
-    const snapped = turf.nearestPointOnLine(closestRoad, clicked);
+    const coords = closestRoad.geometry.coordinates;
+    const segmentIndex = closestSnap.properties.index;
 
     return {
-        point: snapped,
-        coordinates: snapped.geometry.coordinates,
-        roadId: closestRoad.properties.id
+        coordinates: closestSnap.geometry.coordinates,
+        roadId: closestRoad.properties.id,
+        segmentA: coords[segmentIndex],
+        segmentB: coords[segmentIndex + 1]
     };
 }
 
@@ -110,44 +123,24 @@ function snapToGraphNode(coord) {
 }
 
 // TODO: Fix route jumping through roads.
-function insertTemporaryNode(coord) {
+function insertTemporaryNode(coord, a, b) {
     const key = coord.join(",");
 
     if (graph.has(key)) return key;
 
-    let nearestA = null;
-    let nearestB = null;
-    let minA = Infinity;
-    let minB = Infinity;
+    const aKey = a.join(",");
+    const bKey = b.join(",");
 
-    for (const nodeKey of graph.keys()) {
-        const [lng, lat] = nodeKey.split(",").map(Number);
-
-        const dist = turf.distance(
-            turf.point(coord),
-            turf.point([lng, lat]),
-            { units: "meters" }
-        );
-
-        if (dist < minA) {
-            minB = minA;
-            nearestB = nearestA;
-
-            minA = dist;
-            nearestA = nodeKey;
-        } else if (dist < minB) {
-            minB = dist;
-            nearestB = nodeKey;
-        }
-    }
+    const distA = turf.distance(turf.point(coord), turf.point(a), { units: "meters" });
+    const distB = turf.distance(turf.point(coord), turf.point(b), { units: "meters" });
 
     graph.set(key, []);
 
-    graph.get(key).push({ to: nearestA, weight: minA });
-    graph.get(key).push({ to: nearestB, weight: minB });
+    graph.get(key).push({ to: aKey, weight: distA });
+    graph.get(key).push({ to: bKey, weight: distB });
 
-    graph.get(nearestA).push({ to: key, weight: minA });
-    graph.get(nearestB).push({ to: key, weight: minB });
+    graph.get(aKey).push({ to: key, weight: distA });
+    graph.get(bKey).push({ to: key, weight: distB });
 
     return key;
 }
@@ -159,8 +152,7 @@ async function drawRoute() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            waypoints: nodes.map(n => n.graphKey),
-            graph: Object.fromEntries(graph)
+            waypoints: nodes.map(n => n.graphKey)
         })
     });
 

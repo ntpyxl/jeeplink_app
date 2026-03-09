@@ -6,9 +6,10 @@ export default async function handler(req, res) {
     }
 
     try {
-        const geojson = req.body;
+        const geojson = req.body.roads;
+        const graph = req.body.graph;
 
-        const blob = await put(
+        const roadsBlob = await put(
             "Dasma_LineStrings.geojson",
             JSON.stringify(geojson),
             {
@@ -19,7 +20,22 @@ export default async function handler(req, res) {
             }
         );
 
-        return res.status(200).json({ url: blob.url });
+        const graphBlob = await put(
+            "Dasma_RoadGraph.json",
+            JSON.stringify(graph),
+            {
+                access: "private",
+                contentType: "application/json",
+                token: process.env.BLOB_READ_WRITE_TOKEN,
+                allowOverwrite: true
+            }
+        );
+
+        return res.status(200).json({
+            roadsUrl: roadsBlob.url,
+            graphUrl: graphBlob.url
+        });
+
 
     } catch (err) {
         console.error("Blob Saving Error:", err);

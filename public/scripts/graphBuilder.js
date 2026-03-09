@@ -22,6 +22,13 @@ export function buildGraph(roads, showDisabledRoads) {
                     turf.point(b),
                     { units: "meters" }
                 );
+                
+                // TODO: Above function can be slower, test this one instead? Faster but trading some accuracy.
+                function funcDist(a, b) {
+                    const dx = a[0] - b[0];
+                    const dy = a[1] - b[1];
+                    return Math.sqrt(dx*dx + dy*dy) * 111320;
+                }
 
                 if (!graph.has(aKey)) graph.set(aKey, []);
                 if (!graph.has(bKey)) graph.set(bKey, []);
