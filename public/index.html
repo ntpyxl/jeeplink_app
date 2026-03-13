@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JeepLink</title>
 
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
     <!-- Tailwind Cdn (Install Tailwind) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- Google Font (Install if possible) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +100,75 @@
             </div>
         </main>
         <!-- End of Hero Section -->
+        
+        <!-- ── Map Section ── -->
+        <section class="map-section w-full h-full p-4">
+            <div class="flex">
+                <div class="flex flex-col w-full">
+                    <div class="relative w-full">
+                        <!-- Map -->
+                        <div id="map" class="w-full h-full border-[3px] border-black rounded-xl"></div>
+
+                        <!-- Overlay Panel -->
+                        <div class="absolute top-4 left-4 flex flex-col gap-4 z-[1000]">
+                            <div class="bg-white border border-black p-6 rounded-3xl shadow-lg w-80">
+                                <h2 class="text-xl font-bold mb-2">Commuting Destination</h2>
+
+                                <div class="mb-2">
+                                    <div type="text" class="w-full border-[1px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Starting Point</div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div type="text" class="w-full border-[1px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Destination</div>
+                                </div>
+                            </div>
+
+                            <!-- Route Details -->
+                            <div class="bg-[#004F11] border border-black rounded-3xl shadow-lg w-80 overflow-hidden">
+                                <details>
+                                    <summary class="text-xl text-[#E9CD2D] font-bold cursor-pointer p-6">
+                                        Route 1 Details
+                                    </summary>
+
+                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-6">
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                    </div>
+                                </details>
+                            </div>
+
+                            <div class="bg-[#004F11] border border-black rounded-3xl shadow-lg w-80 overflow-hidden">
+                                <details>
+                                    <summary class="text-xl text-[#E9CD2D] font-bold cursor-pointer p-6">
+                                        Route 2 Details
+                                    </summary>
+
+                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-6">
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                        <p>Route details</p>
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+            <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+            <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
+            <script src="scripts/graphBuilder.js" type="module"></script>
+            <script src="scripts/routeEditorScript.js" type="module"></script>
+        </section>
+        <!-- End of Map Section -->
     </body>
 
 </html>
