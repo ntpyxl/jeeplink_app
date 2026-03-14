@@ -22,3 +22,7 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
 }
+
+summary::-webkit-details-marker {
+    display: none;
+}

@@ -102,35 +102,36 @@
         <!-- End of Hero Section -->
         
         <!-- ── Map Section ── -->
-        <section class="map-section w-full h-full p-4">
+        <section class="map-section w-full h-full">
             <div class="flex">
                 <div class="flex flex-col w-full">
                     <div class="relative w-full">
                         <!-- Map -->
-                        <div id="map" class="w-full h-full border-[3px] border-black rounded-xl"></div>
+                        <div id="map" class="w-full h-full border-t-[3px] border-[#004F11] shadow-lg"></div>
 
                         <!-- Overlay Panel -->
-                        <div class="absolute top-4 left-4 flex flex-col gap-4 z-[1000]">
-                            <div class="bg-white border border-black p-6 rounded-3xl shadow-lg w-80">
+                        <div class="absolute top-8 left-8 flex flex-col gap-4 z-[1000]">
+                            <div class="bg-white p-6 rounded-3xl shadow-2xl w-80">
                                 <h2 class="text-xl font-bold mb-2">Commuting Destination</h2>
 
                                 <div class="mb-2">
-                                    <div type="text" class="w-full border-[1px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Starting Point</div>
+                                    <div type="text" class="w-full border-[2px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Starting Point</div>
                                 </div>
 
                                 <div class="mb-2">
-                                    <div type="text" class="w-full border-[1px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Destination</div>
+                                    <div type="text" class="w-full border-[2px] border-[#004F11] rounded-lg text-[#003B01] p-1 mt-1">Destination</div>
                                 </div>
                             </div>
 
                             <!-- Route Details -->
-                            <div class="bg-[#004F11] border border-black rounded-3xl shadow-lg w-80 overflow-hidden">
-                                <details>
-                                    <summary class="text-xl text-[#E9CD2D] font-bold cursor-pointer p-6">
+                            <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
+                                <details class="group">
+                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none hover:bg-[#1b5e20] transition-colors duration-300">
                                         Route 1 Details
+                                        <span class="transition-transform duration-300 group-open:rotate-180">^</span>
                                     </summary>
 
-                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-6">
+                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-4">
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
@@ -140,13 +141,14 @@
                                 </details>
                             </div>
 
-                            <div class="bg-[#004F11] border border-black rounded-3xl shadow-lg w-80 overflow-hidden">
-                                <details>
-                                    <summary class="text-xl text-[#E9CD2D] font-bold cursor-pointer p-6">
+                            <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
+                                <details class="group">
+                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none hover:bg-[#1b5e20] transition-colors duration-300">
                                         Route 2 Details
+                                        <span class="transition-transform duration-300 group-open:rotate-180">^</span>
                                     </summary>
 
-                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-6">
+                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-4">
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
