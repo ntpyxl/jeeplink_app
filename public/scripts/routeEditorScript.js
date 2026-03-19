@@ -42,10 +42,11 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-roadsLayer.on("click", async e => {
-    const snapped = snapToRoad(e.latlng);
+roadsLayer.on("click", async event => {
+    const snapped = snapToRoad(event.latlng);
     if (!snapped) return;
 
+    // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
     const graphNodeKey = snapToGraphNode(snapped.coordinates);
     /*
     const graphNodeKey = insertTemporaryNode(
@@ -64,10 +65,30 @@ roadsLayer.on("click", async e => {
 
     nodes.push(node);
 
+    $("#startNodeText").text(nodes[0].graphKey);
+    if(nodes.length > 1) $("#endNodeText").text(nodes[nodes.length - 1].graphKey);
+
     drawNode(node);
     await drawRoute();
 });
 
+$("#saveNewJeepRoute").on("click", async event => {
+    console.log(nodes)
+    try {
+        const response = await apiFetch("/insertJeepRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nodes: nodes
+            })
+        });
+
+        alert("Successfully saved Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Jeepney Route.");
+    }
+})
 
 
 function snapToRoad(latlng) {
