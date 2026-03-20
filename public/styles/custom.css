@@ -35,3 +35,7 @@ html, body {
 .guide-hero-bg {
     background: linear-gradient(180deg, #38653A 0%, #5BA35F 100%);
 }
+
+summary::-webkit-details-marker {
+    display: none;
+}
