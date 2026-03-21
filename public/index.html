@@ -18,6 +18,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
 
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/custom.css">
     
@@ -111,52 +114,60 @@
 
                         <!-- Overlay Panel -->
                         <div class="absolute top-8 left-8 flex flex-col gap-4 z-[1000]">
-                            <div class="bg-white p-6 rounded-3xl shadow-2xl w-80">
+                            <div class="bg-white border-1 border-[#004F11]/80 p-6 rounded-3xl shadow-2xl w-80">
                                 <h2 class="text-xl font-bold mb-2">Commuting Destination</h2>
 
                                 <div class="mb-2">
-                                    <div type="text" class="w-full border-[1px] border-[#2E7D32] rounded-lg text-black p-1 mt-1">Starting Point</div>
+                                    <div type="text" class="w-full border-[1px] border-1 border-[#004F11]/30 rounded-lg text-black p-1 mt-1">Starting Point</div>
                                 </div>
 
                                 <div class="mb-2">
-                                    <div type="text" class="w-full border-[1px] border-[#2E7D32] rounded-lg text-black p-1 mt-1">Destination</div>
+                                    <div type="text" class="w-full border-[1px] border-1 border-[#004F11]/30 rounded-lg text-black p-1 mt-1">Destination</div>
                                 </div>
                             </div>
 
                             <!-- Route Details -->
                             <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
-                                <details class="group">
-                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none hover:bg-[#1b5e20] transition-colors duration-300">
+                                <details class="group dropdown">
+                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none group-open:bg-[#2E7D32] transition-colors duration-300">
                                         Route 1 Details
-                                        <span class="transition-transform duration-300 group-open:rotate-180">^</span>
+                                        <span class="material-symbols-outlined duration-300 ease-in-out dropdown-icon">keyboard_arrow_down</span>
                                     </summary>
 
-                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-4">
+                                    <div class="dropdown-content bg-white text-sm text-[#555] space-y-2 px-4 overflow-hidden">
+                                        <div class="py-4">
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
+                                        </div>
+                                        
                                     </div>
                                 </details>
                             </div>
 
                             <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
-                                <details class="group">
-                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none hover:bg-[#1b5e20] transition-colors duration-300">
+                                <details class="group dropdown">
+                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none group-open:bg-[#2E7D32] transition-colors duration-300">
                                         Route 2 Details
-                                        <span class="transition-transform duration-300 group-open:rotate-180">^</span>
+                                        <span class="material-symbols-outlined duration-300 ease-in-out dropdown-icon">keyboard_arrow_down</span>
                                     </summary>
 
-                                    <div class="bg-white text-sm text-gray-700 space-y-2 p-4">
+                                    <div class="dropdown-content bg-white text-sm text-[#555] space-y-2 px-4 overflow-hidden">
+                                        <div class="py-4">
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
                                         <p>Route details</p>
+                                        </div>
+                                        
                                     </div>
                                 </details>
                             </div>
+
+                            
                         </div>
                     </div>
                 </div>
@@ -169,6 +180,8 @@
             <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
             <script src="scripts/graphBuilder.js" type="module"></script>
             <script src="scripts/routeEditorScript.js" type="module"></script>
+
+            <script src="scripts/dropDownAnimation.js"></script>
         </section>
         <!-- End of Map Section -->
     </body>
