@@ -29,6 +29,8 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
 let drawnNodes = [];
 let drawnRouteLine = null;
 let existingRouteLines = null;
+let calculatedExistingRoutes = null;
+let drawnExistingRouteLines = [];
 const graph = buildGraph(roadsGeoJSON, false); // NOTE: graph.get(key) => [{ to, weight, coords }]
 
 map.on("zoomend", () => {
@@ -98,15 +100,20 @@ $("#toggleJeepRoutes").on("click", async event => {
                 headers: { "Content-Type": "application/json" },
             });
             existingRouteLines = queryData.queryData;
+            existingRouteLines = existingRouteLines.map(route =>
+                route.nodes.map(node => `${node.longitude},${node.latitude}`)
+            );
         } catch (err) {
             console.error(err);
         }
     }
 
-    const routes = existingRouteLines.map(route =>
-        route.nodes.map(node => `${node.longitude},${node.latitude}`)
-    );
-    displayExistingRoutes(routes)
+    if (drawnExistingRouteLines.length > 0) {
+        drawnExistingRouteLines.forEach(line => map.removeLayer(line));
+        drawnExistingRouteLines = [];
+    } else { 
+        displayExistingRoutes(existingRouteLines);
+    }
 })
 
 
@@ -209,24 +216,26 @@ async function drawRoute(routeNodes) {
 }
 
 async function displayExistingRoutes(routes) {
-    const response = await apiFetch("/calculateRoute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            algorithm: "dijkstra",
-            routes: routes
-        })
-    });
+    if(!calculatedExistingRoutes) {
+        calculatedExistingRoutes = await apiFetch("/calculateRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                algorithm: "dijkstra",
+                routes: routes
+            })
+        });
+    }
+    drawnExistingRouteLines = []
 
-    const { paths } = await response;
-
-    paths.forEach(path => {
+    calculatedExistingRoutes.paths.forEach(path => {
         const routePath = path.map(k => k.split(",").map(Number).reverse());
 
-        L.polyline(routePath, {
+        const line = L.polyline(routePath, {
             color: "orange",
             weight: 5
         }).addTo(map);
+        drawnExistingRouteLines.push(line)
     });
 }
 
