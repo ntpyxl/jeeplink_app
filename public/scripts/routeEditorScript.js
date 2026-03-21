@@ -91,19 +91,22 @@ $("#saveNewJeepRoute").on("click", async event => {
 })
 
 $("#toggleJeepRoutes").on("click", async event => {
-    if(!existingRouteLines) try {
-        const queryData = await apiFetch("/getJeepRoutesWithNodes", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-        existingRouteLines = queryData.queryData;
-    } catch (err) {
-        console.error(err);
+    if(!existingRouteLines) {
+        try {
+            const queryData = await apiFetch("/getJeepRoutesWithNodes", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            existingRouteLines = queryData.queryData;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    await Promise.all(
-        existingRouteLines.map(route => displayExistingRoutes(route.nodes))
+    const routes = existingRouteLines.map(route =>
+        route.nodes.map(node => `${node.longitude},${node.latitude}`)
     );
+    displayExistingRoutes(routes)
 })
 
 
@@ -185,17 +188,18 @@ function insertTemporaryNode(coord, a, b) {
 async function drawRoute(routeNodes) {
     if (routeNodes.length < 2) return;
 
-    const response = await apiFetch("/multipoint_dijkstra", {
+    const response = await apiFetch("/calculateRoute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            waypoints: routeNodes.map(n => n.graphKey)
+            algorithm: "dijkstra",
+            routes: [ routeNodes.map(n => n.graphKey) ]
         })
     });
 
-    const { path } = await response;
+    const { paths } = await response;
 
-    const routePath = path.map(k => k.split(",").map(Number).reverse()); 
+    const routePath = paths[0].map(k => k.split(",").map(Number).reverse()); 
 
     if (drawnRouteLine) map.removeLayer(drawnRouteLine);
     drawnRouteLine = L.polyline(routePath, {
@@ -204,26 +208,26 @@ async function drawRoute(routeNodes) {
     }).addTo(map);
 }
 
-async function displayExistingRoutes(routeNodes) {
-    console.log(routeNodes)
-    if (routeNodes.length < 2) return;
-
-    const response = await apiFetch("/multipoint_dijkstra", {
+async function displayExistingRoutes(routes) {
+    const response = await apiFetch("/calculateRoute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            waypoints: routeNodes.map(node => `${node.longitude},${node.latitude}`)
+            algorithm: "dijkstra",
+            routes: routes
         })
     });
 
-    const { path } = await response;
+    const { paths } = await response;
 
-    const routePath = path.map(k => k.split(",").map(Number).reverse()); 
+    paths.forEach(path => {
+        const routePath = path.map(k => k.split(",").map(Number).reverse());
 
-    L.polyline(routePath, {
-        color: "orange",
-        weight: 5
-    }).addTo(map);
+        L.polyline(routePath, {
+            color: "orange",
+            weight: 5
+        }).addTo(map);
+    });
 }
 
 function drawNode(node) {
