@@ -102,6 +102,9 @@ $("#saveDrawnJeepRoute").on("click", async event => {
             })
         });
 
+        clearDrawnJeepRoute();
+        $("#drawnJeepRouteName").val('');
+
         alert("Successfully saved Jeepney Route!");
     } catch (err) {
         console.error(err);
