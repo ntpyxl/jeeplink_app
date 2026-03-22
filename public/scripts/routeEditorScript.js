@@ -26,7 +26,9 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     }
 }).addTo(map);
 
+// # TODO: Clean this up soon, maybe use class and objects.
 let drawnNodes = [];
+let drawnNodeMarkers = [];
 let drawnRouteLine = null;
 let existingRouteLines = null;
 let calculatedExistingRoutes = null;
@@ -75,7 +77,21 @@ roadsLayer.on("click", async event => {
     await drawRoute(drawnNodes);
 });
 
-$("#saveNewJeepRoute").on("click", async event => {
+$("#clearDrawnJeepRoute").on("click", async event => {
+    await clearDrawnJeepRoute();
+})
+
+async function clearDrawnJeepRoute() {
+    drawnNodeMarkers.forEach(line => map.removeLayer(line));
+    drawnNodeMarkers = [];
+    drawnNodes = [];
+    if(drawnRouteLine) map.removeLayer(drawnRouteLine);
+    drawnRouteLine = null;
+    $("#startNodeText").text("");
+    $("#endNodeText").text("");
+}
+
+$("#saveDrawnJeepRoute").on("click", async event => {
     try {
         await apiFetch("/insertJeepRoute", {
             method: "POST",
@@ -226,7 +242,7 @@ async function displayExistingRoutes(routes) {
             })
         });
     }
-    drawnExistingRouteLines = []
+    drawnExistingRouteLines = [];
 
     calculatedExistingRoutes.paths.forEach(path => {
         const routePath = path.map(k => k.split(",").map(Number).reverse());
@@ -235,7 +251,7 @@ async function displayExistingRoutes(routes) {
             color: "orange",
             weight: 5
         }).addTo(map);
-        drawnExistingRouteLines.push(line)
+        drawnExistingRouteLines.push(line);
     });
 }
 
@@ -247,7 +263,7 @@ function drawNode(node) {
         turn: "blue"
     };
 
-    L.circleMarker(
+    const marker = L.circleMarker(
         [node.coordinates[1], node.coordinates[0]],
         {
             radius: 7,
@@ -256,6 +272,7 @@ function drawNode(node) {
             fillOpacity: 1
         }
     ).addTo(map);
+    drawnNodeMarkers.push(marker);
 }
 
 
