@@ -26,8 +26,11 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     }
 }).addTo(map);
 
-let nodes = [];
-let routeLine = null;
+let drawnNodes = [];
+let drawnRouteLine = null;
+let existingRouteLines = null;
+let calculatedExistingRoutes = null;
+let drawnExistingRouteLines = [];
 const graph = buildGraph(roadsGeoJSON, false); // NOTE: graph.get(key) => [{ to, weight, coords }]
 
 map.on("zoomend", () => {
@@ -42,10 +45,11 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-roadsLayer.on("click", async e => {
-    const snapped = snapToRoad(e.latlng);
+roadsLayer.on("click", async event => {
+    const snapped = snapToRoad(event.latlng);
     if (!snapped) return;
 
+    // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
     const graphNodeKey = snapToGraphNode(snapped.coordinates);
     /*
     const graphNodeKey = insertTemporaryNode(
@@ -62,12 +66,55 @@ roadsLayer.on("click", async e => {
         graphKey: graphNodeKey
     };
 
-    nodes.push(node);
+    drawnNodes.push(node);
+
+    $("#startNodeText").text(drawnNodes[0].graphKey);
+    if(drawnNodes.length > 1) $("#endNodeText").text(drawnNodes[drawnNodes.length - 1].graphKey);
 
     drawNode(node);
-    await drawRoute();
+    await drawRoute(drawnNodes);
 });
 
+$("#saveNewJeepRoute").on("click", async event => {
+    try {
+        await apiFetch("/insertJeepRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nodes: drawnNodes
+            })
+        });
+
+        alert("Successfully saved Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Jeepney Route.");
+    }
+})
+
+$("#toggleJeepRoutes").on("click", async event => {
+    if(!existingRouteLines) {
+        try {
+            const queryData = await apiFetch("/getJeepRoutesWithNodes", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            existingRouteLines = queryData.queryData;
+            existingRouteLines = existingRouteLines.map(route =>
+                route.nodes.map(node => `${node.longitude},${node.latitude}`)
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    if (drawnExistingRouteLines.length > 0) {
+        drawnExistingRouteLines.forEach(line => map.removeLayer(line));
+        drawnExistingRouteLines = [];
+    } else { 
+        displayExistingRoutes(existingRouteLines);
+    }
+})
 
 
 function snapToRoad(latlng) {
@@ -145,30 +192,55 @@ function insertTemporaryNode(coord, a, b) {
     return key;
 }
 
-async function drawRoute() {
-    if (nodes.length < 2) return;
+async function drawRoute(routeNodes) {
+    if (routeNodes.length < 2) return;
 
-    const response = await apiFetch("/multipoint_dijkstra", {
+    const response = await apiFetch("/calculateRoute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            waypoints: nodes.map(n => n.graphKey)
+            algorithm: "dijkstra",
+            routes: [ routeNodes.map(n => n.graphKey) ]
         })
     });
 
-    const { path } = await response;
+    const { paths } = await response;
 
-    const routePath = path.map(k => k.split(",").map(Number).reverse()); 
+    const routePath = paths[0].map(k => k.split(",").map(Number).reverse()); 
 
-    if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(routePath, {
+    if (drawnRouteLine) map.removeLayer(drawnRouteLine);
+    drawnRouteLine = L.polyline(routePath, {
         color: "orange",
         weight: 5
     }).addTo(map);
 }
 
+async function displayExistingRoutes(routes) {
+    if(!calculatedExistingRoutes) {
+        calculatedExistingRoutes = await apiFetch("/calculateRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                algorithm: "dijkstra",
+                routes: routes
+            })
+        });
+    }
+    drawnExistingRouteLines = []
+
+    calculatedExistingRoutes.paths.forEach(path => {
+        const routePath = path.map(k => k.split(",").map(Number).reverse());
+
+        const line = L.polyline(routePath, {
+            color: "orange",
+            weight: 5
+        }).addTo(map);
+        drawnExistingRouteLines.push(line)
+    });
+}
+
 function drawNode(node) {
-    // TODO: Soon, color code the nodes
+    // TODO: Soon, color code the drawnNodes
     const colors = {
         start: "green",
         end: "red",
