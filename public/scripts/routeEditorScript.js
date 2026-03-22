@@ -1,5 +1,6 @@
 import { buildGraph } from "./graphBuilder.js";
 import { apiFetch } from "./jeeplinkApiFetcher.js";
+import { DrawRouteHelper } from "./helpers/drawRouteHelper.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -27,9 +28,8 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
 }).addTo(map);
 
 // # TODO: Clean this up soon, maybe use class and objects.
-let drawnNodes = [];
-let drawnNodeMarkers = [];
-let drawnRouteLine = null;
+const drawRouteHelper = new DrawRouteHelper(map);
+
 let existingRouteLines = null;
 let calculatedExistingRoutes = null;
 let drawnExistingRouteLines = [];
@@ -68,13 +68,11 @@ roadsLayer.on("click", async event => {
         graphKey: graphNodeKey
     };
 
-    drawnNodes.push(node);
+    drawRouteHelper.addNode(node);
+    await drawRouteHelper.drawRoute();
 
-    $("#startNodeText").text(drawnNodes[0].graphKey);
-    if(drawnNodes.length > 1) $("#endNodeText").text(drawnNodes[drawnNodes.length - 1].graphKey);
-
-    drawNode(node);
-    await drawRoute(drawnNodes);
+    $("#startNodeText").text(drawRouteHelper.nodes[0].graphKey);
+    if(drawRouteHelper.nodes.length > 1) $("#endNodeText").text(drawRouteHelper.nodes[drawRouteHelper.nodes.length - 1].graphKey);
 });
 
 $("#clearDrawnJeepRoute").on("click", async event => {
@@ -82,11 +80,7 @@ $("#clearDrawnJeepRoute").on("click", async event => {
 })
 
 async function clearDrawnJeepRoute() {
-    drawnNodeMarkers.forEach(line => map.removeLayer(line));
-    drawnNodeMarkers = [];
-    drawnNodes = [];
-    if(drawnRouteLine) map.removeLayer(drawnRouteLine);
-    drawnRouteLine = null;
+    drawRouteHelper.clear();
     $("#startNodeText").text("");
     $("#endNodeText").text("");
 }
@@ -98,7 +92,7 @@ $("#saveDrawnJeepRoute").on("click", async event => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 routeName: $("#drawnJeepRouteName").val(),
-                nodes: drawnNodes
+                nodes: drawRouteHelper.nodes
             })
         });
 
@@ -212,29 +206,6 @@ function insertTemporaryNode(coord, a, b) {
     return key;
 }
 
-async function drawRoute(routeNodes) {
-    if (routeNodes.length < 2) return;
-
-    const response = await apiFetch("/calculateRoute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            algorithm: "dijkstra",
-            routes: [ routeNodes.map(n => n.graphKey) ]
-        })
-    });
-
-    const { paths } = await response;
-
-    const routePath = paths[0].map(k => k.split(",").map(Number).reverse()); 
-
-    if (drawnRouteLine) map.removeLayer(drawnRouteLine);
-    drawnRouteLine = L.polyline(routePath, {
-        color: "orange",
-        weight: 5
-    }).addTo(map);
-}
-
 async function displayExistingRoutes(routes) {
     if(!calculatedExistingRoutes) {
         calculatedExistingRoutes = await apiFetch("/calculateRoute", {
@@ -258,27 +229,6 @@ async function displayExistingRoutes(routes) {
         drawnExistingRouteLines.push(line);
     });
 }
-
-function drawNode(node) {
-    // TODO: Soon, color code the drawnNodes
-    const colors = {
-        start: "green",
-        end: "red",
-        turn: "blue"
-    };
-
-    const marker = L.circleMarker(
-        [node.coordinates[1], node.coordinates[0]],
-        {
-            radius: 7,
-            color: "green",
-            fillColor: "green",
-            fillOpacity: 1
-        }
-    ).addTo(map);
-    drawnNodeMarkers.push(marker);
-}
-
 
 
 
