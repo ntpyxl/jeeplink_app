@@ -97,6 +97,7 @@ $("#saveDrawnJeepRoute").on("click", async event => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                routeName: $("#drawnJeepRouteName").val(),
                 nodes: drawnNodes
             })
         });
