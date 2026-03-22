@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeepLink - Dashboard</title>
+
+    <!-- Tailwind Cdn (Install Tailwind) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Google Font (Install if possible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+     <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+
+    <!-- Font Awesome (Install if possible) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+</head>
+<body>
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+            <div class="px-12">            
+                <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
+
+                <hr class="text-[#90B67A]">
+            </div>
+
+        <!-- Main Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <!-- ACTIVE -->
+                <a href="dashboard.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-chart-line text-black"></i>
+                    </div>
+
+                    Dashboard
+                </a>
+
+                <!-- NORMAL -->
+                <a href="routesManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-route text-white"></i>
+                    </div>
+                    Routes Management
+                </a>
+
+                <a href="reportsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-bar text-white"></i>
+                    </div>
+                    Reports Management
+                </a>
+            </nav>
+
+            <!-- Line -->
+            <div class="px-12 my-12">            
+                <hr class="text-[#90B67A]">
+            </div>
+
+            <!-- CRUD Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <!-- NORMAL -->
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    Report Webpage
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-book text-white"></i>
+                    </div>
+                    Guide Webpage
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-question text-white"></i>
+                    </div>
+                    FAQs Webpage
+                </a>
+            </nav>
+        </aside>
+
+    <!-- Main Content -->
+    <main class="ml-92 p-6 flex-1">
+            <!-- Header -->
+            <header class="w-full sticky top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+
+                <!-- Left Side -->
+                <div>
+                    <h1 class="text-4xl font-extralight text-gray-800">
+                        Welcome back, Admin!
+                    </h1>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center gap-6">
+
+                    <!-- Notification Icon -->
+                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+
+                    <!-- Divider  -->
+                    <div class="w-px h-12 bg-gray-300"></div>
+
+                    <!-- Profile -->
+                    <div class="flex items-center gap-3">
+                        <!-- Use an existing image as avatar; falls back to a styled icon if not found -->
+                        <img src="../images/hero1.jpg" alt="Admin avatar" onerror="this.style.display='none'" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                        <span class="text-gray-700 font-medium">Admin</span>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="w-full p-6">
+                <div class="border-b-1 border-gray-200">
+                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Dashboard</h2>
+                </div>
+
+                <!-- Cards Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mt-6">
+
+                    <!-- Card 1 -->
+                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total Routes</p>
+                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
+                            <i class="fas fa-route text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total Reports</p>
+                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 rounded-full">
+                            <i class="fas fa-exclamation text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Something</p>
+                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Something</p>
+                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center bg-purple-100 rounded-full">
+                            <i class="fas fa-check text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Activity and Map Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-stretch">
+
+                    <!-- LEFT: Activity Logs -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow">
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            Activity Logs
+                        </h3>
+
+                        <div class="overflow-y-auto flex-1 max-h-[500px]">
+                            <table class="w-full text-left border-collapse">
+
+                                <thead>
+                                    <tr class="text-gray-500 text-sm border-b">
+                                        <th class="py-2">User</th>
+                                        <th class="py-2">Action</th>
+                                        <th class="py-2">Date</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-gray-700 text-sm">
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Juan Dela Cruz</td>
+                                        <td class="py-2">Added new route</td>
+                                        <td class="py-2">Mar 21, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Maria Santos</td>
+                                        <td class="py-2">Submitted report</td>
+                                        <td class="py-2">Mar 20, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Admin</td>
+                                        <td class="py-2">Updated route</td>
+                                        <td class="py-2">Mar 19, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Juan Dela Cruz</td>
+                                        <td class="py-2">Added new route</td>
+                                        <td class="py-2">Mar 21, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Maria Santos</td>
+                                        <td class="py-2">Submitted report</td>
+                                        <td class="py-2">Mar 20, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Admin</td>
+                                        <td class="py-2">Updated route</td>
+                                        <td class="py-2">Mar 19, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Admin</td>
+                                        <td class="py-2">Updated route</td>
+                                        <td class="py-2">Mar 19, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Juan Dela Cruz</td>
+                                        <td class="py-2">Added new route</td>
+                                        <td class="py-2">Mar 21, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Maria Santos</td>
+                                        <td class="py-2">Submitted report</td>
+                                        <td class="py-2">Mar 20, 2026</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">Admin</td>
+                                        <td class="py-2">Updated route</td>
+                                        <td class="py-2">Mar 19, 2026</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                            <a href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                View All Activities
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT: Map -->
+                    <div class="bg-white p-6 rounded-xl shadow flex flex-col">
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            Route Map
+                        </h3>
+
+                        <!-- Map Container -->
+                        <div class="flex-1">
+                            <div id="map" class="w-full h-full rounded-lg"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+        
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+    <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/graphBuilder.js" type="module"></script>
+    <script src="../scripts/routeEditorScript.js" type="module"></script>
+
+</body>
+</html>
