@@ -23,9 +23,15 @@
             <div>
                 <p>start node: <span id="startNodeText"></span></p>
                 <p>end node: <span id="endNodeText"></span></p>
-                <button id="saveNewJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
-                    Save new Jeep Route
+
+                <input id="drawnJeepRouteName" class="border-2 border-black px-3 py-1 hover:cursor-text">
+                <button id="clearDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                    Clear drawn Jeep Route
                 </button>
+                <button id="saveDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                    Save drawn Jeep Route
+                </button>
+
                 <button id="toggleJeepRoutes" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
                     Toggle Jeep Routes Display
                 </button>
@@ -37,7 +43,7 @@
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="scripts/graphBuilder.js" type="module"></script>
     <script src="scripts/routeEditorScript.js" type="module"></script>
+
 </body>
 </html>
