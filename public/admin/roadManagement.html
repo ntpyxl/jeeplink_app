@@ -2,12 +2,28 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JeepLink - Road Management</title>
 
+    <!-- Tailwind Cdn (Install Tailwind) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Google Font (Install if possible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+     <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+
+    <!-- Font Awesome (Install if possible) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
@@ -31,10 +47,8 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
-    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
-    
-    <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="scripts/graphBuilder.js" type="module"></script>
-    <script src="scripts/roadEditorScript.js" type="module"></script>
+
+    <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/roadEditorScript.js" type="module"></script>
 </body>
 </html>

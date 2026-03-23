@@ -1,10 +1,25 @@
-import { buildGraph } from "./graphBuilder.js";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
+import { GraphHelper } from "./helpers/graphHelper.js";
 
-const map = L.map("map").setView([14.3272, 120.9404], 15);
+const map = L.map("map", {
+    renderer: L.canvas()
+}).setView([14.3272, 120.9404], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
+
+map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    let weight;
+
+    if (zoom <= 13) weight = 1;
+    else if (zoom <= 15) weight = 2;
+    else if (zoom <= 17) weight = 3;
+    else weight = 4;
+
+    roadsLayer.setStyle({ weight });
+});
 
 const roadsGeoJSON = await fetch("../api/getRoadsGeoJson").then(r => r.json());
 // Assigns a road ID to each road
@@ -19,7 +34,7 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
     style: {
         color: "#555",
         opacity: 1,
-        weight: map.getZoom()/3
+        weight: 2
     },
     onEachFeature: function(feature, layer) {
         if (feature.properties.disabled) {
@@ -46,28 +61,19 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
                 });
             }
 
-            graph = buildGraph(roadsGeoJSON, true); // TODO: Double check if this is necessary
+            // TODO: Double check if this is necessary
+            graphHelper.buildGraph(roadsGeoJSON, true); 
         });
     }
 }).addTo(map);
 
-map.on("zoomend", () => {
-    const zoom = map.getZoom();
-    let weight;
+const graphHelper = new GraphHelper(roadsGeoJSON);
+// NOTE: graph.get(key) => [{ to, weight, coords }]
 
-    if (zoom <= 13) weight = 1;
-    else if (zoom <= 15) weight = 2;
-    else if (zoom <= 17) weight = 3;
-    else weight = 4;
-
-    roadsLayer.setStyle({ weight });
-});
-
-let graph = buildGraph(roadsGeoJSON, true); // NOTE: graph.get(key) => [{ to, weight, coords }]
-
+// TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
+// TODO: May also want to implement a progress bar and disable other actions after clicking the save button.
+// TODO: Currently takes too long to save.. takes around 10s?
 $("#saveNewGeoJson").on("click", async function () {
-    // TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
-    // TODO: May also want to implement a progress bar and disable other actions after clicking the save button.
     try {
         const response = await fetch("/api/saveRoadsGeoJson", {
             method: "POST",
@@ -76,7 +82,7 @@ $("#saveNewGeoJson").on("click", async function () {
             },
             body: JSON.stringify({
                 roads: roadsGeoJSON,
-                graph: Object.fromEntries(graph)
+                graph: Object.fromEntries(graphHelper.graph)
             })
         });
 
