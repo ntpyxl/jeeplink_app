@@ -1,6 +1,6 @@
 import { apiFetch } from "../jeeplinkApiFetcher.js";
 
-export class DrawRouteHelper {
+export class RouteEditor {
     constructor(map) {
         this.map = map;
         this.nodes = [];
@@ -42,7 +42,7 @@ export class DrawRouteHelper {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 algorithm: "dijkstra",
-                routes: [ this.nodes.map(n => n.graphKey) ]
+                routes: [this.nodes.map(n => n.graphKey)]
             })
         });
 
@@ -68,5 +68,17 @@ export class DrawRouteHelper {
             this.map.removeLayer(this.routeLine);
             this.routeLine = null;
         }
+    }
+
+    getStartNode() {
+        return this.nodes[0] ?? null;
+    }
+
+    getEndNode() {
+        return this.nodes[this.nodes.length - 1] ?? null;
+    }
+
+    getNodes() {
+        return this.nodes;
     }
 }
