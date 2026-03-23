@@ -11,18 +11,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-map.on("zoomend", () => {
-    const zoom = map.getZoom();
-    let weight;
-
-    if (zoom <= 13) weight = 1;
-    else if (zoom <= 15) weight = 2;
-    else if (zoom <= 17) weight = 3;
-    else weight = 4;
-
-    roadsLayer.setStyle({ weight });
-});
-
 const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
