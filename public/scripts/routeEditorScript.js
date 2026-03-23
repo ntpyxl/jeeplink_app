@@ -23,7 +23,7 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-const roadsGeoJSON = await fetch("api/getRoadsGeoJson.js").then(r => r.json());
+const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;

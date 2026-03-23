@@ -6,7 +6,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("/api/getRoadsGeoJson").then(r => r.json());
+const roadsGeoJSON = await fetch("../api/getRoadsGeoJson").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;

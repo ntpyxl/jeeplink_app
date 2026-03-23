@@ -8,7 +8,7 @@ A navigation app to help commuters navigate Dasmariñas City, Cavite by providin
 - **Map Library**: [Leaflet](https://leafletjs.com/)
 - **Tiles**: [OpenStreetMap](https://www.openstreetmap.org/)
 - **Hosting & API**: [Vercel](https://vercel.com/)
-- **Storage**: [Vercel](https://vercel.com/), and _[Supabase](https://supabase.com/) (to be implemented)_
+- **Storage**: [Vercel](https://vercel.com/), and [Supabase](https://supabase.com/)
 
 ## Setup
 

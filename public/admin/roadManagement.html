@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Route Editor</title>
+    <title>JeepLink - Road Management</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
@@ -21,19 +21,9 @@
                 <div id="map"></div>
             </div>
             <div>
-                <p>start node: <span id="startNodeText"></span></p>
-                <p>end node: <span id="endNodeText"></span></p>
-
-                <input id="drawnJeepRouteName" class="border-2 border-black px-3 py-1 hover:cursor-text">
-                <button id="clearDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
-                    Clear drawn Jeep Route
-                </button>
-                <button id="saveDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
-                    Save drawn Jeep Route
-                </button>
-
-                <button id="toggleJeepRoutes" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
-                    Toggle Jeep Routes Display
+                Click on a road to disable it.
+                <button id="saveNewGeoJson" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                    Save new GeoJson Road Data
                 </button>
             </div>
         </div>
@@ -41,9 +31,10 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    
     <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="scripts/routeEditorScript.js" type="module"></script>
-
+    <script src="scripts/graphBuilder.js" type="module"></script>
+    <script src="scripts/roadEditorScript.js" type="module"></script>
 </body>
 </html>
