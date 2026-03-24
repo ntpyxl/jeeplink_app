@@ -66,6 +66,7 @@
                 <div class="search-bar w-full bg-[#D9D9D9] border-[3px] border-[#004F11] flex items-center px-8 py-4 mt-4 shadow-xl rounded-3xl">     
                     <input
                         type="text"
+                        id="startingPointField"
                         placeholder="Starting Point"
                         class="flex-1 bg-transparent outline-none text-[#003B01] placeholder-[#2E7D32] font-medium ms-8 text-3xl italic"
                     />
@@ -78,11 +79,12 @@
 
                     <input
                         type="text"
+                        id="destinationPointField"
                         placeholder="Destination"
                         class="flex-1 bg-transparent outline-none text-[#003B01] placeholder-[#2E7D32] font-medium pe-4 text-3xl italic text-right"
                     />
 
-                    <button class="ml-8 bg-[#004F11] hover:bg-[#1b5e20] transition rounded-full w-16 h-16 flex items-center justify-center">
+                    <button id="calculateRouteButton" class="ml-8 bg-[#004F11] hover:bg-[#1b5e20] transition rounded-full w-16 h-16 flex items-center justify-center cursor-pointer">
                         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
                             <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2.5"/>
                             <path d="M16.5 16.5L21 21" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
@@ -178,8 +180,9 @@
             <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
             <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
-            <script src="scripts/graphBuilder.js" type="module"></script>
-            <script src="scripts/routeEditorScript.js" type="module"></script>
+            <script src="scripts/helpers/graphHelper.js" type="module"></script>
+            
+            <script src="scripts/commuterScript.js" type="module"></script>
 
             <script src="scripts/dropDownAnimation.js"></script>
         </section>

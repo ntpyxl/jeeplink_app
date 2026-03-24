@@ -2,6 +2,7 @@ import { get } from "@vercel/blob";
 
 export default async function handler(req, res) {
     try {
+        // TODO: May use up all Vercel blob transfer (1GB/month). Might consider using caches.
         const URL = "https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/Dasma_LineStrings.geojson";
 
         const blobResponse = await get(URL, {
