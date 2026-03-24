@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeepLink - Road Management</title>
+
+    <!-- Tailwind Cdn (Install Tailwind) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Google Font (Install if possible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+     <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+
+    <!-- Font Awesome (Install if possible) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+            <div class="px-12">            
+                <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
+
+                <hr class="text-[#90B67A]">
+            </div>
+
+        <!-- Main Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <a href="dashboard.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-line text-white"></i>
+                    </div>
+                    Dashboard
+                </a>
+
+                <a href="routesManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-route text-white"></i>
+                    </div>
+
+                    Routes Management
+                </a>
+
+                <!-- ACTIVE -->
+                <a href="roadsManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-road text-black"></i>
+                    </div>
+
+                    Roads Management
+                </a>
+
+                <a href="reportsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-bar text-white"></i>
+                    </div>
+                    Reports Management
+                </a>
+            </nav>
+
+            <!-- Line -->
+            <div class="px-12 my-12">            
+                <hr class="text-[#90B67A]">
+            </div>
+
+            <!-- CRUD Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <!-- NORMAL -->
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    Report Webpage
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-book text-white"></i>
+                    </div>
+                    Guide Webpage
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-question text-white"></i>
+                    </div>
+                    FAQs Webpage
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="ml-92 p-6 flex-1">
+            <!-- Header -->
+            <header class="w-full sticky top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+
+                <!-- Left Side -->
+                <div>
+                    <h1 class="text-4xl font-extralight text-gray-800">
+                        Welcome back, Admin!
+                    </h1>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center gap-6">
+
+                    <!-- Notification Icon -->
+                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+
+                    <!-- Divider  -->
+                    <div class="w-px h-12 bg-gray-300"></div>
+
+                    <!-- Profile -->
+                    <div class="flex items-center gap-3">
+                        <!-- Use an existing image as avatar; falls back to a styled icon if not found -->
+                        <img src="../images/hero1.jpg" alt="Admin avatar" onerror="this.style.display='none'" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                        <span class="text-gray-700 font-medium">Admin</span>
+                    </div>
+
+                </div>
+            </header>
+
+            <div class="flex flex-col w-full">
+                <div class="">
+                    <div id="map"></div>
+                </div>
+                <div>
+                    Click on a road to disable it.
+                    <button id="saveNewGeoJson" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                        Save new GeoJson Road Data
+                    </button>
+                </div>
+            </div>
+        
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+    <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/roadEditorScript.js" type="module"></script>
+</body>
+</html>

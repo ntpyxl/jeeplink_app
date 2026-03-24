@@ -23,6 +23,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 </head>
 <body>
     <div class="flex">
@@ -53,7 +56,13 @@
                     Routes Management
                 </a>
 
+                <a href="roadsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-road text-white"></i>
+                    </div>
 
+                    Roads Management
+                </a>
 
                 <a href="reportsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
@@ -95,8 +104,8 @@
             </nav>
         </aside>
 
-    <!-- Main Content -->
-    <main class="ml-92 p-6 flex-1">
+        <!-- Main Content -->
+        <main class="ml-92 p-6 flex-1">
             <!-- Header -->
             <header class="w-full sticky top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
 
@@ -396,6 +405,22 @@
                     <div class="">
                         <div id="map"></div>
                     </div>
+                    <div>
+                        <p>start node: <span id="startNodeText"></span></p>
+                        <p>end node: <span id="endNodeText"></span></p>
+
+                        <input id="drawnJeepRouteName" class="border-2 border-black px-3 py-1 hover:cursor-text">
+                        <button id="clearDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                            Clear drawn Jeep Route
+                        </button>
+                        <button id="saveDrawnJeepRoute" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                            Save drawn Jeep Route
+                        </button>
+
+                        <button id="toggleJeepRoutes" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
+                            Toggle Jeep Routes Display
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -406,7 +431,6 @@
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="../scripts/graphBuilder.js" type="module"></script>
     <script src="../scripts/routeEditorScript.js" type="module"></script>
 
 </body>
