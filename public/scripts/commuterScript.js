@@ -141,7 +141,7 @@ function snapToRoad(latlng) {
     };
 }
 
-
+const routeGenerated = new RouteEditor(map);
 const pointsGeoJSON = await fetch("/DasmaMapData/Dasma_Points.geojson").then(r => r.json());
 
 const namedPlaces = pointsGeoJSON.features
@@ -176,7 +176,7 @@ function searchPlaces(query) {
             graphKey: graphHelper.snapToGraphNode(results[0].coords)
         };
 
-        routeEditor.addNode(node);
+        routeGenerated.addNode(node);
 
         return results;
     } catch (err) {
@@ -192,11 +192,15 @@ function normalizeText(text) {
 }
 
 $("#calculateRouteButton").on("click", async event => {
+    // TODO: Maybe default starting point to current user location.
     const startingPoint = $("#startingPointField").val();
     const destinationPoint = $("#destinationPointField").val();
+    routeGenerated.clear();
 
     console.log(searchPlaces(startingPoint));
     console.log(searchPlaces(destinationPoint));
 
-    await routeEditor.drawRoute();
+    // TODO: Still using Dijkstra, should be A* now
+    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
+    await routeGenerated.drawRoute();
 })
