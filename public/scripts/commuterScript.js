@@ -26,7 +26,7 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
         opacity: 1,
         weight: 2
     }
-}).addTo(map);
+})
 
 map.on("zoomend", () => {
     const zoom = map.getZoom();
@@ -195,6 +195,7 @@ $("#calculateRouteButton").on("click", async event => {
     // TODO: Maybe default starting point to current user location.
     const startingPoint = $("#startingPointField").val();
     const destinationPoint = $("#destinationPointField").val();
+    if(!startingPoint && !destinationPoint) return;
     routeGenerated.clear();
 
     console.log(searchPlaces(startingPoint));
