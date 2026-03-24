@@ -35,7 +35,7 @@ export class RouteRenderer {
             const routePath = path.map(k => k.split(",").map(Number).reverse());
 
             const line = L.polyline(routePath, {
-                color: "orange",
+                color: "blue",
                 weight: 5
             }).addTo(this.map);
 
