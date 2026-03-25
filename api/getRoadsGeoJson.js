@@ -18,6 +18,7 @@ export default async function handler(req) {
                 'CDN-Cache-Control': 'public, s-maxage=604800',
                 'Vercel-CDN-Cache-Control': 'public, s-maxage=604800',
                 'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=86400',
+                'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
                 'Vary': 'Accept-Encoding', 
             },
         });
