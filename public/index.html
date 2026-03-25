@@ -36,6 +36,7 @@
                 <!-- Desktop links -->
                 <div class="hidden md:flex text-xl flex-gap-12 gap-12 text-[#2E7D32]">
                     <a href="index.html" class="hover:text-black transition">Home</a>
+                    <a href="map.html" class="hover:text-black transition">Map</a>
                     <a href="report.html" class="hover:text-black transition">Report</a>
                     <a href="guide.html" class="hover:text-black transition">Guide</a>
                     <a href="faqs.html" class="hover:text-black transition">FAQs</a>
@@ -94,7 +95,7 @@
 
                 <!-- Recently Navigated -->
                 <div class="flex flex-col items-start w-full max-w-6xl gap-2 mt-4">
-                    <p clagitss="text-white font-semibold text-2xl ms-8">Recently Navigated:</p>
+                    <p class="text-white font-semibold text-2xl ms-8 mb-4">Recently Navigated:</p>
                     <div class="flex flex-wrap gap-2 bg-[#FFF6C1] px-8 py-2 ms-16 opacity-80">
                         <span class="recent-tag px-3 py-1 flex items-center gap-2">
                             Emilio Aguinaldo College - Cavite
@@ -105,100 +106,6 @@
             </div>
         </main>
         <!-- End of Hero Section -->
-        
-        <!-- ── Map Section ── -->
-        <section class="map-section w-full h-full">
-            <div class="flex">
-                <div class="flex flex-col w-full">
-                    <div class="relative w-full">
-                        <!-- Map -->
-                        <div id="map" class="w-full h-full border-t-[3px] border-[#004F11] shadow-lg"></div>
-
-                        <!-- Overlay Panel -->
-                        <div class="absolute top-8 left-8 flex flex-col gap-4 z-[1000]">
-                            <div class="bg-white border-1 border-[#004F11]/80 p-6 rounded-3xl shadow-2xl w-80">
-                                <h2 class="text-xl font-bold mb-2">Commuting Destination</h2>
-
-                                <div class="mb-2">
-                                    <input
-                                        type="text"
-                                        id="startingPointField2"
-                                        placeholder="Starting Point"
-                                        class="w-full border-[1px] border-1 border-[#004F11]/30 rounded-lg text-black p-1 mt-1">
-                                </div>
-
-                                <div class="mb-2">
-                                    <input
-                                        type="text"
-                                        id="destinationPointField2"
-                                        placeholder="Destination"
-                                        class="w-full border-[1px] border-1 border-[#004F11]/30 rounded-lg text-black p-1 mt-1">
-                                </div>
-
-                                <div class="mb-2">
-                                    <button type="text" id="toggleJeepRoutes" class="w-full border-[1px] border-1 border-[#004F11]/30 rounded-lg text-black p-1 mt-1 cursor-pointer">Toggle Available Jeepney Routes</button>
-                                </div>
-                            </div>
-
-                            <!-- Route Details -->
-                            <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
-                                <details class="group dropdown">
-                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none group-open:bg-[#2E7D32] transition-colors duration-300">
-                                        Route 1 Details
-                                        <span class="material-symbols-outlined duration-300 ease-in-out dropdown-icon">keyboard_arrow_down</span>
-                                    </summary>
-
-                                    <div class="dropdown-content bg-white text-sm text-[#555] space-y-2 px-4 overflow-hidden">
-                                        <div class="py-4">
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        </div>
-                                        
-                                    </div>
-                                </details>
-                            </div>
-
-                            <div class="bg-[#004F11] rounded-3xl shadow-2xl w-80 overflow-hidden">
-                                <details class="group dropdown">
-                                    <summary class="flex justify-between items-center text-xl text-[#E9CD2D] font-bold cursor-pointer p-6 list-none group-open:bg-[#2E7D32] transition-colors duration-300">
-                                        Route 2 Details
-                                        <span class="material-symbols-outlined duration-300 ease-in-out dropdown-icon">keyboard_arrow_down</span>
-                                    </summary>
-
-                                    <div class="dropdown-content bg-white text-sm text-[#555] space-y-2 px-4 overflow-hidden">
-                                        <div class="py-4">
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        <p>Route details</p>
-                                        </div>
-                                        
-                                    </div>
-                                </details>
-                            </div>
-
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-            <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
-
-            <script src="scripts/jeeplinkApiFetcher.js" type="module"></script>
-            <script src="scripts/helpers/graphHelper.js" type="module"></script>
-            
-            <script src="scripts/commuterScript.js" type="module"></script>
-
-            <script src="scripts/dropDownAnimation.js"></script>
-        </section>
-        <!-- End of Map Section -->
     </body>
 
 </html>
