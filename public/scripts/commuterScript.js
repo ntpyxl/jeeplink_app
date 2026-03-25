@@ -40,7 +40,6 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
-// # TODO: Clean this up soon, maybe use class and objects.
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const routeEditor = new RouteEditor(map);
