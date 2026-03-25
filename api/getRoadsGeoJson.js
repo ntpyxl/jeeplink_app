@@ -1,9 +1,5 @@
 import { get } from "@vercel/blob";
 
-export const config = {
-  runtime: 'edge', // This ensures the fastest execution and better cache hits
-};
-
 export default async function handler(req) {
   const URL = "https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/Dasma_LineStrings.geojson";
 
