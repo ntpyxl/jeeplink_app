@@ -24,9 +24,9 @@ export class RouteEditor {
         const marker = L.circleMarker(
             [node.coordinates[1], node.coordinates[0]],
             {
-                radius: 7,
+                radius: 5,
                 color: "green",
-                fillColor: "green",
+                fillColor: "orange",
                 fillOpacity: 1
             }
         ).addTo(this.map);
