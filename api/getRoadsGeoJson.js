@@ -1,8 +1,11 @@
 import { get } from "@vercel/blob";
 
 export default async function handler(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ error: "Method not allowed" });
+    }
+
     try {
-        // TODO: May use up all Vercel blob transfer (1GB/month). Might consider using caches.
         const URL = "https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/Dasma_LineStrings.geojson";
 
         const blobResponse = await get(URL, {
@@ -12,6 +15,10 @@ export default async function handler(req, res) {
 
         if (blobResponse.stream) {
             const data = await new Response(blobResponse.stream).json();
+
+            res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=86400');
+            res.setHeader('Vary', 'Accept-Encoding');
+
             return res.status(200).json(data);
         }
 
