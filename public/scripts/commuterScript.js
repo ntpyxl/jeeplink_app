@@ -3,14 +3,18 @@ import { GraphHelper } from "./helpers/graphHelper.js";
 import { RouteEditor } from "./helpers/routeEditor.js";
 import { RouteRenderer } from "./helpers/routeRenderer.js";
 
+// TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
-    renderer: L.canvas()
+    renderer: L.canvas(),
+    minZoom: 12,
+    maxZoom: 18
 }).setView([14.3272, 120.9404], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
+// TODO: This takes 6 seconds everytime...
 const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -195,6 +199,8 @@ if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
     // TODO: Maybe default starting point to current user location.
     const startingPoint = sessionStorage.getItem("start");
     const destinationPoint = sessionStorage.getItem("destination");
+    $("#startingPointField").val(startingPoint);
+    $("#destinationPointField").val(destinationPoint);
 
     routeGenerated.clear();
 
