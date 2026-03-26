@@ -38,6 +38,22 @@ html, body {
     min-height: 100%;
 }
 
+/* Sidebar mobile helpers */
+@media (max-width: 767px) {
+    .mobile-aside {
+        transition: transform 0.3s ease;
+        transform: translateX(0);
+        will-change: transform;
+    }
+
+    /* when this class is applied, hide the aside off-canvas */
+    .mobile-aside.mobile-hidden {
+        transform: translateX(-100%);
+    }
+
+    /* overlay visibility helper (we toggle the 'hidden' Tailwind class in markup/js) */
+}
+
 .report-hero-bg, .guide-hero-bg {
     background: linear-gradient(180deg, #335c35 0%, #61ad64 100%);
 }

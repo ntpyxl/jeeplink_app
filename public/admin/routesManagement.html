@@ -360,10 +360,6 @@
                     </div>
 
                 </div>
-                
-
-                
-        
             </div>
 
             <!-- Add Routes Content -->
@@ -426,6 +422,65 @@
 
         </main>
     </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="../images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to landscape mode.
+        </p>
+    </div>
+
+    <!-- Check orientation script -->
+    <script>
+    function checkOrientation() {
+        const overlay = document.getElementById("rotateOverlay");
+
+        const isMobile = window.innerWidth < 768;
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
+        if (isMobile && isPortrait) {
+            // SHOW overlay
+            overlay.classList.remove("hidden");
+
+            document.body.style.overflow = "hidden";
+            document.body.style.height = "100vh";
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            // HIDE overlay
+            overlay.classList.add("hidden");
+
+            document.body.style.overflow = "";
+            document.body.style.height = "";
+            document.documentElement.style.overflow = "";
+        }
+    }
+
+    // Run on load
+    window.addEventListener("load", checkOrientation);
+
+    // 🔥 IMPORTANT: detect rotation properly
+    window.addEventListener("orientationchange", () => {
+        setTimeout(checkOrientation, 200); 
+    });
+
+    // Keep resize as backup
+    window.addEventListener("resize", checkOrientation);
+    </script>
+
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
