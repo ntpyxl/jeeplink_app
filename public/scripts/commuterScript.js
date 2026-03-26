@@ -141,6 +141,7 @@ function snapToRoad(latlng) {
 }
 
 const routeGenerated = new RouteEditor(map);
+// TODO: Upload Dasma_Points.geojson to Vercel Blob
 const pointsGeoJSON = await fetch("/DasmaMapData/Dasma_Points.geojson").then(r => r.json());
 
 const namedPlaces = pointsGeoJSON.features
@@ -188,6 +189,21 @@ function normalizeText(text) {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
+}
+
+if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
+    // TODO: Maybe default starting point to current user location.
+    const startingPoint = sessionStorage.getItem("start");
+    const destinationPoint = sessionStorage.getItem("destination");
+
+    routeGenerated.clear();
+
+    console.log(searchPlaces(startingPoint));
+    console.log(searchPlaces(destinationPoint));
+
+    // TODO: Still using Dijkstra, should be A* now
+    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
+    await routeGenerated.drawRoute();
 }
 
 $("#calculateRouteButton").on("click", async event => {
