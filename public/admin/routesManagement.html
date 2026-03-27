@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
      <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Font Awesome (Install if possible) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -30,7 +30,8 @@
 <body>
     <div class="flex">
         <!-- Sidebar -->
-        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+        <aside class="fixed top-0 left-0 h-full w-92 bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+    transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 overflow-y-auto">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -105,9 +106,18 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="ml-92 p-6 flex-1">
+        <main class="flex-1 md:ml-92 p-4 md:p-6">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+
+                <!-- Aside toggle (mobile) -->
+                <button id="asideToggleBtn" class="md:hidden mr-4 p-2 rounded-md bg-white border border-gray-200 shadow-sm">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="3" y="6" width="18" height="2" rx="1" fill="#0B5A2B" />
+                        <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B" />
+                        <rect x="3" y="16" width="18" height="2" rx="1" fill="#0B5A2B" />
+                    </svg>
+                </button>
 
                 <!-- Left Side -->
                 <div>
@@ -374,9 +384,9 @@
                     <div id="inputsContainer" class="flex flex-col gap-3">
 
                         <!-- One Row -->
-                        <div class="flex gap-3 items-center">
+                        <div class="flex flex-col md:flex-row gap-3">
                             <input type="text" placeholder="Route Name"
-                                class="w-300 px-3 py-2 border border-gray-300 rounded-lg">
+                                class="w-full md:w-1/3 px-3 py-2 border border-gray-300 rounded-lg">
                             <input type="text" placeholder="Latitude"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg"
                             >
@@ -472,13 +482,21 @@
     // Run on load
     window.addEventListener("load", checkOrientation);
 
-    // 🔥 IMPORTANT: detect rotation properly
     window.addEventListener("orientationchange", () => {
         setTimeout(checkOrientation, 200); 
     });
 
     // Keep resize as backup
     window.addEventListener("resize", checkOrientation);
+    </script>
+
+    <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+
+    menuBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("-translate-x-full");
+    });
     </script>
 
 

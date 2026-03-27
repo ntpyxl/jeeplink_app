@@ -41,9 +41,23 @@ html, body {
 /* Sidebar mobile helpers */
 @media (max-width: 767px) {
     .mobile-aside {
-        transition: transform 0.3s ease;
+        transition: transform 0.25s ease, width 0.25s ease;
         transform: translateX(0);
-        will-change: transform;
+        will-change: transform, width;
+        /* default to icons-only narrow bar on mobile */
+        width: 5rem;
+        overflow: visible;
+    }
+
+    /* hide textual labels when in icons-only mode */
+    .mobile-aside .nav-label {
+        display: none;
+    }
+
+    /* when this class is applied, show the full aside (expanded) */
+    .mobile-aside.expanded {
+        width: 23rem; /* match w-92 (~23rem) */
+        transform: translateX(0);
     }
 
     /* when this class is applied, hide the aside off-canvas */
@@ -61,3 +75,4 @@ html, body {
 summary::-webkit-details-marker {
     display: none;
 }
+

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JeepLink - Reports Management</title>
 
     <!-- Tailwind Cdn (Install Tailwind) -->
@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
      <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Font Awesome (Install if possible) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -22,7 +22,8 @@
 <body>
     <div class="flex">
         <!-- Sidebar -->
-        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+        <aside class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+              bg-gradient-to-b from-[#35903A] to-[#133A15] text-white">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -305,7 +306,7 @@
             // SHOW overlay
             overlay.classList.remove("hidden");
 
-            document.body.style.overflow = "hidden";
+            overlay.style.overflow = "auto";
             document.body.style.height = "100vh";
             document.documentElement.style.overflow = "hidden";
         } else {
@@ -321,7 +322,6 @@
     // Run on load
     window.addEventListener("load", checkOrientation);
 
-    // 🔥 IMPORTANT: detect rotation properly
     window.addEventListener("orientationchange", () => {
         setTimeout(checkOrientation, 200); 
     });
