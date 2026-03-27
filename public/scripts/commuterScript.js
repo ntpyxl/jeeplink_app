@@ -2,15 +2,20 @@ import { apiFetch } from "./jeeplinkApiFetcher.js";
 import { GraphHelper } from "./helpers/graphHelper.js";
 import { RouteEditor } from "./helpers/routeEditor.js";
 import { RouteRenderer } from "./helpers/routeRenderer.js";
+import { LocationSuggester } from "./locationSuggester.js";
 
+// TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
-    renderer: L.canvas()
+    renderer: L.canvas(),
+    minZoom: 12,
+    maxZoom: 18
 }).setView([14.3272, 120.9404], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
+// TODO: This takes 6 seconds everytime...
 const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -141,6 +146,7 @@ function snapToRoad(latlng) {
 }
 
 const routeGenerated = new RouteEditor(map);
+// TODO: Upload Dasma_Points.geojson to Vercel Blob
 const pointsGeoJSON = await fetch("/DasmaMapData/Dasma_Points.geojson").then(r => r.json());
 
 const namedPlaces = pointsGeoJSON.features
@@ -157,30 +163,17 @@ const namedPlaces = pointsGeoJSON.features
         };
     });
 
-function searchPlaces(query) {
-    const normalizedQuery = normalizeText(query);
 
-    try{
-        // TODO: Maybe try Nominatim if cannot be searched, but otherwise, resort to just placing down a pin on the map.
-        // TODO: Would definitely help if the user was given a suggestion on the place they are typing.
-        const results = namedPlaces.filter(place =>
-            place.searchName.includes(normalizedQuery)
-        );
+function addRouteNode(data) {
+    const randomUUID = crypto.randomUUID();
+    const node = {
+        id: randomUUID,
+        coordinates: data.coords,
+        roadId: randomUUID,
+        graphKey: graphHelper.snapToGraphNode(data.coords)
+    };
 
-        const randomUUID = crypto.randomUUID();
-        const node = {
-            id: randomUUID,
-            coordinates: results[0].coords,
-            roadId: randomUUID,
-            graphKey: graphHelper.snapToGraphNode(results[0].coords)
-        };
-
-        routeGenerated.addNode(node);
-
-        return results;
-    } catch (err) {
-        console.log("Cannot find: " + query)
-    }
+    routeGenerated.addNode(node);
 }
 
 function normalizeText(text) {
@@ -190,17 +183,50 @@ function normalizeText(text) {
         .toLowerCase();
 }
 
-$("#calculateRouteButton").on("click", async event => {
-    // TODO: Maybe default starting point to current user location.
-    const startingPoint = $("#startingPointField").val();
-    const destinationPoint = $("#destinationPointField").val();
-    if(!startingPoint && !destinationPoint) return;
+if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
+    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+    $("#startingPointField").val(startingPoint.name);
+    $("#destinationPointField").val(destinationPoint.name);
+
     routeGenerated.clear();
 
-    console.log(searchPlaces(startingPoint));
-    console.log(searchPlaces(destinationPoint));
+    addRouteNode(startingPoint);
+    addRouteNode(destinationPoint);
+
+    // TODO: Still using Dijkstra, should be A* now
+    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
+    await routeGenerated.drawRoute();
+}
+
+$("#calculateRouteButton").on("click", async event => {
+    // TODO: Maybe default starting point to current user location.
+    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+
+    routeGenerated.clear();
+
+    addRouteNode(startingPoint);
+    addRouteNode(destinationPoint);
 
     // TODO: Still using Dijkstra, should be A* now
     // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
     await routeGenerated.drawRoute();
 })
+
+const startingPointSearch = new LocationSuggester($("#startingPointField"));
+const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
+
+startingPointSearch.onResults = function(results) {
+    console.log("Starting Point search results");
+    console.log(results);
+
+    sessionStorage.setItem("start", JSON.stringify(results[0]));
+};
+
+destinationPointSearch.onResults = function(results) {
+    console.log("Destination Point search results");
+    console.log(results);
+
+    sessionStorage.setItem("destination", JSON.stringify(results[0]));
+};
