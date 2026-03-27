@@ -2,6 +2,7 @@ import { apiFetch } from "./jeeplinkApiFetcher.js";
 import { GraphHelper } from "./helpers/graphHelper.js";
 import { RouteEditor } from "./helpers/routeEditor.js";
 import { RouteRenderer } from "./helpers/routeRenderer.js";
+import { LocationSuggester } from "./locationSuggester.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -162,30 +163,17 @@ const namedPlaces = pointsGeoJSON.features
         };
     });
 
-function searchPlaces(query) {
-    const normalizedQuery = normalizeText(query);
 
-    try{
-        // TODO: Maybe try Nominatim if cannot be searched, but otherwise, resort to just placing down a pin on the map.
-        // TODO: Would definitely help if the user was given a suggestion on the place they are typing.
-        const results = namedPlaces.filter(place =>
-            place.searchName.includes(normalizedQuery)
-        );
+function addRouteNode(data) {
+    const randomUUID = crypto.randomUUID();
+    const node = {
+        id: randomUUID,
+        coordinates: data.coords,
+        roadId: randomUUID,
+        graphKey: graphHelper.snapToGraphNode(data.coords)
+    };
 
-        const randomUUID = crypto.randomUUID();
-        const node = {
-            id: randomUUID,
-            coordinates: results[0].coords,
-            roadId: randomUUID,
-            graphKey: graphHelper.snapToGraphNode(results[0].coords)
-        };
-
-        routeGenerated.addNode(node);
-
-        return results;
-    } catch (err) {
-        console.log("Cannot find: " + query)
-    }
+    routeGenerated.addNode(node);
 }
 
 function normalizeText(text) {
@@ -196,16 +184,15 @@ function normalizeText(text) {
 }
 
 if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
-    // TODO: Maybe default starting point to current user location.
-    const startingPoint = sessionStorage.getItem("start");
-    const destinationPoint = sessionStorage.getItem("destination");
-    $("#startingPointField").val(startingPoint);
-    $("#destinationPointField").val(destinationPoint);
+    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+    $("#startingPointField").val(startingPoint.name);
+    $("#destinationPointField").val(destinationPoint.name);
 
     routeGenerated.clear();
 
-    console.log(searchPlaces(startingPoint));
-    console.log(searchPlaces(destinationPoint));
+    addRouteNode(startingPoint);
+    addRouteNode(destinationPoint);
 
     // TODO: Still using Dijkstra, should be A* now
     // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
@@ -214,15 +201,32 @@ if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
 
 $("#calculateRouteButton").on("click", async event => {
     // TODO: Maybe default starting point to current user location.
-    const startingPoint = $("#startingPointField").val();
-    const destinationPoint = $("#destinationPointField").val();
-    if(!startingPoint && !destinationPoint) return;
+    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+
     routeGenerated.clear();
 
-    console.log(searchPlaces(startingPoint));
-    console.log(searchPlaces(destinationPoint));
+    addRouteNode(startingPoint);
+    addRouteNode(destinationPoint);
 
     // TODO: Still using Dijkstra, should be A* now
     // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
     await routeGenerated.drawRoute();
 })
+
+const startingPointSearch = new LocationSuggester($("#startingPointField"));
+const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
+
+startingPointSearch.onResults = function(results) {
+    console.log("Starting Point search results");
+    console.log(results);
+
+    sessionStorage.setItem("start", JSON.stringify(results[0]));
+};
+
+destinationPointSearch.onResults = function(results) {
+    console.log("Destination Point search results");
+    console.log(results);
+
+    sessionStorage.setItem("destination", JSON.stringify(results[0]));
+};
