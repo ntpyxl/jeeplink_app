@@ -75,7 +75,7 @@ Remember to import the `.env.local` file to your Vercel project's environment va
 vercel dev
 # No caching
 
-npm run localVercel
+npm run deployPreview
 # Caching included. Will deploy a pre-production deployment in your Vercel project.
 # The website will instead be available in the preview link as shown in your terminal.
 ```
