@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JeepLink - Dashboard</title>
+    <title>JeepLink - Admin Fare Matrix Management</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="../images/tab-logo.png">
 
     <!-- Tailwind Cdn (Install Tailwind) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -48,13 +51,11 @@
         <!-- Main Navigation -->
             <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
 
-                <!-- ACTIVE -->
-                <a href="dashboard.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
-                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
-                        <i class="fas fa-chart-line text-black"></i>
+                <a href="dashboard.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-money-bill text-white"></i>
                     </div>
-
-                    <span class="nav-label">Dashboard</span>
+                    <span class="nav-label text-lg">Dashboard</span>
                 </a>
 
                 <!-- NORMAL -->
@@ -78,6 +79,15 @@
                         <i class="fas fa-chart-bar text-white"></i>
                     </div>
                     <span class="nav-label">Reports Management</span>
+                </a>
+
+                <!-- ACTIVE -->
+                <a href="fareMatrixManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-chart-line text-black"></i>
+                    </div>
+
+                    <span class="nav-label text-lg">Fare Matrix Management</span>
                 </a>
             </nav>
 
