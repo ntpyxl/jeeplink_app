@@ -49,6 +49,7 @@ const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const routeEditor = new RouteEditor(map);
 const routeRenderer = new RouteRenderer(map);
+const routeGenerated = new RouteEditor(map);
 
 roadsLayer.on("click", async event => {
     const snapped = snapToRoad(event.latlng);
@@ -145,25 +146,6 @@ function snapToRoad(latlng) {
     };
 }
 
-const routeGenerated = new RouteEditor(map);
-// TODO: Upload Dasma_Points.geojson to Vercel Blob
-const pointsGeoJSON = await fetch("/DasmaMapData/Dasma_Points.geojson").then(r => r.json());
-
-const namedPlaces = pointsGeoJSON.features
-    .filter(feature => feature.properties?.name)
-    .map(feature => {
-        const coords = feature.geometry.coordinates;
-
-        // TODO: Doesn't snap to the map grid so it may fuck up?
-        return {
-            name: feature.properties.name,
-            searchName: normalizeText(feature.properties.name),
-            coords: coords,
-            data: feature
-        };
-    });
-
-
 function addRouteNode(data) {
     const randomUUID = crypto.randomUUID();
     const node = {
@@ -174,13 +156,6 @@ function addRouteNode(data) {
     };
 
     routeGenerated.addNode(node);
-}
-
-function normalizeText(text) {
-    return text
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
 }
 
 if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {

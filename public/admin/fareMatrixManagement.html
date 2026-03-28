@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JeepLink - Dashboard</title>
+
+    <!-- Tailwind Cdn (Install Tailwind) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Jquery Cdn (Install Jquery) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Google Font (Install if possible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+     <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/admin.css">
+
+    <!-- Font Awesome (Install if possible) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+</head>
+<body>
+    <div class="flex">
+
+      <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+        
+      <!-- Sidebar -->
+      <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+            <div class="px-12">            
+                <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
+
+                <hr class="text-[#90B67A]">
+            </div>
+
+        <!-- Main Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <!-- ACTIVE -->
+                <a href="dashboard.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-chart-line text-black"></i>
+                    </div>
+
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <!-- NORMAL -->
+                <a href="routesManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-route text-white"></i>
+                    </div>
+                    <span class="nav-label">Routes Management</span>
+                </a>
+
+                <a href="roadsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-road text-white"></i>
+                    </div>
+
+                    <span class="nav-label">Roads Management</span>
+                </a>
+
+                <a href="reportsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-bar text-white"></i>
+                    </div>
+                    <span class="nav-label">Reports Management</span>
+                </a>
+            </nav>
+
+            <!-- Line -->
+            <div class="px-12 my-12">            
+                <hr class="text-[#90B67A]">
+            </div>
+
+            <!-- CRUD Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <!-- NORMAL -->
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    <span class="nav-label">Report Webpage</span>
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-book text-white"></i>
+                    </div>
+                    <span class="nav-label">Guide Webpage</span>
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-question text-white"></i>
+                    </div>
+                    <span class="nav-label">FAQs Webpage</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Aside overlay (for mobile) -->
+        <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
+
+    <!-- Main Content -->
+    <main class="lg:ml-92 p-6 flex-1">
+            <!-- Header -->
+            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+
+                <!-- Left Side -->
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
+                        Welcome back, Admin!
+                    </h1>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center gap-6">
+
+                    <!-- Notification Icon -->
+                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+
+                    <!-- Divider  -->
+                    <div class="w-px h-12 bg-gray-300"></div>
+
+                    <!-- Profile -->
+                    <div class="flex items-center gap-3">
+                        <!-- Use an existing image as avatar; falls back to a styled icon if not found -->
+                        <img src="../images/hero1.jpg" alt="Admin avatar" onerror="this.style.display='none'" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                        <span class="text-gray-700 font-medium">Admin</span>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="w-full p-6">
+                <div class="border-b-1 border-gray-200">
+                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Fare Matrices</h2>
+                </div>
+
+                <!-- Fare Matrices Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-stretch">
+
+                    <!-- LEFT: PUJ GENERAL FARE GUIDE MATRIX -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            PUJ GENERAL FARE GUIDE MATRIX
+                        </h3>
+
+                        <div class="overflow-y-auto flex-1 max-h-[500px]">
+                            <p>Effective: OCTOBER 8, 2023</p>
+                            
+                            <br>
+                            <p>Computation of Fares: (Add-on Method)</p>
+                            
+                            <div>
+                                <p>REGULAR</p>
+                                <p>First Four (4) kilometers = P 13.00</p>
+                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                            </div>
+                            
+                            <div>
+                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
+                                <p>First Four (4) kilometers = P 10.40</p>
+                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                            
+                            </div>
+
+                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div>
+                                <button href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    View Matrix Table
+                                </button>
+
+                                <button data-id="1" class="openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    Update Matrix Table
+                                </button>
+                            </div>
+
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-gray-500 text-sm border-b">
+                                        <th class="py-2">Distance (kms.)</th>
+                                        <th class="py-2">Regular</th>
+                                        <th class="py-2">Student / Elderly / Disabled</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-gray-700 text-sm">
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">1</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">2</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">3</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <!-- MIDDLE: NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                        </h3>
+
+                        <div class="overflow-y-auto flex-1 max-h-[500px]">
+                            <p>Effective: OCTOBER 8, 2023</p>
+                            
+                            <br>
+                            <p>Computation of Fares: (Add-on Method)</p>
+                            
+                            <div>
+                                <p>REGULAR</p>
+                                <p>First Four (4) kilometers = P 13.00</p>
+                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                            </div>
+                            
+                            <div>
+                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
+                                <p>First Four (4) kilometers = P 10.40</p>
+                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                            
+                            </div>
+
+                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div>
+                                <button href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    View Matrix Table
+                                </button>
+
+                                <button data-id="2" class="openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    Update Matrix Table
+                                </button>
+                            </div>
+
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-gray-500 text-sm border-b">
+                                        <th class="py-2">Distance (kms.)</th>
+                                        <th class="py-2">Regular</th>
+                                        <th class="py-2">Student / Elderly / Disabled</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-gray-700 text-sm">
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">1</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">2</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">3</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT: AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                        </h3>
+
+                        <div class="overflow-y-auto flex-1 max-h-[500px]">
+                            <p>Effective: OCTOBER 8, 2023</p>
+                            
+                            <br>
+                            <p>Computation of Fares: (Add-on Method)</p>
+                            
+                            <div>
+                                <p>REGULAR</p>
+                                <p>First Four (4) kilometers = P 13.00</p>
+                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                            </div>
+                            
+                            <div>
+                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
+                                <p>First Four (4) kilometers = P 10.40</p>
+                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                            
+                            </div>
+
+                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div>
+                                <button href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    View Matrix Table
+                                </button>
+
+                                <button data-id="3" class="openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                    Update Matrix Table
+                                </button>
+                            </div>
+
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-gray-500 text-sm border-b">
+                                        <th class="py-2">Distance (kms.)</th>
+                                        <th class="py-2">Regular</th>
+                                        <th class="py-2">Student / Elderly / Disabled</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-gray-700 text-sm">
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">1</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">2</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2">3</td>
+                                        <td class="py-2">13.00</td>
+                                        <td class="py-2">10.50</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <div id="updateMatrixModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                <h3 class="text-lg font-bold mb-4">Update Matrix <span id="targetMatrixId"></span></h3>
+                
+                <input type="file" id="modalPdfInput" accept="application/pdf" class="block w-full text-sm text-gray-500 mb-4">
+                
+                <div class="flex justify-end gap-2">
+                    <button id="closeUpdateMatrixModalButton" class="px-4 py-2 text-gray-600">Cancel</button>
+                    <button id="uploadFareMatrixFile" class="px-4 py-2 bg-green-600 text-white rounded">Upload & Process</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="../images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to landscape mode.
+        </p>
+    </div>
+
+    <!-- Check orientation script -->
+    <script>
+    function checkOrientation() {
+        const overlay = document.getElementById("rotateOverlay");
+
+        const isMobile = window.innerWidth < 768;
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
+        if (isMobile && isPortrait) {
+            // SHOW overlay
+            overlay.classList.remove("hidden");
+
+            overlay.style.overflow = "auto";
+            document.body.style.height = "100vh";
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            // HIDE overlay
+            overlay.classList.add("hidden");
+
+            document.body.style.overflow = "";
+            document.body.style.height = "";
+            document.documentElement.style.overflow = "";
+        }
+    }
+
+    // Run on load
+    window.addEventListener("load", checkOrientation);
+
+    window.addEventListener("orientationchange", () => {
+        setTimeout(checkOrientation, 200); 
+    });
+
+    // Keep resize as backup
+    window.addEventListener("resize", checkOrientation);
+    </script>
+
+    <!-- Sidebar Toggle -->
+    <script>
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+
+    document.querySelectorAll('#sidebar nav a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+    </script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+    <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/fareMatrixScript.js" type="module"></script>
+</body>
+</html>
