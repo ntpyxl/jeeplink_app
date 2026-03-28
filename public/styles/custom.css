@@ -49,23 +49,19 @@ html, body {
         overflow: visible;
     }
 
-    /* hide textual labels when in icons-only mode */
     .mobile-aside .nav-label {
         display: none;
     }
 
-    /* when this class is applied, show the full aside (expanded) */
     .mobile-aside.expanded {
         width: 23rem; /* match w-92 (~23rem) */
         transform: translateX(0);
     }
 
-    /* when this class is applied, hide the aside off-canvas */
     .mobile-aside.mobile-hidden {
         transform: translateX(-100%);
     }
 
-    /* overlay visibility helper (we toggle the 'hidden' Tailwind class in markup/js) */
 }
 
 .report-hero-bg, .guide-hero-bg {

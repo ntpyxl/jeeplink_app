@@ -29,9 +29,16 @@
 </head>
 <body>
     <div class="flex">
+        <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+
         <!-- Sidebar -->
-        <aside class="fixed top-0 left-0 h-full w-92 bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
-    transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 overflow-y-auto">
+        <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -106,25 +113,19 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 md:ml-92 p-4 md:p-6">
+        <main class="flex-1 lg:ml-92 p-4 lg:p-6">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
-
-                <!-- Aside toggle (mobile) -->
-                <button id="asideToggleBtn" class="md:hidden mr-4 p-2 rounded-md bg-white border border-gray-200 shadow-sm">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="3" y="6" width="18" height="2" rx="1" fill="#0B5A2B" />
-                        <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B" />
-                        <rect x="3" y="16" width="18" height="2" rx="1" fill="#0B5A2B" />
-                    </svg>
-                </button>
-
                 <!-- Left Side -->
-                <div>
-                    <h1 class="text-4xl font-extralight text-gray-800">
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
                         Welcome back, Admin!
                     </h1>
                 </div>
+
 
                 <!-- Right Side -->
                 <div class="flex items-center gap-6">
@@ -454,7 +455,7 @@
         </p>
     </div>
 
-    <!-- Check orientation script -->
+     <!-- Check orientation script -->
     <script>
     function checkOrientation() {
         const overlay = document.getElementById("rotateOverlay");
@@ -466,7 +467,7 @@
             // SHOW overlay
             overlay.classList.remove("hidden");
 
-            document.body.style.overflow = "hidden";
+            overlay.style.overflow = "auto";
             document.body.style.height = "100vh";
             document.documentElement.style.overflow = "hidden";
         } else {
@@ -490,12 +491,24 @@
     window.addEventListener("resize", checkOrientation);
     </script>
 
+    <!-- Toggle Menu -->
     <script>
-    const menuBtn = document.getElementById("menuBtn");
-    const sidebar = document.getElementById("sidebar");
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 
-    menuBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("-translate-x-full");
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+
+    document.querySelectorAll('#sidebar nav a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
     });
     </script>
 

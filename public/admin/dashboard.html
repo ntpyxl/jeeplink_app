@@ -25,9 +25,17 @@
 </head>
 <body>
     <div class="flex">
+
+      <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+        
       <!-- Sidebar -->
-      <aside id="mainAside" class="mobile-aside w-92 h-screen overflow-y-auto fixed left-0 top-0 
-          bg-gradient-to-b from-[#35903A] to-[#133A15] text-white z-50">
+      <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -106,22 +114,16 @@
         <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
 
     <!-- Main Content -->
-    <main class="ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-6 flex-1">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
 
-                <!-- Aside toggle (mobile) -->
-                <button id="asideToggleBtn" class="md:hidden mr-4 p-2 rounded-md bg-white border border-gray-200 shadow-sm">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="3" y="6" width="18" height="2" rx="1" fill="#0B5A2B" />
-                        <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B" />
-                        <rect x="3" y="16" width="18" height="2" rx="1" fill="#0B5A2B" />
-                    </svg>
-                </button>
-
                 <!-- Left Side -->
-                <div>
-                    <h1 class="text-4xl font-extralight text-gray-800">
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
                         Welcome back, Admin!
                     </h1>
                 </div>
@@ -374,6 +376,27 @@
     window.addEventListener("resize", checkOrientation);
     </script>
 
+    <!-- Sidebar Toggle -->
+    <script>
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+
+    document.querySelectorAll('#sidebar nav a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+    </script>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
@@ -381,52 +404,6 @@
     <script src="../scripts/graphBuilder.js" type="module"></script>
     <script src="../scripts/routeEditorScript.js" type="module"></script>
 
-    <script>
-    (function(){
-        const aside = document.getElementById('mainAside');
-        const toggleBtn = document.getElementById('asideToggleBtn');
-        const overlay = document.getElementById('asideOverlay');
-
-        if (!aside || !toggleBtn || !overlay) return;
-
-        function closeAsideMobile() {
-            aside.classList.remove('expanded');
-            aside.classList.remove('icons-only');
-            aside.classList.add('icons-only');
-            overlay.classList.add('hidden');
-        }
-
-        function openAsideMobile() {
-            aside.classList.add('expanded');
-            aside.classList.remove('icons-only');
-            overlay.classList.remove('hidden');
-        }
-
-        function updateAsideOnResize() {
-            if (window.innerWidth < 768) {
-                // default to icons-only on mobile
-                aside.classList.add('icons-only');
-                aside.classList.remove('expanded');
-                overlay.classList.add('hidden');
-            } else {
-                // full aside on desktop
-                aside.classList.remove('icons-only');
-                aside.classList.remove('expanded');
-                overlay.classList.add('hidden');
-            }
-        }
-
-        toggleBtn.addEventListener('click', (e) => {
-            const isExpanded = aside.classList.contains('expanded');
-            if (!isExpanded) openAsideMobile(); else closeAsideMobile();
-        });
-
-        overlay.addEventListener('click', closeAsideMobile);
-
-        window.addEventListener('resize', updateAsideOnResize);
-        window.addEventListener('load', updateAsideOnResize);
-    })();
-    </script>
 
 </body>
 </html>
