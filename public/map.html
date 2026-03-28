@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JeepLink</title>
+    <title>JeepLink - Map</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="images/tab-logo.png">
 
     <!-- leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -29,7 +32,7 @@
     </head>
     <body>
         <!-- Start of Navigation Bar -->
-        <nav class="bg-white shadow relative z-50">
+        <nav class="bg-white shadow relative z-[1000]">
             <div class="container mx-auto flex justify-between items-center px-4 py-3">
 
                 <!-- Logo -->
@@ -62,12 +65,11 @@
             <div id="mobileMenu" 
                 class="md:hidden absolute left-0 top-full w-full 
                         bg-white rounded-b-2xl shadow-lg overflow-hidden
-                        max-h-0 transition-all duration-300 ease-in-out"
-                style="z-index:700">
+                        max-h-0 transition-all duration-300 ease-in-out ">
 
                 <div class="flex flex-col gap-3 text-[#2E7D32] text-lg py-4">
-                    <a href="index.html" class="py-2 hover:text-black text-center bg-[#2E7D32] text-white transition">Home</a>
-                    <a href="map.html" class="hover:text-black text-center transition">Map</a>
+                    <a href="index.html" class="hover:text-black text-center transition">Home</a>
+                    <a href="map.html" class="py-2 hover:text-black text-center bg-[#2E7D32] text-white transition">Map</a>
                     <a href="report.html" class="hover:text-black text-center transition">Report</a>
                     <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
                     <a href="faqs.html" class="hover:text-black text-center transition">FAQs</a>
@@ -163,43 +165,12 @@
         </section>
         <!-- End of Map Section -->
 
-        <!-- Menu Script -->
-        <script>
-        (function(){
-            const menuBtn = document.getElementById("menuBtn");
-            const mobileMenu = document.getElementById("mobileMenu");
+        <!-- JQuery CDN (Download) -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-            if (!menuBtn || !mobileMenu) return;
+        <!-- Commuter Front End Script -->
+        <script src="scripts/commuterFrontEndScript.js"></script>
 
-            // Ensure menu is on top of overlays
-            mobileMenu.style.zIndex = '700';
-            // Start collapsed
-            mobileMenu.style.maxHeight = '0px';
-            mobileMenu.setAttribute('data-open', 'false');
-
-            menuBtn.addEventListener("click", () => {
-                const isOpen = mobileMenu.getAttribute('data-open') === 'true';
-
-                if (isOpen) {
-                    mobileMenu.setAttribute('data-open', 'false');
-                    mobileMenu.style.maxHeight = '0px';
-                } else {
-                    mobileMenu.setAttribute('data-open', 'true');
-                    mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
-                }
-            });
-
-            // Clear inline height at desktop sizes so responsive classes can show menu normally
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    mobileMenu.style.maxHeight = null;
-                    mobileMenu.setAttribute('data-open', 'false');
-                } else if (mobileMenu.getAttribute('data-open') !== 'true') {
-                    mobileMenu.style.maxHeight = '0px';
-                }
-            });
-        })();
-        </script>
 
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>

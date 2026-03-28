@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JeepLink - Reports Management</title>
+    <title>JeepLink - Admin Reports Management</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="../images/tab-logo.png">
 
     <!-- Tailwind Cdn (Install Tailwind) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -304,62 +307,11 @@
         </p>
     </div>
 
-    <!-- Check orientation script -->
-    <script>
-    function checkOrientation() {
-        const overlay = document.getElementById("rotateOverlay");
+    <!-- JQuery CDN (Download) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-        const isMobile = window.innerWidth < 1024;
-        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-
-        if (isMobile && isPortrait) {
-            // SHOW overlay
-            overlay.classList.remove("hidden");
-
-            overlay.style.overflow = "auto";
-            document.body.style.height = "100vh";
-            document.documentElement.style.overflow = "hidden";
-        } else {
-            // HIDE overlay
-            overlay.classList.add("hidden");
-
-            document.body.style.overflow = "";
-            document.body.style.height = "";
-            document.documentElement.style.overflow = "";
-        }
-    }
-
-    // Run on load
-    window.addEventListener("load", checkOrientation);
-
-    window.addEventListener("orientationchange", () => {
-        setTimeout(checkOrientation, 200); 
-    });
-
-    // Keep resize as backup
-    window.addEventListener("resize", checkOrientation);
-    </script>
-
-    <!-- Sidebar Toggle -->
-    <script>
-    function openSidebar() {
-        document.getElementById('sidebar').classList.remove('-translate-x-full');
-        document.getElementById('sidebarOverlay').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.add('-translate-x-full');
-        document.getElementById('sidebarOverlay').classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    document.getElementById('menuBtn').addEventListener('click', openSidebar);
-
-    document.querySelectorAll('#sidebar nav a').forEach(link => {
-        link.addEventListener('click', closeSidebar);
-    });
-    </script>
+    <!-- Admin Front End Script -->
+    <script src="../scripts/adminFrontEndScript.js"></script>
 
 
 </body>
