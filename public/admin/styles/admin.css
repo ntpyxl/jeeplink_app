@@ -1,0 +1,17 @@
+* {
+    font-family: 'Roboto', cursive;
+}
+
+html, body {
+    height: 100%;
+}
+
+#map {
+    height: 300px;
+}
+
+@media (min-width: 768px) {
+    #map {
+        height: 500px;
+    }
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JeepLink - Dashboard</title>
 
     <!-- Tailwind Cdn (Install Tailwind) -->
@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
      <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Font Awesome (Install if possible) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -25,8 +25,17 @@
 </head>
 <body>
     <div class="flex">
-        <!-- Sidebar -->
-        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+
+      <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+        
+      <!-- Sidebar -->
+      <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -42,7 +51,7 @@
                         <i class="fas fa-chart-line text-black"></i>
                     </div>
 
-                    Dashboard
+                    <span class="nav-label">Dashboard</span>
                 </a>
 
                 <!-- NORMAL -->
@@ -50,7 +59,7 @@
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-route text-white"></i>
                     </div>
-                    Routes Management
+                    <span class="nav-label">Routes Management</span>
                 </a>
 
                 <a href="roadsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
@@ -58,14 +67,14 @@
                         <i class="fas fa-road text-white"></i>
                     </div>
 
-                    Roads Management
+                    <span class="nav-label">Roads Management</span>
                 </a>
 
                 <a href="reportsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-chart-bar text-white"></i>
                     </div>
-                    Reports Management
+                    <span class="nav-label">Reports Management</span>
                 </a>
             </nav>
 
@@ -82,33 +91,39 @@
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-exclamation text-white"></i>
                     </div>
-                    Report Webpage
+                    <span class="nav-label">Report Webpage</span>
                 </a>
 
                 <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-book text-white"></i>
                     </div>
-                    Guide Webpage
+                    <span class="nav-label">Guide Webpage</span>
                 </a>
 
                 <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-question text-white"></i>
                     </div>
-                    FAQs Webpage
+                    <span class="nav-label">FAQs Webpage</span>
                 </a>
             </nav>
         </aside>
 
+        <!-- Aside overlay (for mobile) -->
+        <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
+
     <!-- Main Content -->
-    <main class="ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-6 flex-1">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
 
                 <!-- Left Side -->
-                <div>
-                    <h1 class="text-4xl font-extralight text-gray-800">
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
                         Welcome back, Admin!
                     </h1>
                 </div>
@@ -284,14 +299,14 @@
                     </div>
 
                     <!-- RIGHT: Map -->
-                    <div class="bg-white p-6 rounded-xl shadow flex flex-col">
+                    <div class="bg-white p-6 rounded-xl shadow flex flex-col h-[400px] lg:h-auto">
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             Route Map
                         </h3>
 
                         <!-- Map Container -->
-                        <div class="flex-1">
+                        <div class="w-full h-[100px] md:h-[200px] lg:h-full">
                             <div id="map" class="w-full h-full rounded-lg"></div>
                         </div>
 
@@ -304,12 +319,91 @@
         </main>
     </div>
 
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="../images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to landscape mode.
+        </p>
+    </div>
+
+    <!-- Check orientation script -->
+    <script>
+    function checkOrientation() {
+        const overlay = document.getElementById("rotateOverlay");
+
+        const isMobile = window.innerWidth < 768;
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
+        if (isMobile && isPortrait) {
+            // SHOW overlay
+            overlay.classList.remove("hidden");
+
+            overlay.style.overflow = "auto";
+            document.body.style.height = "100vh";
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            // HIDE overlay
+            overlay.classList.add("hidden");
+
+            document.body.style.overflow = "";
+            document.body.style.height = "";
+            document.documentElement.style.overflow = "";
+        }
+    }
+
+    // Run on load
+    window.addEventListener("load", checkOrientation);
+
+    window.addEventListener("orientationchange", () => {
+        setTimeout(checkOrientation, 200); 
+    });
+
+    // Keep resize as backup
+    window.addEventListener("resize", checkOrientation);
+    </script>
+
+    <!-- Sidebar Toggle -->
+    <script>
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+
+    document.querySelectorAll('#sidebar nav a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+    </script>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
     <script src="../scripts/graphBuilder.js" type="module"></script>
     <script src="../scripts/routeEditorScript.js" type="module"></script>
+
 
 </body>
 </html>

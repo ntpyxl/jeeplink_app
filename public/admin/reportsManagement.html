@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JeepLink - Reports Management</title>
 
     <!-- Tailwind Cdn (Install Tailwind) -->
@@ -14,15 +14,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
      <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Font Awesome (Install if possible) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="flex">
+        <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+
         <!-- Sidebar -->
-        <aside class="w-92 h-screen bg-gradient-to-b from-[#35903A] to-[#133A15] text-white fixed">
+        <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -97,13 +105,16 @@
         </aside>
 
     <!-- Main Content -->
-    <main class="ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-6 flex-1">
             <!-- Header -->
             <header class="w-full flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
 
                 <!-- Left Side -->
-                <div>
-                    <h1 class="text-4xl font-extralight text-gray-800">
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
                         Welcome back, Admin!
                     </h1>
                 </div>
@@ -271,6 +282,85 @@
 
         </main>
     </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="../images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to landscape mode.
+        </p>
+    </div>
+
+    <!-- Check orientation script -->
+    <script>
+    function checkOrientation() {
+        const overlay = document.getElementById("rotateOverlay");
+
+        const isMobile = window.innerWidth < 1024;
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
+        if (isMobile && isPortrait) {
+            // SHOW overlay
+            overlay.classList.remove("hidden");
+
+            overlay.style.overflow = "auto";
+            document.body.style.height = "100vh";
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            // HIDE overlay
+            overlay.classList.add("hidden");
+
+            document.body.style.overflow = "";
+            document.body.style.height = "";
+            document.documentElement.style.overflow = "";
+        }
+    }
+
+    // Run on load
+    window.addEventListener("load", checkOrientation);
+
+    window.addEventListener("orientationchange", () => {
+        setTimeout(checkOrientation, 200); 
+    });
+
+    // Keep resize as backup
+    window.addEventListener("resize", checkOrientation);
+    </script>
+
+    <!-- Sidebar Toggle -->
+    <script>
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+
+    document.querySelectorAll('#sidebar nav a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+    </script>
+
 
 </body>
 </html>
