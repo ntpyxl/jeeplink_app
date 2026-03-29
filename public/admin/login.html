@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JeepLink - Admin</title>
+    <title>JeepLink - Admin Login</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="../images/tab-logo.png">
 
     <!-- Tailwind Cdn (Install Tailwind) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -23,9 +26,9 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <div class="grid grid-cols-5 ">
+    <main class="grid grid-cols-1 lg:grid-cols-5 min-h-screen">
         <!-- Left Side -->
-        <div class="col-span-3 relative flex items-center justify-center h-screen overflow-hidden">
+        <div class="hidden lg:flex col-span-3 relative items-center justify-center overflow-hidden">
             <!-- Blurred Background Image -->
             <img src="/images/hero1.jpg"
                 class="absolute w-full h-full object-cover blur-xs">
@@ -40,8 +43,13 @@
         </div>
 
         <!-- Right Side -->
-        <div class="col-span-2 flex items-center justify-center">
-            <div class="text-[#2E7D32] w-full max-w-md px-12 py-16 bg-white rounded-3xl shadow-2xl flex flex-col gap-6">
+        <div class="col-span-1 lg:col-span-2 flex flex-col items-center justify-start lg:justify-center px-4 py-10">
+            <div class="flex justify-center mb-6 lg:hidden">
+                <img src="../images/JeepLink-Logo2.png"
+                    class="h-40 bg-[#F0F0F0] rounded-full p-3 shadow-md"
+                    alt="JeepLink Logo">
+            </div>
+            <div class="text-[#2E7D32] w-full max-w-md  px-6 py-10 md:px-10 md:py-14 bg-white rounded-3xl shadow-2xl flex flex-col gap-6">
                 <div>
                     <h1 class="text-[#2E7D32] text-3xl font-bold mb-2">Admin Login</h1>
                     <h2 class="text-lg font-thin text-gray-600 ">
@@ -75,7 +83,7 @@
                 <p class="text-center text-gray-500 mt-8 font-extralight text-sm">© 2026 JeepLink. All rights reserved.</p>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
     <script src="../scripts/accountHandler.js" type="module"></script>
