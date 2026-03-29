@@ -178,6 +178,8 @@ $("#calculateRouteButton").on("click", async event => {
     // TODO: Maybe default starting point to current user location.
     const startingPoint = JSON.parse(sessionStorage.getItem("start"));
     const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+    console.log(startingPoint + destinationPoint)
+    // TODO: Wait 2 seconds? This does not wait the search to complete first before firing.
 
     routeGenerated.clear();
 

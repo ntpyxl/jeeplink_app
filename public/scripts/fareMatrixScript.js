@@ -44,3 +44,16 @@ $('#uploadFareMatrixFile').on('click', async event => {
         console.error("Error:", err);
     }
 });
+
+try {
+    // TODO: Eto yung data ng mga fare matrix para madisplay sa page.
+    const fareMatrixData = await apiFetch("/getFareMatrix", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            "matrixId": "0"
+        })
+    });
+} catch (err) {
+    console.error("Error:", err);
+}
