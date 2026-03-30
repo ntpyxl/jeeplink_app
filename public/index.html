@@ -161,20 +161,35 @@
 
                     <!-- Button -->
                     <button id="calculateRouteButton"
-                        class="w-12 h-12 md:w-16 md:h-16 
-                            bg-[#004F11] hover:bg-[#1b5e20] 
-                            transition transform hover:scale-105
-                            rounded-full shadow-md
-                            flex items-center justify-center 
-                            flex-shrink-0 self-center">
+                        class="w-full md:w-16 md:h-16
+                            bg-[#004F11] hover:bg-[#1b5e20]
+                            active:scale-95 transition-all duration-150
+                            rounded-2xl md:rounded-full shadow-md
+                            flex items-center justify-center
+                            py-3 md:p-4">
 
-                        <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none">
+                        <!-- Mobile: text + icon -->
+                        <span class="flex items-center gap-2 text-white font-semibold text-lg md:hidden">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2.5"/>
+                                <path d="M16.5 16.5L21 21"
+                                    stroke="white"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"/>
+                            </svg>
+
+                            Search Route
+                        </span>
+
+                        <!-- Desktop: icon only -->
+                        <svg class="hidden md:block w-7 h-7" viewBox="0 0 24 24" fill="none">
                             <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2.5"/>
                             <path d="M16.5 16.5L21 21"
                                 stroke="white"
                                 stroke-width="2.5"
                                 stroke-linecap="round"/>
                         </svg>
+
                     </button>
                 </div>
 
@@ -195,9 +210,7 @@
             </div>
         </main>
 
-        <!-- Menu Script -->
-
-        <!-- Search Suggestion Script -->
+        <!-- Search SuggestionScript -->
         <script src="scripts/homeSearchScript.js" type="module"></script>
 
         <!-- JQuery CDN (Download) -->
@@ -206,18 +219,5 @@
         <!-- Commuter Front End Script -->
         <script src="scripts/commuterFrontEndScript.js"></script>
 
-    </body>
->>>>>>>>> Temporary merge branch 2
-
-        <!-- Menu Script -->
-        <script>
-        const menuBtn = document.getElementById("menuBtn");
-        const mobileMenu = document.getElementById("mobileMenu");
-
-        menuBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("max-h-0");
-            mobileMenu.classList.toggle("max-h-96"); 
-        });
-        </script>
     </body>
 </html>
