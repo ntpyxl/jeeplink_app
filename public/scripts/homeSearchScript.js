@@ -16,25 +16,74 @@ startingPointSearch.onResults = function(results) {
     const container = $("#startingSuggestions");
     container.empty();
 
+    const currentLocationItem = $(`
+        <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b">
+            <i class="fa-solid fa-location-crosshairs text-blue-600 text-lg"></i>
+            <span class="text-[blue-600] font-semibold">
+                Your Location
+            </span>
+        </div>
+    `);
+
+    currentLocationItem.on("click", () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation not supported.");
+            return;
+        }
+
+        $("#startingPointField").val("Getting your location...");
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                const locationData = {
+                    name: "Your Location",
+                    lat: lat,
+                    lon: lon
+                };
+
+                $("#startingPointField").val("Your Location");
+                $("#startingSuggestions").addClass("hidden");
+
+                sessionStorage.setItem("start", JSON.stringify(locationData));
+            },
+            (error) => {
+                alert("Failed to get location.");
+                console.error(error);
+            }
+        );
+    });
+
+    container.append(currentLocationItem);
+
     if (!results || results.length === 0) {
         container.addClass("hidden");
         return;
     }
 
     results.forEach(result => {
-        const item = $(`
-            <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b last:border-none">
-                
-                <!-- Font Awesome Location Icon -->
-                <i class="fa-solid fa-location-dot text-[#2E7D32] text-lg"></i>
+const item = $(`
+    <div class="flex items-center gap-4 px-5 py-4 cursor-pointer
+                transition-all duration-200
+                hover:bg-green-50 hover:scale-[1.01] active:scale-[0.98]">
 
-                <!-- Place Name -->
-                <span class="text-[#003B01] font-medium">
-                    ${result.name}
-                </span>
+        <!-- Icon -->
+        <div class="w-10 h-10 flex items-center justify-center
+                    bg-green-100 text-[#2E7D32] rounded-full">
+            <i class="fa-solid fa-location-dot text-sm"></i>
+        </div>
 
-            </div>
-        `);
+        <!-- Text -->
+        <div class="flex flex-col">
+            <span class="text-[#003B01] font-semibold text-sm md:text-base">
+                ${result.name}
+            </span>
+        </div>
+
+    </div>
+`);
 
         // When user clicks a suggestion
         item.on("click", () => {
@@ -63,6 +112,49 @@ destinationPointSearch.onResults = function(results) {
     const container = $("#destinationSuggestions");
     container.empty();
 
+    const currentLocationItem = $(`
+        <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b">
+            <i class="fa-solid fa-location-crosshairs text-blue-600 text-lg"></i>
+            <span class="text-blue-600 font-semibold">
+                Your Location
+            </span>
+        </div>
+    `);
+
+    currentLocationItem.on("click", () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation not supported.");
+            return;
+        }
+
+        $("#destinationPointField").val("Getting your location...");
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                const locationData = {
+                    name: "Your Location",
+                    lat: lat,
+                    lon: lon
+                };
+
+                $("#destinationPointField").val("Your Location");
+                $("#destinationSuggestions").addClass("hidden");
+
+                sessionStorage.setItem("destination", JSON.stringify(locationData));
+            },
+            (error) => {
+                alert("Failed to get location.");
+                console.error(error);
+            }
+        );
+    });
+
+    container.append(currentLocationItem);
+
+
     if (!results || results.length === 0) {
         container.addClass("hidden");
         return;
@@ -70,19 +162,27 @@ destinationPointSearch.onResults = function(results) {
 
     results.forEach(result => {
         const item = $(`
-            <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b last:border-none">
+            <div class="flex items-center gap-4 px-5 py-4 cursor-pointer
+                        transition-all duration-200
+                        hover:bg-green-50 hover:scale-[1.01] active:scale-[0.98]">
+
+                <!-- Icon -->
+                <div class="w-10 h-10 flex items-center justify-center
+                            bg-green-100 text-[#2E7D32] rounded-full">
+                    <i class="fa-solid fa-location-dot text-sm"></i>
+                </div>
+
+                <!-- Text -->
+                <div class="flex flex-col">
+                    <span class="text-[#003B01] font-semibold text-sm md:text-base">
+                        ${result.name}
+                    </span>
+                </div>
+
                 
-                <!-- Font Awesome Location Icon -->
-                <i class="fa-solid fa-location-dot text-[#2E7D32] text-lg"></i>
-
-                <!-- Place Name -->
-                <span class="text-[#003B01] font-medium">
-                    ${result.name}
-                </span>
-
             </div>
         `);
-
+        
         item.on("click", () => {
             $("#destinationPointField").val(result.name);
             container.addClass("hidden");

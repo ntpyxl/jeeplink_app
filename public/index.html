@@ -103,6 +103,7 @@
                         <input
                             type="text"
                             id="startingPointField"
+                            autocomplete="off"
                             placeholder="Starting Point"
                             class="w-full bg-transparent outline-none 
                                 text-[#003B01] placeholder-[#2E7D32] 
@@ -111,7 +112,10 @@
 
                         <!-- Suggestions dropdown -->
                         <div id="startingSuggestions"
-                            class="absolute left-0 top-full w-full bg-white shadow-lg mt-2 hidden z-50">
+                            class="absolute left-0 top-full w-full mt-3 hidden z-50
+                                bg-white/95 backdrop-blur-md
+                                rounded-2xl shadow-2xl border border-gray-200
+                                overflow-hidden animate-fadeIn">
                         </div>
                     </div>
 
@@ -140,6 +144,7 @@
                             type="text"
                             id="destinationPointField"
                             placeholder="Destination"
+                            autocomplete="off"
                             class="w-full bg-transparent outline-none 
                                 text-[#003B01] placeholder-[#2E7D32] 
                                 text-lg md:text-2xl italic"
@@ -147,7 +152,10 @@
 
                         <!-- Destination dropdown -->
                         <div id="destinationSuggestions"
-                            class="absolute left-0 top-full w-full bg-white shadow-lg mt-2 hidden z-50">
+                            class="absolute left-0 top-full w-full mt-3 hidden z-50
+                                bg-white/95 backdrop-blur-md
+                                rounded-2xl shadow-2xl border border-gray-200
+                                overflow-hidden animate-fadeIn">
                         </div>
                     </div>
 
