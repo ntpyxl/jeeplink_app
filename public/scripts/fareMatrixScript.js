@@ -2,16 +2,40 @@ import { apiFetch } from "./jeeplinkApiFetcher.js";
 
 let currentMatrixId = null;
 
+const matrixLabels = {
+    "1": "PUJ general fare guide",
+    "2": "Non-aircon modern & electric PUJ",
+    "3": "Aircon modern & electric PUJ"
+};
+
+function closeUpdateMatrixModal() {
+    $("#updateMatrixModal").removeClass("fare-matrix-modal--open");
+    $("#modalPdfInput").val("");
+    document.body.style.overflow = "";
+}
+
+function openUpdateMatrixModal(matrixId) {
+    currentMatrixId = matrixId;
+    const label = matrixLabels[matrixId] || `Matrix ${matrixId}`;
+    $("#targetMatrixId").text(label);
+    $("#updateMatrixModal").addClass("fare-matrix-modal--open");
+    document.body.style.overflow = "hidden";
+}
+
 $('.openUpdateMatrixModal').on('click', function() {
-    currentMatrixId = $(this).attr('data-id');
-    console.log("open update matrix modal")
-    console.log("Opening modal for Matrix:", currentMatrixId);
-    $("#updateMatrixModal").removeClass("hidden");
+    openUpdateMatrixModal($(this).attr('data-id'));
 });
 
-$('#closeUpdateMatrixModalButton').on('click', function() {
-    $("#updateMatrixModal").addClass("hidden");
-    $("#modalPdfInput").val("");
+$('#closeUpdateMatrixModalButton, #closeUpdateMatrixModalX').on('click', closeUpdateMatrixModal);
+
+$('#updateMatrixModal').on('click', function (e) {
+    if (e.target === this) closeUpdateMatrixModal();
+});
+
+$(document).on('keydown', function (e) {
+    if (e.key === 'Escape' && $('#updateMatrixModal').hasClass('fare-matrix-modal--open')) {
+        closeUpdateMatrixModal();
+    }
 });
 
 $('#uploadFareMatrixFile').on('click', async event => {
@@ -37,8 +61,7 @@ $('#uploadFareMatrixFile').on('click', async event => {
             console.log("Upload successful!");
         }
 
-        $("#updateMatrixModal").addClass("hidden");
-        $("#modalPdfInput").val("");
+        closeUpdateMatrixModal();
         file = null;
     } catch (err) {
         console.error("Error:", err);

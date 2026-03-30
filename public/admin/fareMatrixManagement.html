@@ -391,15 +391,41 @@
             </div>
         </main>
 
-        <div id="updateMatrixModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-                <h3 class="text-lg font-bold mb-4">Update Matrix <span id="targetMatrixId"></span></h3>
-                
-                <input type="file" id="modalPdfInput" accept="application/pdf" class="block w-full text-sm text-gray-500 mb-4">
-                
-                <div class="flex justify-end gap-2">
-                    <button id="closeUpdateMatrixModalButton" class="px-4 py-2 text-gray-600">Cancel</button>
-                    <button id="uploadFareMatrixFile" class="px-4 py-2 bg-green-600 text-white rounded">Upload & Process</button>
+    <!-- FareMatrix Modal -->
+        <div id="updateMatrixModal" class="fare-matrix-modal" role="dialog" aria-modal="true" aria-labelledby="updateMatrixModalTitle"aria-describedby="updateMatrixModalDesc">
+            <div class="fare-matrix-modal-panel" onclick="event.stopPropagation()">
+                <div class="fare-matrix-modal-header">
+                    <div>
+                        <h3 id="updateMatrixModalTitle" class="fare-matrix-modal_title">
+                            Upload fare matrix
+                        </h3>
+                        <p id="updateMatrixModalDesc" class="fare-matrix-modal-desc">
+                            Replace the matrix with a new PDF. <span id="targetMatrixId" class="fare-matrix-modal__matrix-name"></span>
+                        </p>
+                    </div>
+                    <button type="button" id="closeUpdateMatrixModalX"
+                        class="fare-matrix-modal-close"
+                        aria-label="Close">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+                <div class="fare-matrix-modal-body">
+                    <label for="modalPdfInput" class="fare-matrix-modal-label">PDF file</label>
+                    <div class="fare-matrix-modal-dropzone">
+                        <i class="fas fa-file-pdf"></i>
+                        <input type="file" id="modalPdfInput" accept="application/pdf"
+                            class="fare-matrix-modal-file-input">
+                    </div>
+                </div>
+                <div class="fare-matrix-modal-footer">
+                    <button type="button" id="closeUpdateMatrixModalButton"
+                        class="fare-matrix-modal-btn-cancel">
+                        Cancel
+                    </button>
+                    <button type="button" id="uploadFareMatrixFile"
+                        class="fare-matrix-modal-btn-submit">
+                        <i class="fas fa-upload"></i>Upload &amp; process
+                    </button>
                 </div>
             </div>
         </div>
