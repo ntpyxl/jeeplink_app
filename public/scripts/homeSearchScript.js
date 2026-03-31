@@ -21,5 +21,8 @@ destinationPointSearch.onResults = function(results) {
 };
 
 $("#calculateRouteButton").on("click", async event => {
+    await startingPointSearch.flush();
+    await destinationPointSearch.flush();
+    
     window.location.href = "/map.html";
 });

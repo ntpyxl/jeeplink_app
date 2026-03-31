@@ -161,6 +161,7 @@ function addRouteNode(data) {
 if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
     const startingPoint = JSON.parse(sessionStorage.getItem("start"));
     const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+    
     $("#startingPointField").val(startingPoint.name);
     $("#destinationPointField").val(destinationPoint.name);
 
@@ -174,23 +175,6 @@ if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
     await routeGenerated.drawRoute();
 }
 
-$("#calculateRouteButton").on("click", async event => {
-    // TODO: Maybe default starting point to current user location.
-    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
-    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
-    console.log(startingPoint + destinationPoint)
-    // TODO: Wait 2 seconds? This does not wait the search to complete first before firing.
-
-    routeGenerated.clear();
-
-    addRouteNode(startingPoint);
-    addRouteNode(destinationPoint);
-
-    // TODO: Still using Dijkstra, should be A* now
-    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
-    await routeGenerated.drawRoute();
-})
-
 const startingPointSearch = new LocationSuggester($("#startingPointField"));
 const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
 
@@ -198,12 +182,35 @@ startingPointSearch.onResults = function(results) {
     console.log("Starting Point search results");
     console.log(results);
 
-    sessionStorage.setItem("start", JSON.stringify(results[0]));
+    if (results.length > 0) {
+        sessionStorage.setItem("start", JSON.stringify(results[0]));
+    }
 };
 
 destinationPointSearch.onResults = function(results) {
     console.log("Destination Point search results");
     console.log(results);
 
-    sessionStorage.setItem("destination", JSON.stringify(results[0]));
+    if (results.length > 0) {
+        sessionStorage.setItem("destination", JSON.stringify(results[0]));
+    }
 };
+
+$("#calculateRouteButton").on("click", async event => {
+    await startingPointSearch.flush();
+    await destinationPointSearch.flush();
+    
+    // TODO: Maybe default starting point to current user location.
+    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+
+    routeGenerated.clear();
+
+    console.log("calculated")
+    addRouteNode(startingPoint);
+    addRouteNode(destinationPoint);
+
+    // TODO: Still using Dijkstra, should be A* now
+    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
+    await routeGenerated.drawRoute();
+})
