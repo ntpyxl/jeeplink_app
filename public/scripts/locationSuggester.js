@@ -25,6 +25,8 @@ export class LocationSuggester {
         if (query.trim() !== "") {
             const results = (await searchLocations(query)).slice(0, this.maxResults);
             this.onResults(results);
+            console.log(query)
+            console.log(results)
         }
     }
 
@@ -38,7 +40,7 @@ export class LocationSuggester {
 
     // Override this method to handle results (e.g., show a dropdown)
     onResults(results) {
-        sessionStorage.setItem("start", JSON.stringify(results[0]));
+        results;
     }
 }
 
