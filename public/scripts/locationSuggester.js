@@ -1,5 +1,5 @@
 export class LocationSuggester {
-    constructor(inputSelector, delay = 2000, maxResults = 7) {
+    constructor(inputSelector, delay = 2000, maxResults = 5) {
         this.input = $(inputSelector);
         this.delay = delay;
         this.maxResults = maxResults;

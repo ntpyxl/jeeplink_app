@@ -15,3 +15,186 @@ html, body {
         height: 500px;
     }
 }
+
+/* FareMatrix Modal CSS */
+:root {
+    --fare-modal-green: #35903a;
+    --fare-modal-green-hover: #2d7a32;
+}
+
+.fare-matrix-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.fare-matrix-modal.fare-matrix-modal--open {
+    display: flex;
+}
+
+.fare-matrix-modal-panel {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 28rem;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #f3f4f6;
+}
+
+.fare-matrix-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    background: linear-gradient(to right, rgba(53, 144, 58, 0.1), transparent);
+}
+
+.fare-matrix-modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.fare-matrix-modal-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0;
+}
+
+.fare-matrix-modal-matrix-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.fare-matrix-modal-close {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.fare-matrix-modal-close:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.fare-matrix-modal-body {
+    padding: 1.25rem 1.5rem;
+}
+
+.fare-matrix-modal-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.fare-matrix-modal-dropzone {
+    border-radius: 0.75rem;
+    border: 2px dashed #e5e7eb;
+    background: rgba(249, 250, 251, 0.8);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: border-color 0.15s;
+}
+
+.fare-matrix-modal-dropzone:hover {
+    border-color: rgba(53, 144, 58, 0.4);
+}
+
+.fare-matrix-modal-dropzone .fa-file-pdf {
+    font-size: 1.875rem;
+    color: var(--fare-modal-green);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.fare-matrix-modal-file-input {
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.fare-matrix-modal-file-input::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: var(--fare-modal-green);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.fare-matrix-modal-file-input:hover::file-selector-button {
+    background: var(--fare-modal-green-hover);
+}
+
+.fare-matrix-modal-footer {
+    padding: 1rem 1.5rem;
+    background: #f9fafb;
+    border-top: 1px solid #f3f4f6;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.fare-matrix-modal-btn-cancel {
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    color: #374151;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.fare-matrix-modal-btn-cancel:hover {
+    background: #f9fafb;
+}
+
+.fare-matrix-modal-btn-submit {
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--fare-modal-green);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.15s;
+}
+
+.fare-matrix-modal-btn-submit:hover {
+    background: var(--fare-modal-green-hover);
+}
+
+.fare-matrix-modal-btn-submit .fa-upload {
+    margin-right: 0.5rem;
+}

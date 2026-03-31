@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JeepLink - Dashboard</title>
+    <title>JeepLink - Admin Fare Matrix Management</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="../images/tab-logo.png">
 
     <!-- Tailwind Cdn (Install Tailwind) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -48,13 +51,11 @@
         <!-- Main Navigation -->
             <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
 
-                <!-- ACTIVE -->
-                <a href="dashboard.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
-                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
-                        <i class="fas fa-chart-line text-black"></i>
+                <a href="dashboard.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-money-bill text-white"></i>
                     </div>
-
-                    <span class="nav-label">Dashboard</span>
+                    <span class="nav-label text-lg">Dashboard</span>
                 </a>
 
                 <!-- NORMAL -->
@@ -78,6 +79,15 @@
                         <i class="fas fa-chart-bar text-white"></i>
                     </div>
                     <span class="nav-label">Reports Management</span>
+                </a>
+
+                <!-- ACTIVE -->
+                <a href="fareMatrixManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-chart-line text-black"></i>
+                    </div>
+
+                    <span class="nav-label text-lg">Fare Matrix Management</span>
                 </a>
             </nav>
 
@@ -123,7 +133,7 @@
 
                 <!-- Left Side -->
                 <div class="flex items-center">
-                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 md:hidden">
                         <i class="fas fa-bars text-gray-600 text-xl"></i>
                     </button>
                     <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
@@ -381,15 +391,41 @@
             </div>
         </main>
 
-        <div id="updateMatrixModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-                <h3 class="text-lg font-bold mb-4">Update Matrix <span id="targetMatrixId"></span></h3>
-                
-                <input type="file" id="modalPdfInput" accept="application/pdf" class="block w-full text-sm text-gray-500 mb-4">
-                
-                <div class="flex justify-end gap-2">
-                    <button id="closeUpdateMatrixModalButton" class="px-4 py-2 text-gray-600">Cancel</button>
-                    <button id="uploadFareMatrixFile" class="px-4 py-2 bg-green-600 text-white rounded">Upload & Process</button>
+    <!-- FareMatrix Modal -->
+        <div id="updateMatrixModal" class="fare-matrix-modal" role="dialog" aria-modal="true" aria-labelledby="updateMatrixModalTitle"aria-describedby="updateMatrixModalDesc">
+            <div class="fare-matrix-modal-panel" onclick="event.stopPropagation()">
+                <div class="fare-matrix-modal-header">
+                    <div>
+                        <h3 id="updateMatrixModalTitle" class="fare-matrix-modal_title">
+                            Upload fare matrix
+                        </h3>
+                        <p id="updateMatrixModalDesc" class="fare-matrix-modal-desc">
+                            Replace the matrix with a new PDF. <span id="targetMatrixId" class="fare-matrix-modal-matrix-name"></span>
+                        </p>
+                    </div>
+                    <button type="button" id="closeUpdateMatrixModalX"
+                        class="fare-matrix-modal-close"
+                        aria-label="Close">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+                <div class="fare-matrix-modal-body">
+                    <label for="modalPdfInput" class="fare-matrix-modal-label">PDF file</label>
+                    <div class="fare-matrix-modal-dropzone">
+                        <i class="fas fa-file-pdf"></i>
+                        <input type="file" id="modalPdfInput" accept="application/pdf"
+                            class="fare-matrix-modal-file-input">
+                    </div>
+                </div>
+                <div class="fare-matrix-modal-footer">
+                    <button type="button" id="closeUpdateMatrixModalButton"
+                        class="fare-matrix-modal-btn-cancel">
+                        Cancel
+                    </button>
+                    <button type="button" id="uploadFareMatrixFile"
+                        class="fare-matrix-modal-btn-submit">
+                        <i class="fas fa-upload"></i>Upload &amp; process
+                    </button>
                 </div>
             </div>
         </div>
@@ -416,62 +452,12 @@
         </p>
     </div>
 
-    <!-- Check orientation script -->
-    <script>
-    function checkOrientation() {
-        const overlay = document.getElementById("rotateOverlay");
 
-        const isMobile = window.innerWidth < 768;
-        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    <!-- JQuery CDN (Download) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-        if (isMobile && isPortrait) {
-            // SHOW overlay
-            overlay.classList.remove("hidden");
-
-            overlay.style.overflow = "auto";
-            document.body.style.height = "100vh";
-            document.documentElement.style.overflow = "hidden";
-        } else {
-            // HIDE overlay
-            overlay.classList.add("hidden");
-
-            document.body.style.overflow = "";
-            document.body.style.height = "";
-            document.documentElement.style.overflow = "";
-        }
-    }
-
-    // Run on load
-    window.addEventListener("load", checkOrientation);
-
-    window.addEventListener("orientationchange", () => {
-        setTimeout(checkOrientation, 200); 
-    });
-
-    // Keep resize as backup
-    window.addEventListener("resize", checkOrientation);
-    </script>
-
-    <!-- Sidebar Toggle -->
-    <script>
-    function openSidebar() {
-        document.getElementById('sidebar').classList.remove('-translate-x-full');
-        document.getElementById('sidebarOverlay').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.add('-translate-x-full');
-        document.getElementById('sidebarOverlay').classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    document.getElementById('menuBtn').addEventListener('click', openSidebar);
-
-    document.querySelectorAll('#sidebar nav a').forEach(link => {
-        link.addEventListener('click', closeSidebar);
-    });
-    </script>
+    <!-- Admin Front End Script -->
+    <script src="../scripts/adminFrontEndScript.js"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
