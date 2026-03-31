@@ -11,20 +11,34 @@ export class LocationSuggester {
     init() {
         this.input.on("input", () => {
             clearTimeout(this.typingTimer);
+            this.typingTimer = null;
             const query = normalizeText(this.input.val());
 
             this.typingTimer = setTimeout(async () => {
-                if (query.trim() !== "") {
-                    const results = (await searchLocations(query)).slice(0, this.maxResults);
-                    this.onResults(results);
-                }
+                this.typingTimer = null;
+                await this.runSearch(query);
             }, this.delay);
         });
     }
 
+    async runSearch(query) {
+        if (query.trim() !== "") {
+            const results = (await searchLocations(query)).slice(0, this.maxResults);
+            this.onResults(results);
+        }
+    }
+
+    async flush() {
+        if (!this.typingTimer) return;
+
+        clearTimeout(this.typingTimer);
+        this.typingTimer = null;
+        await this.runSearch(normalizeText(this.input.val()));
+    }
+
     // Override this method to handle results (e.g., show a dropdown)
     onResults(results) {
-        console.log(results);
+        sessionStorage.setItem("start", JSON.stringify(results[0]));
     }
 }
 
