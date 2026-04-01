@@ -3,6 +3,7 @@ const publicAPI = "https://jeeplinkapi.vercel.app";
 
 let baseAPI = null;
 
+// TODO: VERY INEFFICIENT!!!! WHEN NO LOCAL SERVER, IT WILL TAKE SECONDS TO USE VERCEL SERVER AND PRODUCES UNNECESSARY ERROR
 async function getAPIBase() {
     if (baseAPI) return baseAPI;
 

@@ -25,8 +25,6 @@ export class LocationSuggester {
         if (query.trim() !== "") {
             const results = (await searchLocations(query)).slice(0, this.maxResults);
             this.onResults(results);
-            console.log(query)
-            console.log(results)
         }
     }
 
@@ -98,7 +96,7 @@ async function searchLocations(query) {
         
         return nominatimMapped;
     } catch (err) {
-        console.log("Cannot find: " + query, err);
+        console.error("Cannot find: " + query, err);
         return [];
     }
 }

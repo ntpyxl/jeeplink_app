@@ -299,31 +299,33 @@ $(document).on("click", function(e) {
     }
 });
 
-async function getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-        async (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
+function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-            const locationData = {
-                name: "Your Location",
-                searchName: "Your Location",
-                coords: [lon, lat]
-            };
+                const locationData = {
+                    name: "Your Location",
+                    searchName: "Your Location",
+                    coords: [lon, lat]
+                };
 
-            return locationData;
-        },
-        (error) => {
-            alert("Failed to get location.");
-            console.error(error);
-            return null;
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        }
-    );
+                resolve(locationData);
+            },
+            (error) => {
+                console.error(error);
+                alert("Failed to get location.");
+                reject(error);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            }
+        );
+    });
 }
 
 function createCurrentLocationItem() {
