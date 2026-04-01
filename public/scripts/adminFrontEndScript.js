@@ -1,5 +1,8 @@
+import { logout } from "../scripts/accountHandler.js";
+
 $(document).ready(function () {
 
+    // Orientation Checker
     function checkOrientation() {
         const $overlay = $("#rotateOverlay");
 
@@ -38,5 +41,35 @@ $(document).ready(function () {
     $("#menuBtn").on("click", openSidebar);
     $("#sidebarOverlay").on("click", closeSidebar);
     $("#sidebar nav a").on("click", closeSidebar);
+
+    // Profile Dropdown
+    $("#profileBtn").click(function (e) {
+        e.stopPropagation();
+
+        const dropdown = $("#profileDropdown");
+
+        if (dropdown.hasClass("opacity-0")) {
+            // OPEN
+            dropdown.removeClass("opacity-0 scale-95 translate-y-2 pointer-events-none")
+                    .addClass("opacity-100 scale-100 translate-y-0");
+        } else {
+            // CLOSE
+            dropdown.addClass("opacity-0 scale-95 translate-y-2 pointer-events-none")
+                    .removeClass("opacity-100 scale-100 translate-y-0");
+        }
+    });
+
+    // Click outside close
+    $(document).click(function (e) {
+        if (!$(e.target).closest("#profileBtn, #profileDropdown").length) {
+            $("#profileDropdown")
+                .addClass("opacity-0 scale-95 translate-y-2 pointer-events-none")
+                .removeClass("opacity-100 scale-100 translate-y-0");
+        }
+    });
+
+    $("#logoutBtn").click(function () {
+        logout();
+    });
 
 });

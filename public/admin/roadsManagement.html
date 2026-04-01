@@ -140,7 +140,7 @@
 
                 <!-- Left Side -->
                 <div class="flex items-center">
-                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 md:hidden">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 lg:hidden">
                         <i class="fas fa-bars text-gray-600 text-xl"></i>
                     </button>
                     <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
@@ -159,11 +159,39 @@
                     <!-- Divider  -->
                     <div class="w-px h-12 bg-gray-300"></div>
 
-                    <!-- Profile -->
-                    <div class="flex items-center gap-3">
-                        <!-- Use an existing image as avatar; falls back to a styled icon if not found -->
-                        <img src="../images/hero1.jpg" alt="Admin avatar" onerror="this.style.display='none'" class="w-10 h-10 rounded-full object-cover border border-gray-200">
-                        <span class="text-gray-700 font-medium">Admin</span>
+                    <div class="relative">
+                        <!-- Profile -->
+                        <div id="profileBtn" class="flex items-center gap-3 cursor-pointer">
+                            <img src="../images/hero1.jpg"
+                                alt="Admin avatar"
+                                onerror="this.style.display='none'"
+                                class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                            <span class="text-gray-700 font-medium">Admin</span>
+                        </div>
+
+                        <!-- Dropdown -->
+                        <div id="profileDropdown"
+                            class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md 
+                                    border border-gray-200 rounded-2xl shadow-xl overflow-hidden
+
+                                    opacity-0 scale-95 translate-y-2 pointer-events-none
+                                    transition-all duration-200 ease-out z-[9999]">
+
+                            <!-- User Info -->
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-800">Admin</p>
+                                <p class="text-xs text-gray-500">admin@email.com</p>
+                            </div>
+
+                            <!-- Logout -->
+                            <button id="logoutBtn"
+                                    class="w-full flex items-center gap-3 px-4 py-3 
+                                        text-gray-700 hover:bg-red-50 hover:text-red-500 
+                                        transition-all duration-200">
+                                <i class="fas fa-sign-out-alt text-sm"></i>
+                                <span class="font-medium">Logout</span>
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -208,7 +236,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- Admin Front End Script -->
-    <script src="../scripts/adminFrontEndScript.js"></script>
+    <script src="../scripts/adminFrontEndScript.js" type="module"></script>
 
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
