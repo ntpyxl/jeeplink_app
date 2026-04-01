@@ -3,22 +3,24 @@ const publicAPI = "https://jeeplinkapi.vercel.app";
 
 let baseAPI = null;
 
-// TODO: VERY INEFFICIENT!!!! WHEN NO LOCAL SERVER, IT WILL TAKE SECONDS TO USE VERCEL SERVER AND PRODUCES UNNECESSARY ERROR
 async function getAPIBase() {
     if (baseAPI) return baseAPI;
 
+    const testConnection = async (url) => {
+        const res = await fetch(url + "/", { method: "GET" });
+        if (!res.ok) throw new Error("Bad response");
+        return url;
+    };
+
     try {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 5000); // Modify 5000 (ms) should it fail to connect to the local server despite it running.
+        baseAPI = await Promise.any([
+            testConnection(localAPI),
+            testConnection(publicAPI)
+        ]);
+    } catch {
+        baseAPI = publicAPI;
+    }
 
-        const res = await fetch(localAPI + "/", { method: "GET", signal: controller.signal });
-        if (res.ok) {
-            baseAPI = localAPI;
-            return baseAPI;
-        }
-    } catch {}
-
-    baseAPI = publicAPI;
     return baseAPI;
 }
 
