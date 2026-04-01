@@ -25,6 +25,18 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+
+    <style>
+        body { display: none; }
+    </style>
+
+    <script type="module">
+        import { checkAuth } from "../scripts/accountHandler.js";
+
+        checkAuth();
+        document.body.style.display = "block";
+    </script>
 </head>
 <body>
     <div class="flex">
@@ -360,9 +372,7 @@
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="../scripts/graphBuilder.js" type="module"></script>
+    <script src="../scripts/helpers/graphHelper.js" type="module"></script>
     <script src="../scripts/routeEditorScript.js" type="module"></script>
-
-
 </body>
 </html>

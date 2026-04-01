@@ -24,8 +24,29 @@ async function getAPIBase() {
     return baseAPI;
 }
 
-export async function apiFetch(endpoint, options = {}) {
+export async function apiFetch(endpoint, options = {}, requireAuth = true) {
     const base = await getAPIBase();
+
+    if (requireAuth) {
+        const token = localStorage.getItem("token");
+        if (token) {
+            options.headers = {
+                ...(options.headers || {}),
+                "Authorization": `Bearer ${token}`
+            };
+        }
+    }
+
     const res = await fetch(base + endpoint, options);
+
+    if (!res.ok) {
+        // Optional: handle 401 globally
+        if (res.status === 401 && requireAuth) {
+            localStorage.removeItem("token");
+            window.location.href = "./admin/login.html";
+        }
+        throw new Error(`API request failed: ${res.status}`);
+    }
+
     return res.json();
 }
