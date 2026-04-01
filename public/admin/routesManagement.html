@@ -29,6 +29,17 @@
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+
+    <style>
+        body { display: none; }
+    </style>
+
+    <script type="module">
+        import { checkAuth } from "../scripts/accountHandler.js";
+
+        checkAuth();
+        document.body.style.display = "block";
+    </script>
 </head>
 <body>
     <div class="flex">

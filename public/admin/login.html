@@ -24,6 +24,21 @@
 
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <style>
+        body { display: none; }
+    </style>
+
+    <script type="module">
+        import { isLoggedIn } from "../scripts/accountHandler.js";
+
+        if(isLoggedIn()) {
+            window.location.replace("./dashboard.html");
+        } else {
+            document.body.style.display = "block";
+        }
+    </script>
 </head>
 <body>
     <main class="grid grid-cols-1 lg:grid-cols-5 min-h-screen">
@@ -86,6 +101,6 @@
     </main>
 
     <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="../scripts/accountHandler.js" type="module"></script>
+    <script src="../scripts/loginFormScript.js" type="module"></script>
 </body>
 </html>

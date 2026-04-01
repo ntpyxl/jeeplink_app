@@ -151,7 +151,7 @@ destinationPointSearch.onResults = async function(results) {
     container.removeClass("hidden");
 };
 
-$("#calculateRouteButton").on("click", async event => {
+$("#calculateRouteButton").on("click", async () => {
     if(!isStartingPointSelectedLocation) await startingPointSearch.flush();
     if(!isDestinationPointSelectedLocation) await destinationPointSearch.flush();
     

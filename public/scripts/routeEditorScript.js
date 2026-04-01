@@ -73,7 +73,7 @@ roadsLayer.on("click", async event => {
     if(routeEditor.nodes.length > 1) $("#endNodeText").text(routeEditor.getEndNode().graphKey);
 });
 
-$("#clearDrawnJeepRoute").on("click", async event => {
+$("#clearDrawnJeepRoute").on("click", async () => {
     await clearDrawnJeepRoute();
 })
 
@@ -84,7 +84,7 @@ async function clearDrawnJeepRoute() {
     $("#endNodeText").text("");
 }
 
-$("#saveDrawnJeepRoute").on("click", async event => {
+$("#saveDrawnJeepRoute").on("click", async () => {
     try {
         await apiFetch("/insertJeepRoute", {
             method: "POST",
@@ -105,7 +105,7 @@ $("#saveDrawnJeepRoute").on("click", async event => {
     }
 })
 
-$("#toggleJeepRoutes").on("click", async event => {
+$("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 })
 

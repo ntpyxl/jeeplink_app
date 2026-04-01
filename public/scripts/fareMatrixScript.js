@@ -38,7 +38,7 @@ $(document).on('keydown', function (e) {
     }
 });
 
-$('#uploadFareMatrixFile').on('click', async event => {
+$('#uploadFareMatrixFile').on('click', async () => {
     const fileInput = $("#modalPdfInput")[0];
     let file = fileInput.files ? fileInput.files[0] : null;
 

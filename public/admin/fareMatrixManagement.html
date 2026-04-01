@@ -28,6 +28,18 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+    
+    <style>
+        body { display: none; }
+    </style>
+
+    <script type="module">
+        import { checkAuth } from "../scripts/accountHandler.js";
+
+        checkAuth();
+        document.body.style.display = "block";
+    </script>
 </head>
 <body>
     <div class="flex">
