@@ -28,6 +28,7 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
     <div class="flex">
@@ -172,28 +173,28 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-stretch">
 
                     <!-- LEFT: PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-1" x-text="$store.fareMatrix?.matricesById?.['1']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -218,54 +219,35 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-1" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
                     </div>
 
                     <!-- MIDDLE: NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-2" x-text="$store.fareMatrix?.matricesById?.['2']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -290,54 +272,35 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-2" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
                     </div>
 
                     <!-- RIGHT: AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-3" x-text="$store.fareMatrix?.matricesById?.['3']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -362,26 +325,7 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-3" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
