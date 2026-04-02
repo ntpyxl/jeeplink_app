@@ -3,27 +3,50 @@ const publicAPI = "https://jeeplinkapi.vercel.app";
 
 let baseAPI = null;
 
-// TODO: VERY INEFFICIENT!!!! WHEN NO LOCAL SERVER, IT WILL TAKE SECONDS TO USE VERCEL SERVER AND PRODUCES UNNECESSARY ERROR
 async function getAPIBase() {
     if (baseAPI) return baseAPI;
 
+    const testConnection = async (url) => {
+        const res = await fetch(url + "/", { method: "GET" });
+        if (!res.ok) throw new Error("Bad response");
+        return url;
+    };
+
     try {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 5000); // Modify 5000 (ms) should it fail to connect to the local server despite it running.
+        baseAPI = await Promise.any([
+            testConnection(localAPI),
+            testConnection(publicAPI)
+        ]);
+    } catch {
+        baseAPI = publicAPI;
+    }
 
-        const res = await fetch(localAPI + "/", { method: "GET", signal: controller.signal });
-        if (res.ok) {
-            baseAPI = localAPI;
-            return baseAPI;
-        }
-    } catch {}
-
-    baseAPI = publicAPI;
     return baseAPI;
 }
 
-export async function apiFetch(endpoint, options = {}) {
+export async function apiFetch(endpoint, options = {}, requireAuth = true) {
     const base = await getAPIBase();
+
+    if (requireAuth) {
+        const token = localStorage.getItem("token");
+        if (token) {
+            options.headers = {
+                ...(options.headers || {}),
+                "Authorization": `Bearer ${token}`
+            };
+        }
+    }
+
     const res = await fetch(base + endpoint, options);
+
+    if (!res.ok) {
+        // Optional: handle 401 globally
+        if (res.status === 401 && requireAuth) {
+            localStorage.removeItem("token");
+            window.location.href = "./admin/login.html";
+        }
+        throw new Error(`API request failed: ${res.status}`);
+    }
+
     return res.json();
 }

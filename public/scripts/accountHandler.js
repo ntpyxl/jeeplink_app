@@ -1,22 +1,34 @@
 import { apiFetch } from "../scripts/jeeplinkApiFetcher.js";
 
-$("#loginForm").on("submit", async event => {
-    event.preventDefault();
-    console.log("form submitted");
+export async function checkAuth() {
+    let token = localStorage.getItem("token");
 
-    const usernameValue = $("#usernameField").val();
-    const passwordValue = $("#passwordField").val();
+    if (!token) {
+        window.location.replace("./login.html");
+        return;
+    }
 
-    const response = await apiFetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: usernameValue,
-            password: passwordValue
-        })
-    })
+    try {
+        const response = await apiFetch("/getCurrentUser", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-    console.log(response);
-});
+        console.log("Logged in as:", response.username);
+        return {"loggedInUsername": response.username};
+    } catch (error) {
+        localStorage.removeItem("token");
+        window.location.replace("./login.html");
+    }
+}
+
+export function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "./login.html";
+}
+
+export function isLoggedIn() {
+    return !!localStorage.getItem("token");
+}
