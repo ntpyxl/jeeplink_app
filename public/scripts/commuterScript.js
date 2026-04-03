@@ -15,7 +15,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-// TODO: This takes 6 seconds everytime...
+// TODO: This takes 3 seconds everytime...
 const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -158,10 +158,15 @@ function addRouteNode(data) {
     routeGenerated.addNode(node);
 }
 
+let startingPoint = null;
+let destinationPoint = null;
+
 if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
-    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
-    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
-    
+    startingPoint = JSON.parse(sessionStorage.getItem("start"));
+    destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+    sessionStorage.removeItem("start");
+    sessionStorage.removeItem("destination");
+
     $("#startingPointField").val(startingPoint.name);
     $("#destinationPointField").val(destinationPoint.name);
 
@@ -182,7 +187,7 @@ let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
 startingPointSearch.onResults = async function(results) {
-    sessionStorage.setItem("start", JSON.stringify(results[0]));
+    startingPoint = results[0];
     const container = $("#startingSuggestions");
     container.empty();
 
@@ -196,7 +201,7 @@ startingPointSearch.onResults = async function(results) {
 
         $("#startingPointField").val("Getting your location...");
 
-        sessionStorage.setItem("start", JSON.stringify(await getCurrentLocation()));
+        startingPoint = JSON.stringify(await getCurrentLocation());
         isStartingPointSelectedLocation = true;
 
         $("#startingPointField").val("Your Location");
@@ -217,7 +222,7 @@ startingPointSearch.onResults = async function(results) {
             isStartingPointSelectedLocation = true;
             container.addClass("hidden");
 
-            sessionStorage.setItem("start", JSON.stringify(result));
+            startingPoint = result;
         });
         container.append(item);
     });
@@ -226,7 +231,7 @@ startingPointSearch.onResults = async function(results) {
 };
 
 destinationPointSearch.onResults = async function(results) {
-    sessionStorage.setItem("destination", JSON.stringify(results[0]));
+    destinationPoint = results[0];
     const container = $("#destinationSuggestions");
     container.empty();
 
@@ -240,7 +245,7 @@ destinationPointSearch.onResults = async function(results) {
 
         $("#destinationPointField").val("Getting your location...");
 
-        sessionStorage.setItem("destination", JSON.stringify(await getCurrentLocation()));
+        destinationPoint = await getCurrentLocation();
         isDestinationPointSelectedLocation = true;
 
         $("#destinationPointField").val("Your Location");
@@ -262,7 +267,7 @@ destinationPointSearch.onResults = async function(results) {
             isDestinationPointSelectedLocation = true;
             container.addClass("hidden");
 
-            sessionStorage.setItem("destination", JSON.stringify(result));
+            destinationPoint = result;
         });
         container.append(item);
     });
@@ -273,10 +278,6 @@ destinationPointSearch.onResults = async function(results) {
 $("#calculateRouteButton").on("click", async () => {
     if(!isStartingPointSelectedLocation) await startingPointSearch.flush();
     if(!isDestinationPointSelectedLocation) await destinationPointSearch.flush();
-    
-    // TODO: Maybe default starting point to current user location.
-    const startingPoint = JSON.parse(sessionStorage.getItem("start"));
-    const destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
 
     routeGenerated.clear();
 
