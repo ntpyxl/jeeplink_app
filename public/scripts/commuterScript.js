@@ -8,8 +8,14 @@ import { LocationSuggester } from "./locationSuggester.js";
 const map = L.map("map", {
     renderer: L.canvas(),
     minZoom: 12,
-    maxZoom: 18
+    maxZoom: 18,
+    zoomControl: false
 }).setView([14.3272, 120.9404], 15);
+
+// TODO: Add locate current user location button above the + - icon
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
