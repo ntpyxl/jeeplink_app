@@ -16,7 +16,6 @@ export async function checkAuth() {
             }
         });
 
-        console.log("Logged in as:", response.username);
         return {"loggedInUsername": response.username};
     } catch (error) {
         localStorage.removeItem("token");

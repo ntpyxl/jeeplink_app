@@ -6,23 +6,11 @@ export default async function handler(req, res) {
     }
 
     try {
-        const geojson = req.body.roads;
-        const graph = req.body.graph;
+        const { filename, fileData } = req.body;
 
-        const roadsBlob = await put(
-            "Dasma_LineStrings.geojson",
-            JSON.stringify(geojson),
-            {
-                access: "private",
-                contentType: "application/json",
-                token: process.env.BLOB_READ_WRITE_TOKEN,
-                allowOverwrite: true
-            }
-        );
-
-        const graphBlob = await put(
-            "Dasma_RoadGraph.json",
-            JSON.stringify(graph),
+        const fileUrlResult = await put(
+            filename,
+            JSON.stringify(fileData),
             {
                 access: "private",
                 contentType: "application/json",
@@ -32,8 +20,7 @@ export default async function handler(req, res) {
         );
 
         return res.status(200).json({
-            roadsUrl: roadsBlob.url,
-            graphUrl: graphBlob.url
+            fileUrlResult: fileUrlResult.url
         });
 
 

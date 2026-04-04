@@ -8,14 +8,14 @@ To split up a geojson file into LineStrings, Points, and Polygons, just cd to th
 
 ## Existing Files
 
-1. **Dasma_LineStrings - Unfiltered.geojson**
-    - Original Dasma_LineStrings.geojson output from the script file.
+1. **Dasma_LineStrings-AllRoads.geojson**
+    - Originally Dasma_LineStrings.geojson output from the script file. Roads outside Dasmarinas were deleted.
 
-2. **Dasma_LineStrings - Public Roads.geojson**
+2. **Dasma_LineStrings-PublicRoads.geojson**
     - Dasma_LineStrings.geojson but modified to only have roads assumed to be public or accessible to PUJ. Roads not deemed to be public were deleted.
 
-3. **Dasma_LineStrings - Web Modified.geojson**
-    - Dasma_LineStrings.geojson but modified via the JeepLink admin dashboard before the usage of QGIS software, which is a faster way of disabling certain roads.
+3. **Dasma_LineStrings-WebModified.geojson**
+    - Dasma_LineStrings.geojson but modified via the JeepLink admin dashboard before the usage of QGIS software, which is a faster way of disabling certain roads. Just here as a backup.
 
 4. **Dasma_LineStrings.geojson, Dasma_Points.geojson, and Dasma_Polygons.geojson**
     - Original output from the script file.

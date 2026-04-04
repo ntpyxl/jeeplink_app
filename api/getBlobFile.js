@@ -6,7 +6,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const URL = "https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/Dasma_LineStrings.geojson";
+        const { filename } = req.query;
+
+        const URL = `https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/${filename}`;
 
         const blobResponse = await get(URL, {
             access: 'private',

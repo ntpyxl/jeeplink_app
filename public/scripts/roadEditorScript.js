@@ -1,4 +1,3 @@
-import { apiFetch } from "./jeeplinkApiFetcher.js";
 import { GraphHelper } from "./helpers/graphHelper.js";
 
 const map = L.map("map", {
@@ -9,7 +8,8 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("../api/getRoadsGeoJson").then(r => r.json());
+const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
+
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
@@ -48,9 +48,6 @@ const roadsLayer = L.geoJSON(roadsGeoJSON, {
                     opacity: 1
                 });
             }
-
-            // TODO: Double check if this is necessary
-            graphHelper.buildGraph(roadsGeoJSON, true); 
         });
     }
 }).addTo(map);
@@ -75,26 +72,54 @@ const graphHelper = new GraphHelper(roadsGeoJSON);
 // TODO: Currently takes too long to save.. takes around 10s?
 $("#saveNewGeoJson").on("click", async function () {
     try {
-        const response = await fetch("/api/saveRoadsGeoJson", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                roads: roadsGeoJSON,
-                graph: Object.fromEntries(graphHelper.graph)
-            })
-        });
+        graphHelper.buildGraph(roadsGeoJSON, true); 
+        
+        await Promise.all([
+            saveRoadsGeoJson(),
+            saveGraphJson()
+        ]);
 
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.error);
-        }
-
-        alert("Successfully saved new GeoJson Road Data!");
+        alert("Successfully saved new GeoJson and Graph Road Data!");
     } catch (err) {
         console.error(err);
         alert("Failed to save GeoJSON Road Data.");
     }
 });
+
+async function saveRoadsGeoJson() {
+    const response = await fetch("/api/saveBlobFile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            filename: "Dasma_LineStrings-AllRoads.geojson",
+            fileData: roadsGeoJSON
+        })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.error);
+    }
+}
+
+async function saveGraphJson() {
+    const response = await fetch("/api/saveBlobFile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            filename: "Dasma_RoadGraph-AllRoads.json",
+            fileData: Object.fromEntries(graphHelper.graph)
+        })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.error);
+    }
+}
