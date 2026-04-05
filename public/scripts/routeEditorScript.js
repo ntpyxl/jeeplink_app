@@ -141,3 +141,35 @@ function snapToRoad(latlng) {
         segmentB: coords[segmentIndex + 1]
     };
 }
+
+async function findInsertIndex(latlng) {
+
+    if (routeEditor.nodes.length < 2) return null;
+
+    const clicked = turf.point([latlng.lng, latlng.lat]);
+
+    let bestIndex = null;
+    let minDist = Infinity;
+
+    for (let i = 0; i < routeEditor.nodes.length - 1; i++) {
+
+        const a = routeEditor.nodes[i].coordinates;
+        const b = routeEditor.nodes[i + 1].coordinates;
+
+        const line = turf.lineString([a, b]);
+
+        const snap = turf.nearestPointOnLine(line, clicked);
+
+        const dist = snap.properties.dist;
+
+        if (dist < minDist) {
+            minDist = dist;
+            bestIndex = i + 1;
+        }
+    }
+
+    // Optional: limit how far the click can be
+    if (minDist > 0.02) return null;
+
+    return bestIndex;
+}

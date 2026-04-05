@@ -12,8 +12,13 @@ export class RouteEditor {
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
 
-    addNode(node) {
-        this.nodes.push(node);
+    addNode(node, index = null) {
+        if (index === null) {
+            this.nodes.push(node);
+        } else {
+            this.nodes.splice(index, 0, node);
+        }
+        
         this.drawNode(node);
     }
 
@@ -87,6 +92,51 @@ export class RouteEditor {
             color: "orange",
             weight: 5
         }).addTo(this.map);
+
+        this.routeLine.on("click", (e) => {
+            this.handleRouteClick(e);
+        })
+    }
+
+    handleRouteClick(e) {
+        if (this.nodes.length < 2) return;
+
+        const clicked = turf.point([e.latlng.lng, e.latlng.lat]);
+
+        let bestIndex = null;
+        let minDist = Infinity;
+
+        for (let i = 0; i < this.nodes.length - 1; i++) {
+
+            const a = this.nodes[i].coordinates;
+            const b = this.nodes[i + 1].coordinates;
+
+            const line = turf.lineString([a, b]);
+
+            const snap = turf.nearestPointOnLine(line, clicked);
+            const dist = snap.properties.dist;
+
+            if (dist < minDist) {
+                minDist = dist;
+                bestIndex = i + 1;
+            }
+        }
+
+        if (bestIndex === null) return;
+
+        const snapped = this.snapToRoad(e.latlng);
+        if (!snapped) return;
+
+        const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+
+        const node = {
+            id: crypto.randomUUID(),
+            coordinates: snapped.coordinates,
+            graphKey: graphNodeKey
+        };
+
+        this.addNode(node, bestIndex);
+        this.drawRoute();
     }
 
     clear() {
