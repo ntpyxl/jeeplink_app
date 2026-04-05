@@ -1,12 +1,7 @@
 import { apiFetch } from "../jeeplinkApiFetcher.js";
 
 export class RouteEditor {
-    constructor({
-        map,
-        snapToRoad,
-        graphHelper,
-        addInteractability = false
-    }) {
+    constructor({ map, snapToRoad, graphHelper, addInteractability = false }) {
         this.map = map;
         this.snapToRoad = snapToRoad;
         this.graphHelper = graphHelper;
@@ -42,7 +37,7 @@ export class RouteEditor {
 
         node.layer = marker;
 
-        if(this.addInteractability) this.addNodeInteractability(marker, node);
+        if(this.addInteractability) this.addNodeInteractability(node, marker, this.map);
     }
 
     async drawRoute() {
@@ -107,7 +102,7 @@ export class RouteEditor {
         return this.nodes;
     }
 
-    addNodeInteractability(marker, node) {
+    addNodeInteractability(node, marker, map) {
         let dragging = false;
 
         marker.on("mousedown", () => {
@@ -115,7 +110,7 @@ export class RouteEditor {
             this.map.dragging.disable();
         });
 
-        this.map.on("mousemove", (e) => {
+        map.on("mousemove", (e) => {
             if (!dragging) return;
 
             const snapped = this.snapToRoad(e.latlng);
