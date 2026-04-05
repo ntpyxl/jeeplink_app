@@ -11,6 +11,10 @@ const map = L.map("map", {
     maxZoom: 18,
     zoomControl: false
 }).setView([14.3272, 120.9404], 15);
+map.createPane("routePane");
+map.createPane("nodePane");
+map.getPane("routePane").style.zIndex = 400;
+map.getPane("nodePane").style.zIndex = 500;
 
 // TODO: Add locate current user location button above the + - icon
 L.control.zoom({
