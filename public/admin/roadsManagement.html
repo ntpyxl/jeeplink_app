@@ -196,18 +196,40 @@
 
                 </div>
             </header>
-            <div class="mt-6 flex flex-col w-full">
-                <div class="">
-                    <div id="map"></div>
+
+            <div class="w-full p-6 space-y-4">
+
+                <!-- HEADER -->
+                <div class="border-b border-gray-200 pb-3">
+                    <h2 class="text-3xl font-semibold text-gray-800">
+                        Roads Management
+                    </h2>
                 </div>
-                <div>
-                    Click on a road to disable it.
-                    <button id="saveNewGeoJson" class="border-2 border-black px-3 py-1 hover:cursor-pointer">
-                        Save new GeoJson Road Data
+
+                <!-- INFO + ACTION BAR -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+
+                    <!-- Instruction -->
+                    <p class="text-sm text-gray-600">
+                        Click on a road to disable it
+                    </p>
+
+                    <!-- Button -->
+                    <button id="saveNewGeoJson"
+                        class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-sm text-sm">
+                        <i class="fas fa-save"></i>
+                        Save GeoJSON Road Data
                     </button>
+
                 </div>
+
+                <!-- MAP -->
+                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                    <div id="map" class="border border-gray-300 rounded-lg" style="height: 900px; width: 100%;"></div>
+                </div>
+
             </div>
-        
+                    
         </main>
     </div>
 
