@@ -1,4 +1,4 @@
-import { GraphHelper } from "./helpers/graphHelper.js";
+import { GraphHelper } from "./classes/graphHelper.js";
 
 const map = L.map("map", {
     renderer: L.canvas()

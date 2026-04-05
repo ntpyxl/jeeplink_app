@@ -1,7 +1,7 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
-import { GraphHelper } from "./helpers/graphHelper.js";
-import { RouteEditor } from "./helpers/routeEditor.js";
-import { RouteRenderer } from "./helpers/routeRenderer.js";
+import { GraphHelper } from "./classes/graphHelper.js";
+import { RouteEditor } from "./classes/routeEditor.js";
+import { RouteRenderer } from "./classes/routeRenderer.js";
 import { LocationSuggester } from "./locationSuggester.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
@@ -57,69 +57,11 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeEditor = new RouteEditor(map);
 const routeRenderer = new RouteRenderer(map);
-const routeGenerated = new RouteEditor(map);
-
-roadsLayer.on("click", async event => {
-    const snapped = snapToRoad(event.latlng);
-    if (!snapped) return;
-
-    // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
-    const graphNodeKey = graphHelper.snapToGraphNode(snapped.coordinates);
-    /*
-    const graphNodeKey = graphHelper.insertTemporaryNode(
-        snapped.coordinates,
-        snapped.segmentA,
-        snapped.segmentB
-    );
-    */
-
-    const node = {
-        id: crypto.randomUUID(),
-        coordinates: snapped.coordinates,
-        roadId: snapped.roadId,
-        graphKey: graphNodeKey
-    };
-
-    routeEditor.addNode(node);
-    await routeEditor.drawRoute();
-
-    $("#startNodeText").text(routeEditor.getStartNode().graphKey);
-    if(routeEditor.nodes.length > 1) $("#endNodeText").text(routeEditor.getEndNode().graphKey);
+const routeGenerated = new RouteEditor({
+    map: map,
+    addInteractability: false
 });
-
-$("#clearDrawnJeepRoute").on("click", async () => {
-    await clearDrawnJeepRoute();
-})
-
-async function clearDrawnJeepRoute() {
-    routeEditor.clear();
-    $("#drawnJeepRouteName").val("");
-    $("#startNodeText").text("");
-    $("#endNodeText").text("");
-}
-
-$("#saveDrawnJeepRoute").on("click", async () => {
-    try {
-        await apiFetch("/insertJeepRoute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val(),
-                nodes: routeEditor.nodes
-            })
-        });
-
-        clearDrawnJeepRoute();
-        $("#drawnJeepRouteName").val('');
-
-        alert("Successfully saved Jeepney Route!");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save Jeepney Route.");
-    }
-})
 
 $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();

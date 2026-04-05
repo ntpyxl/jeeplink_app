@@ -1,7 +1,7 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
-import { GraphHelper } from "./helpers/graphHelper.js";
-import { RouteEditor } from "./helpers/routeEditor.js";
-import { RouteRenderer } from "./helpers/routeRenderer.js";
+import { GraphHelper } from "./classes/graphHelper.js";
+import { RouteEditor } from "./classes/routeEditor.js";
+import { RouteRenderer } from "./classes/routeRenderer.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -47,7 +47,7 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeEditor = new RouteEditor(map, snapToRoad, graphHelper);
+const routeEditor = new RouteEditor(map, snapToRoad, graphHelper, true);
 const routeRenderer = new RouteRenderer(map);
 
 roadsLayer.on("click", async event => {
