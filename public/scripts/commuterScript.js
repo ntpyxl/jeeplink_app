@@ -199,8 +199,7 @@ $("#startingPointField").on("focus click", async function () {
     currentLocationItem.on("click", async () => {
         $("#startingPointField").val("Getting your location...");
 
-        const location = await getCurrentLocation();
-        sessionStorage.setItem("start", JSON.stringify(location));
+        startingPoint = await getCurrentLocation();
 
         isStartingPointSelectedLocation = true;
 
@@ -222,8 +221,7 @@ $("#destinationPointField").on("focus click", async function () {
     currentLocationItem.on("click", async () => {
         $("#destinationPointField").val("Getting your location...");
 
-        const location = await getCurrentLocation();
-        sessionStorage.setItem("destination", JSON.stringify(location));
+        startingPoint = await getCurrentLocation();
 
         isDestinationPointSelectedLocation = true;
 
@@ -253,7 +251,7 @@ startingPointSearch.onResults = async function(results) {
 
         $("#startingPointField").val("Getting your location...");
 
-        startingPoint = JSON.stringify(await getCurrentLocation());
+        startingPoint = await getCurrentLocation();
         isStartingPointSelectedLocation = true;
 
         $("#startingPointField").val("Your Location");
