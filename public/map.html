@@ -33,9 +33,9 @@
     <link rel="stylesheet" href="styles/custom.css">
     
     </head>
-    <body>
+    <body class="overflow-y-hidden">
         <!-- Start of Navigation Bar -->
-        <nav class="bg-white shadow relative z-[1000]">
+        <nav class="bg-white shadow relative z-[1000] border-b-[2px] border-[#004F11]">
             <div class="container mx-auto flex justify-between items-center px-4 py-3">
 
                 <!-- Logo -->
@@ -87,13 +87,13 @@
                 <div class="flex flex-col w-full">
                     <div class="relative w-full">
                         <!-- Map -->
-                        <div id="map" class="w-full h-full border-t-[3px] border-[#004F11] shadow-lg"></div>
+                        <div id="map" class="w-screen h-screen fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
 
                         <!-- Overlay Absolute -->
                         <div class="absolute top-8 left-8 flex flex-col gap-4 z-[500]">
 
                             <!-- Overlay Panel -->
-                            <div class="w-[90vw] max-w-sm bg-white rounded-3xl shadow-2xl overflow-visible border border-[#004F11]/20">
+                            <div class="w-[90vw] p-0 m-0 max-w-sm bg-white rounded-3xl shadow-2xl overflow-visible border border-[#004F11]/20">
 
                                 <!-- HEADER -->
                                 <div id="toggleCommute"
@@ -177,9 +177,6 @@
                                 class="fixed bottom-0 left-0 w-full md:static md:w-80
                                         z-[600] flex flex-col gap-3
                                         px-3 pb-4 md:p-0">
-
-                                <!-- Drag Handle (mobile only) -->
-                                <div class="w-12 h-1.5 bg-gray-400 rounded-full mx-auto my-2 md:hidden"></div>
 
                                 <!-- ROUTE 1 -->
                                 <div class="bg-[#004F11] rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden">
