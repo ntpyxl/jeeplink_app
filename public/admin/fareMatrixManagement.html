@@ -28,18 +28,7 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
-
-    
-    <style>
-        body { display: none; }
-    </style>
-
-    <script type="module">
-        import { checkAuth } from "../scripts/accountHandler.js";
-
-        checkAuth();
-        document.body.style.display = "block";
-    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
     <div class="flex">
@@ -65,10 +54,11 @@
 
                 <a href="dashboard.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
-                        <i class="fas fa-money-bill text-white"></i>
+                        <i class="fas fa-chart-line text-white"></i>
                     </div>
-                    <span class="nav-label text-lg">Dashboard</span>
+                    Dashboard
                 </a>
+
 
                 <!-- NORMAL -->
                 <a href="routesManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
@@ -96,7 +86,7 @@
                 <!-- ACTIVE -->
                 <a href="fareMatrixManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
-                        <i class="fas fa-chart-line text-black"></i>
+                        <i class="fas fa-money-bill text-black"></i>
                     </div>
 
                     <span class="nav-label text-lg">Fare Matrix Management</span>
@@ -126,7 +116,7 @@
                     <span class="nav-label">Guide Webpage</span>
                 </a>
 
-                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                <a href="faqsWebpageManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-question text-white"></i>
                     </div>
@@ -145,7 +135,7 @@
 
                 <!-- Left Side -->
                 <div class="flex items-center">
-                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 md:hidden">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 lg:hidden">
                         <i class="fas fa-bars text-gray-600 text-xl"></i>
                     </button>
                     <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
@@ -164,11 +154,39 @@
                     <!-- Divider  -->
                     <div class="w-px h-12 bg-gray-300"></div>
 
-                    <!-- Profile -->
-                    <div class="flex items-center gap-3">
-                        <!-- Use an existing image as avatar; falls back to a styled icon if not found -->
-                        <img src="../images/hero1.jpg" alt="Admin avatar" onerror="this.style.display='none'" class="w-10 h-10 rounded-full object-cover border border-gray-200">
-                        <span class="text-gray-700 font-medium">Admin</span>
+                    <div class="relative">
+                        <!-- Profile -->
+                        <div id="profileBtn" class="flex items-center gap-3 cursor-pointer">
+                            <img src="../images/hero1.jpg"
+                                alt="Admin avatar"
+                                onerror="this.style.display='none'"
+                                class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                            <span class="text-gray-700 font-medium">Admin</span>
+                        </div>
+
+                        <!-- Dropdown -->
+                        <div id="profileDropdown"
+                            class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md 
+                                    border border-gray-200 rounded-2xl shadow-xl overflow-hidden
+
+                                    opacity-0 scale-95 translate-y-2 pointer-events-none
+                                    transition-all duration-200 ease-out">
+
+                            <!-- User Info -->
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-800">Admin</p>
+                                <p class="text-xs text-gray-500">admin@email.com</p>
+                            </div>
+
+                            <!-- Logout -->
+                            <button id="logoutBtn"
+                                    class="w-full flex items-center gap-3 px-4 py-3 
+                                        text-gray-700 hover:bg-red-50 hover:text-red-500 
+                                        transition-all duration-200">
+                                <i class="fas fa-sign-out-alt text-sm"></i>
+                                <span class="font-medium">Logout</span>
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -184,28 +202,28 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-stretch">
 
                     <!-- LEFT: PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-1" x-text="$store.fareMatrix?.matricesById?.['1']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -230,54 +248,35 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-1" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
                     </div>
 
                     <!-- MIDDLE: NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-2" x-text="$store.fareMatrix?.matricesById?.['2']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -302,54 +301,35 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-2" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
                     </div>
 
                     <!-- RIGHT: AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
                         </h3>
 
                         <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: OCTOBER 8, 2023</p>
+                            <p>Effective: <span id="effective-3" x-text="$store.fareMatrix?.matricesById?.['3']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
                             
                             <br>
                             <p>Computation of Fares: (Add-on Method)</p>
                             
                             <div>
                                 <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P 13.00</p>
-                                <p>Succeeding kilometers = Additional P 1.80 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '13.00'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
                             
                             <div>
                                 <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P 10.40</p>
-                                <p>Succeeding kilometers = Additional P 1.44 per kilometer</p>
+                                <p>First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '10.40'"></span></p>
+                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '1.44'"></span> per kilometer</p>
                             
                             </div>
 
@@ -374,26 +354,7 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">1</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">2</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">3</td>
-                                        <td class="py-2">13.00</td>
-                                        <td class="py-2">10.50</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="fare-table-body-3" class="text-gray-700 text-sm"></tbody>
                             </table>
                         </div>
 
@@ -469,7 +430,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- Admin Front End Script -->
-    <script src="../scripts/adminFrontEndScript.js"></script>
+    <script src="../scripts/adminFrontEndScript.js" type="module"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>

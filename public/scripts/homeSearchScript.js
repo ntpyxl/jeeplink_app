@@ -3,6 +3,62 @@ import { LocationSuggester } from "./locationSuggester.js";
 const startingPointSearch = new LocationSuggester($("#startingPointField"));
 const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
 
+// SHOW "Your Location" on focus (START)
+$("#startingPointField").on("focus click", async function () {
+    const container = $("#startingSuggestions");
+    container.empty();
+
+    const currentLocationItem = await createCurrentLocationItem();
+
+    currentLocationItem.on("click", async () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation not supported.");
+            return;
+        }
+
+        $("#startingPointField").val("Getting your location...");
+
+        const location = await getCurrentLocation();
+        sessionStorage.setItem("start", JSON.stringify(location));
+
+        isStartingPointSelectedLocation = true;
+
+        $("#startingPointField").val("Your Location");
+        container.addClass("hidden");
+    });
+
+    container.append(currentLocationItem);
+    container.removeClass("hidden");
+});
+
+// SHOW "Your Location" on focus (DESTINATION)
+$("#destinationPointField").on("focus click", async function () {
+    const container = $("#destinationSuggestions");
+    container.empty();
+
+    const currentLocationItem = await createCurrentLocationItem();
+
+    currentLocationItem.on("click", async () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation not supported.");
+            return;
+        }
+
+        $("#destinationPointField").val("Getting your location...");
+
+        const location = await getCurrentLocation();
+        sessionStorage.setItem("destination", JSON.stringify(location));
+
+        isDestinationPointSelectedLocation = true;
+
+        $("#destinationPointField").val("Your Location");
+        container.addClass("hidden");
+    });
+
+    container.append(currentLocationItem);
+    container.removeClass("hidden");
+});
+
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 

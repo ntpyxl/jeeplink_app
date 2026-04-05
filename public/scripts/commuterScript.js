@@ -8,8 +8,14 @@ import { LocationSuggester } from "./locationSuggester.js";
 const map = L.map("map", {
     renderer: L.canvas(),
     minZoom: 12,
-    maxZoom: 18
+    maxZoom: 18,
+    zoomControl: false
 }).setView([14.3272, 120.9404], 15);
+
+// TODO: Add locate current user location button above the + - icon
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -182,6 +188,52 @@ if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
 
 const startingPointSearch = new LocationSuggester($("#startingPointField"));
 const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
+
+// SHOW "Your Location" on focus (START)
+$("#startingPointField").on("focus click", async function () {
+    const container = $("#startingSuggestions");
+    container.empty();
+
+    const currentLocationItem = await createCurrentLocationItem();
+
+    currentLocationItem.on("click", async () => {
+        $("#startingPointField").val("Getting your location...");
+
+        const location = await getCurrentLocation();
+        sessionStorage.setItem("start", JSON.stringify(location));
+
+        isStartingPointSelectedLocation = true;
+
+        $("#startingPointField").val("Your Location");
+        container.addClass("hidden");
+    });
+
+    container.append(currentLocationItem);
+    container.removeClass("hidden");
+});
+
+// SHOW "Your Location" on focus (DESTINATION)
+$("#destinationPointField").on("focus click", async function () {
+    const container = $("#destinationSuggestions");
+    container.empty();
+
+    const currentLocationItem = await createCurrentLocationItem();
+
+    currentLocationItem.on("click", async () => {
+        $("#destinationPointField").val("Getting your location...");
+
+        const location = await getCurrentLocation();
+        sessionStorage.setItem("destination", JSON.stringify(location));
+
+        isDestinationPointSelectedLocation = true;
+
+        $("#destinationPointField").val("Your Location");
+        container.addClass("hidden");
+    });
+
+    container.append(currentLocationItem);
+    container.removeClass("hidden");
+});
 
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
