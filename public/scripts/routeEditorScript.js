@@ -1,7 +1,7 @@
-import { apiFetch } from "./jeeplinkApiFetcher.js";
-import { GraphHelper } from "./classes/graphHelper.js";
-import { RouteEditor } from "./classes/routeEditor.js";
-import { RouteRenderer } from "./classes/routeRenderer.js";
+import { apiFetch } from "./core/jeeplinkApiFetcher.js";
+import { GraphHelper } from "./core/graphHelper.js";
+import { RouteEditor } from "./core/routeEditor.js";
+import { RouteRenderer } from "./core/routeRenderer.js";
 
 const map = L.map("map", {
     renderer: L.canvas()

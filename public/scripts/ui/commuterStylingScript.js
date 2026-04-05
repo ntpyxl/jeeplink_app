@@ -1,5 +1,5 @@
+// TODO: This script is never used.
 $(document).ready(function () {
-
     // Nav bar
     $("#menuBtn").on("click", function () {
         $("#mobileMenu").toggleClass("max-h-0 max-h-96");
@@ -16,6 +16,5 @@ $(document).ready(function () {
     if (window.innerWidth < 768) {
         $("#commuteContent").hide();   
         $("#arrow").addClass("rotate-180"); 
-    }
-    
+    } 
 });

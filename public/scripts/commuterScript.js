@@ -1,8 +1,7 @@
-import { apiFetch } from "./jeeplinkApiFetcher.js";
-import { GraphHelper } from "./classes/graphHelper.js";
-import { RouteEditor } from "./classes/routeEditor.js";
-import { RouteRenderer } from "./classes/routeRenderer.js";
-import { LocationSuggester } from "./locationSuggester.js";
+import { GraphHelper } from "./core/graphHelper.js";
+import { RouteEditor } from "./core/routeEditor.js";
+import { RouteRenderer } from "./core/routeRenderer.js";
+import { setupLocationSearch } from "./core/search/locationSearchAutocomplete.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -18,7 +17,7 @@ map.getPane("nodePane").style.zIndex = 500;
 
 // TODO: Add locate current user location button above the + - icon
 L.control.zoom({
-    position: 'bottomright'
+    position: 'bottomright' 
 }).addTo(map);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -67,37 +66,6 @@ $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 })
 
-function snapToRoad(latlng) {
-    const clicked = turf.point([latlng.lng, latlng.lat]);
-
-    let closestRoad = null;
-    let closestSnap = null;
-    let minDist = Infinity;
-
-    roadsGeoJSON.features.forEach(road => {
-        const snap = turf.nearestPointOnLine(road, clicked);
-        const dist = snap.properties.dist;
-
-        if (dist < minDist) {
-            minDist = dist;
-            closestRoad = road;
-            closestSnap = snap;
-        }
-    });
-
-    if (!closestRoad) return null;
-
-    const coords = closestRoad.geometry.coordinates;
-    const segmentIndex = closestSnap.properties.index;
-
-    return {
-        coordinates: closestSnap.geometry.coordinates,
-        roadId: closestRoad.properties.id,
-        segmentA: coords[segmentIndex],
-        segmentB: coords[segmentIndex + 1]
-    };
-}
-
 function addRouteNode(data) {
     const randomUUID = crypto.randomUUID();
     const node = {
@@ -112,10 +80,16 @@ function addRouteNode(data) {
 
 let startingPoint = null;
 let destinationPoint = null;
+let isStartingPointSelectedLocation = false;
+let isDestinationPointSelectedLocation = false;
 
-if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
-    startingPoint = JSON.parse(sessionStorage.getItem("start"));
-    destinationPoint = JSON.parse(sessionStorage.getItem("destination"));
+const start = sessionStorage.getItem("start");
+const destination = sessionStorage.getItem("destination");
+
+if (start && destination) {
+    startingPoint = JSON.parse(start);
+    destinationPoint = JSON.parse(destination);
+
     sessionStorage.removeItem("start");
     sessionStorage.removeItem("destination");
 
@@ -127,149 +101,26 @@ if(sessionStorage.getItem("start") && sessionStorage.getItem("destination")) {
     addRouteNode(startingPoint);
     addRouteNode(destinationPoint);
 
-    // TODO: Still using Dijkstra, should be A* now
-    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
     await routeGenerated.drawRoute();
 }
 
-const startingPointSearch = new LocationSuggester($("#startingPointField"));
-const destinationPointSearch = new LocationSuggester($("#destinationPointField"));
-
-// SHOW "Your Location" on focus (START)
-$("#startingPointField").on("focus click", async function () {
-    const container = $("#startingSuggestions");
-    container.empty();
-
-    const currentLocationItem = await createCurrentLocationItem();
-
-    currentLocationItem.on("click", async () => {
-        $("#startingPointField").val("Getting your location...");
-
-        startingPoint = await getCurrentLocation();
-
+const startingPointSearch = setupLocationSearch({
+    field: $("#startingPointField"),
+    suggestionBox: $("#startingSuggestions"),
+    onSelect: (location) => {
+        startingPoint = location;
         isStartingPointSelectedLocation = true;
-
-        $("#startingPointField").val("Your Location");
-        container.addClass("hidden");
-    });
-
-    container.append(currentLocationItem);
-    container.removeClass("hidden");
+    }
 });
 
-// SHOW "Your Location" on focus (DESTINATION)
-$("#destinationPointField").on("focus click", async function () {
-    const container = $("#destinationSuggestions");
-    container.empty();
-
-    const currentLocationItem = await createCurrentLocationItem();
-
-    currentLocationItem.on("click", async () => {
-        $("#destinationPointField").val("Getting your location...");
-
-        startingPoint = await getCurrentLocation();
-
+const destinationPointSearch = setupLocationSearch({
+    field: $("#destinationPointField"),
+    suggestionBox: $("#destinationSuggestions"),
+    onSelect: (location) => {
+        destinationPoint = location;
         isDestinationPointSelectedLocation = true;
-
-        $("#destinationPointField").val("Your Location");
-        container.addClass("hidden");
-    });
-
-    container.append(currentLocationItem);
-    container.removeClass("hidden");
+    }
 });
-
-let isStartingPointSelectedLocation = false;
-let isDestinationPointSelectedLocation = false;
-
-startingPointSearch.onResults = async function(results) {
-    startingPoint = results[0];
-    const container = $("#startingSuggestions");
-    container.empty();
-
-    const currentLocationItem = await createCurrentLocationItem();
-
-    currentLocationItem.on("click", async () => {
-        if (!navigator.geolocation) {
-            alert("Geolocation not supported.");
-            return;
-        }
-
-        $("#startingPointField").val("Getting your location...");
-
-        startingPoint = await getCurrentLocation();
-        isStartingPointSelectedLocation = true;
-
-        $("#startingPointField").val("Your Location");
-        $("#startingSuggestions").addClass("hidden");
-    });
-    container.append(currentLocationItem);
-
-    if (!results || results.length === 0) {
-        container.addClass("hidden");
-        return;
-    }
-
-    results.forEach(async result => {
-        const item = await createLocationResultItem(result.name);
-
-        item.on("click", () => {
-            $("#startingPointField").val(result.name);
-            isStartingPointSelectedLocation = true;
-            container.addClass("hidden");
-
-            startingPoint = result;
-        });
-        container.append(item);
-    });
-
-    container.removeClass("hidden");
-};
-
-destinationPointSearch.onResults = async function(results) {
-    destinationPoint = results[0];
-    const container = $("#destinationSuggestions");
-    container.empty();
-
-    const currentLocationItem = await createCurrentLocationItem();
-
-    currentLocationItem.on("click", async () => {
-        if (!navigator.geolocation) {
-            alert("Geolocation not supported.");
-            return;
-        }
-
-        $("#destinationPointField").val("Getting your location...");
-
-        destinationPoint = await getCurrentLocation();
-        isDestinationPointSelectedLocation = true;
-
-        $("#destinationPointField").val("Your Location");
-        $("#destinationSuggestions").addClass("hidden");
-    });
-    container.append(currentLocationItem);
-
-
-    if (!results || results.length === 0) {
-        container.addClass("hidden");
-        return;
-    }
-
-    results.forEach(async result => {
-        const item = await createLocationResultItem(result.name);
-        
-        item.on("click", () => {
-            $("#destinationPointField").val(result.name);
-            isDestinationPointSelectedLocation = true;
-            container.addClass("hidden");
-
-            destinationPoint = result;
-        });
-        container.append(item);
-    });
-
-    container.removeClass("hidden");
-};
 
 $("#calculateRouteButton").on("click", async () => {
     if(!isStartingPointSelectedLocation) await startingPointSearch.flush();
@@ -285,76 +136,10 @@ $("#calculateRouteButton").on("click", async () => {
     await routeGenerated.drawRoute();
 })
 
-// Close autocomplete suggested location when clicked out
-$(document).on("click", function(e) {
-    if (!$(e.target).closest("#startingPointField, #startingSuggestions").length) {
-        $("#startingSuggestions").addClass("hidden");
-    }
-
-    if (!$(e.target).closest("#destinationPointField, #destinationSuggestions").length) {
-        $("#destinationSuggestions").addClass("hidden");
-    }
-});
-
-function getCurrentLocation() {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                const locationData = {
-                    name: "Your Location",
-                    searchName: "Your Location",
-                    coords: [lon, lat]
-                };
-
-                resolve(locationData);
-            },
-            (error) => {
-                console.error(error);
-                alert("Failed to get location.");
-                reject(error);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            }
-        );
+$(document).on("click", e => {
+    ["starting", "destination"].forEach(type => {
+        if (!$(e.target).closest(`#${type}PointField, #${type}Suggestions`).length) {
+            $(`#${type}Suggestions`).addClass("hidden");
+        }
     });
-}
-
-function createCurrentLocationItem() {
-    return $(`
-        <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b">
-            <i class="fa-solid fa-location-crosshairs text-blue-600 text-lg"></i>
-            <span class="text-[blue-600] font-semibold">
-                Your Location
-            </span>
-        </div>
-    `);
-}
-
-function createLocationResultItem(text) {
-    return $(`
-        <div class="flex items-center gap-4 px-5 py-4 cursor-pointer
-                    transition-all duration-200
-                    hover:bg-green-50 hover:scale-[1.01] active:scale-[0.98]">
-
-            <!-- Icon -->
-            <div class="w-10 h-10 flex items-center justify-center
-                        bg-green-100 text-[#2E7D32] rounded-full">
-                <i class="fa-solid fa-location-dot text-sm"></i>
-            </div>
-
-            <!-- Text -->
-            <div class="flex flex-col">
-                <span class="text-[#003B01] font-semibold text-sm md:text-base">
-                    ${text}
-                </span>
-            </div>
-
-        </div>
-    `);
-}
+});

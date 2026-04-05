@@ -1,4 +1,4 @@
-import { apiFetch } from "../jeeplinkApiFetcher.js";
+import { apiFetch } from "../core/jeeplinkApiFetcher.js";
 
 export class RouteEditor {
     constructor({ map, snapToRoad, graphHelper, addInteractability = false }) {

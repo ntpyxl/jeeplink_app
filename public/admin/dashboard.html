@@ -43,7 +43,7 @@
     </style>
 
     <script type="module">
-        import { checkAuth } from "../scripts/accountHandler.js";
+        import { checkAuth } from "../scripts/core/accountHandler.js";
 
         checkAuth();
         document.body.style.display = "block";
@@ -134,7 +134,7 @@
                     <span class="nav-label">Guide Webpage</span>
                 </a>
 
-                <a href="faqsWebpageManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                <a href="faqsManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
                     <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
                         <i class="fas fa-question text-white"></i>
                     </div>
@@ -402,13 +402,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- Admin Front End Script -->
-    <script src="../scripts/adminFrontEndScript.js" type="module"></script>
+    <script src="../scripts/ui/adminStylingScript.js" type="module"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
-    <script src="../scripts/jeeplinkApiFetcher.js" type="module"></script>
-    <script src="../scripts/classes/graphHelper.js" type="module"></script>
+    <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/core/graphHelper.js" type="module"></script>
     <script src="../scripts/routeEditorScript.js" type="module"></script>
 </body>
 </html>

@@ -1,7 +1,6 @@
-import { logout } from "../scripts/accountHandler.js";
+import { logout } from "../core/accountHandler.js";
 
 $(document).ready(function () {
-
     // Orientation Checker
     function checkOrientation() {
         const $overlay = $("#rotateOverlay");
@@ -48,12 +47,10 @@ $(document).ready(function () {
 
         const dropdown = $("#profileDropdown");
 
-        if (dropdown.hasClass("opacity-0")) {
-            // OPEN
+        if (dropdown.hasClass("opacity-0")) { // OPEN
             dropdown.removeClass("opacity-0 scale-95 translate-y-2 pointer-events-none")
                     .addClass("opacity-100 scale-100 translate-y-0");
-        } else {
-            // CLOSE
+        } else { // CLOSE
             dropdown.addClass("opacity-0 scale-95 translate-y-2 pointer-events-none")
                     .removeClass("opacity-100 scale-100 translate-y-0");
         }
@@ -68,8 +65,5 @@ $(document).ready(function () {
         }
     });
 
-    $("#logoutBtn").click(function () {
-        logout();
-    });
-
+    $("#logoutBtn").click(function () { logout(); });
 });

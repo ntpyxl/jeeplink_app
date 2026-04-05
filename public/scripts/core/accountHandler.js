@@ -1,4 +1,4 @@
-import { apiFetch } from "../scripts/jeeplinkApiFetcher.js";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
 
 export async function checkAuth() {
     let token = localStorage.getItem("token");

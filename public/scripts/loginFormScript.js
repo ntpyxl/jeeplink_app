@@ -1,4 +1,4 @@
-import { apiFetch } from "../scripts/jeeplinkApiFetcher.js";
+import { apiFetch } from "../scripts/core/jeeplinkApiFetcher.js";
 
 $("#loginForm").on("submit", async event => {
     event.preventDefault();
