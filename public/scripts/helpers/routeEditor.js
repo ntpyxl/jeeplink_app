@@ -30,7 +30,8 @@ export class RouteEditor {
                 color: "green",
                 fillColor: "orange",
                 fillOpacity: 1,
-                weight: 2
+                weight: 2,
+                pane: "nodePane"
             }
         ).addTo(this.nodeLayer);
 
@@ -54,10 +55,7 @@ export class RouteEditor {
             node.coordinates = snapped.coordinates;
             node.graphKey = graphNodeKey;
 
-            marker.setLatLng([
-                snapped.coordinates[1],
-                snapped.coordinates[0]
-            ]);
+            marker.setLatLng([snapped.coordinates[1], snapped.coordinates[0]]);
         });
 
         this.map.on("mouseup", async () => {
@@ -66,6 +64,27 @@ export class RouteEditor {
             dragging = false;
             this.map.dragging.enable();
 
+            await this.drawRoute();
+        });
+
+        marker.on("mouseover", () => {
+            marker.setStyle({
+                radius: 8,
+                color: "green",
+                fillColor: "yellow"
+            });
+        });
+
+        marker.on("mouseout", () => {
+            marker.setStyle({
+                radius: 6,
+                color: "green",
+                fillColor: "orange",
+            });
+        });
+
+        marker.on("contextmenu", async () => {
+            this.removeNode(node.id);
             await this.drawRoute();
         });
     }
@@ -90,7 +109,8 @@ export class RouteEditor {
 
         this.routeLine = L.polyline(routePath, {
             color: "orange",
-            weight: 5
+            weight: 5,
+            pane: "routePane"
         }).addTo(this.map);
 
         this.routeLine.on("click", (e) => {
@@ -137,6 +157,19 @@ export class RouteEditor {
 
         this.addNode(node, bestIndex);
         this.drawRoute();
+    }
+
+    removeNode(nodeId) {
+        const index = this.nodes.findIndex(n => n.id === nodeId);
+        if (index === -1) return;
+
+        const node = this.nodes[index];
+
+        if (node.layer) {
+            this.nodeLayer.removeLayer(node.layer);
+        }
+
+        this.nodes.splice(index, 1);
     }
 
     clear() {

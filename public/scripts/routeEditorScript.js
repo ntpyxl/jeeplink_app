@@ -6,6 +6,10 @@ import { RouteRenderer } from "./helpers/routeRenderer.js";
 const map = L.map("map", {
     renderer: L.canvas()
 }).setView([14.3272, 120.9404], 15);
+map.createPane("routePane");
+map.createPane("nodePane");
+map.getPane("routePane").style.zIndex = 400;
+map.getPane("nodePane").style.zIndex = 500;
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
