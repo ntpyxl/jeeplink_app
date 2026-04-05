@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JeepLink - Admin Routes Management</title>
+    <title>JeepLink - Admin FAQs Webpage Management</title>
 
     <!-- JeepLink Tab Logo -->
     <link rel="icon" type="image/png" href="../images/tab-logo.png">
@@ -70,9 +70,9 @@
                 </a>
 
                 <!-- ACTIVE -->
-                <a href="routesManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
-                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
-                        <i class="fas fa-route text-black"></i>
+                <a href="routesManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-route text-white"></i>
                     </div>
 
                     Routes Management
@@ -99,6 +99,7 @@
                     </div>
                     <span class="nav-label text-lg">Fare Matrix Management</span>
                 </a>
+
             </nav>
 
             <!-- Line -->
@@ -124,9 +125,10 @@
                     Guide Webpage
                 </a>
 
-                <a href="faqsWebpageManagement.html" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
-                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
-                        <i class="fas fa-question text-white"></i>
+                <!-- ACTIVE -->
+                <a href="faqsWebpageManagement.html" class="w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-question text-black"></i>
                     </div>
                     FAQs Webpage
                 </a>
@@ -196,208 +198,190 @@
                 </div>
             </header>
 
-            <!-- Routes Management Content -->
+            <!-- Add FAQ Content -->
             <div class="w-full p-6">
                 <div class="border-b-1 border-gray-200">
-                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Routes Management</h2>
+                    <h2 class="text-3xl font-medium text-gray-800 mb-4">FAQs Content Management</h2>
                 </div>
 
-                <!-- Search + Table Container -->
-                <div class="bg-white mt-6 p-6 rounded-xl shadow">
+                <!-- Add Guides -->
+                <div class="bg-white p-4 rounded-xl shadow my-4">
 
-                    <!-- Top Bar -->
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div id="inputsContainer" class="flex flex-col gap-3">
 
-                        <!-- Search Bar -->
-                        <div class="relative w-full md:w-1/3">
-                            <input type="text" placeholder="Search routes..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        </div>
-
-                        <!-- Add Button -->
-                        <button class="bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition">
-                            + Add Route
-                        </button>
+                            <input type="text" placeholder="FAQ Title"
+                                class="w-full md:w-1/3 px-3 py-2 border border-gray-300 rounded-lg">
+                            <textarea placeholder="FAQ Content"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg h-32 resize-none"
+                            ></textarea>
 
                     </div>
 
-                    <!-- Table -->
+                    <!-- Buttons -->
+                    <div class="flex gap-3 mt-4 justify-end">
+                        <button class="bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33]">
+                            + Add FAQ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full px-6">
+                <div class="bg-white p-4 rounded-xl shadow mb-4">
+                    <!-- FAQs Table Container -->
+                    <h5 class="font-semibold text-gray-800">Existing FAQs</h5>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
 
+                            <colgroup>
+                                <col style="width: 35%;">
+                                <col style="width: 50%;">
+                                <col style="width: 15%;">
+                            </colgroup>
+
                             <thead>
                                 <tr class="text-gray-500 text-sm border-b">
-                                    <th class="py-3">Route ID</th>
-                                    <th class="py-3">Route Name</th>
-                                    <th class="py-3">Start</th>
-                                    <th class="py-3">End</th>
-                                    <th class="py-3">Status</th>
+                                    <th class="py-3 text-left">Title</th>
+                                    <th class="py-3 text-left">Content</th>
                                     <th class="py-3 text-center">Actions</th>
                                 </tr>
                             </thead>
 
-                            <tbody class="text-gray-700 text-sm">
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R001</td>
-                                    <td class="py-3">Dasma Bayan</td>
-                                    <td class="py-3">SM Dasma</td>
-                                    <td class="py-3">Robinsons</td>
-                                    <td class="py-3">
-                                        <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs">Active</span>
+                            <tbody id="faqsTableBody" class="text-gray-700 text-sm">
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R002</td>
-                                    <td class="py-3">Paliparan</td>
-                                    <td class="py-3">Salawag</td>
-                                    <td class="py-3">SM Molino</td>
-                                    <td class="py-3">
-                                        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-xs">Pending</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R003</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R004</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R005</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R006</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R007</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R008</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R009</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R010</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
+                                <tr class="border-b hover:bg-gray-50 align-top">
+                                    <td class="py-3 break-words">
+                                        What is JeepLink?
+                                    </td>
+                                    <td class="py-3 break-words">
+                                        JeepLink is a platform that connects Jeep owners with each other and with the Jeep community.
                                     </td>
                                     <td class="py-3 text-center space-x-2">
                                         <button class="text-blue-500 hover:underline">Edit</button>
                                         <button class="text-red-500 hover:underline">Delete</button>
                                     </td>
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>
 
                     <!-- Pagination -->
                     <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
+                        <div class="text-sm text-gray-500">
+                            Showing 1 to 10 of 50 entries
+                        </div>
 
-                        <!-- Info -->
-                        <span class="text-sm text-gray-500">
-                            Showing 1 to 3 of 10 entries
-                        </span>
-
-                        <!-- Controls -->
                         <div class="flex items-center gap-2">
-
                             <button class="px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
                                 Prev
                             </button>
-
                             <button class="px-3 py-1 bg-[#84C177] text-black rounded-lg font-semibold">
                                 1
                             </button>
@@ -409,83 +393,13 @@
                             <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">
                                 3
                             </button>
-
                             <button class="px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
                                 Next
                             </button>
-
                         </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Add Routes Content -->
-            <div class="w-full p-6">
-                <div class="border-b-1 border-gray-200">
-                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Add Routes</h2>
-                </div>
-
-                <!-- Add Coordinates -->
-                <div class="bg-white p-4 rounded-xl mt-4">
-
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-
-                        <!-- LEFT SIDE -->
-                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-
-                            <!-- Search Bar -->
-                            <div class="relative w-full sm:w-64">
-                                <input type="text" placeholder="Search routes..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            </div>
-
-                            <!-- Add Button -->
-                            <button class="bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap">
-                                + Add Route
-                            </button>
-                        </div>
-
-                        <!-- RIGHT SIDE -->
-                        <div class="flex flex-wrap gap-2 justify-start md:justify-end">
-
-                            <!-- Clear -->
-                            <button id="clearDrawnJeepRoute"
-                                class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm">
-                                <i class="fas fa-trash-alt text-gray-600"></i>
-                                Clear
-                            </button>
-
-                            <!-- Save -->
-                            <button id="saveDrawnJeepRoute"
-                                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-400 text-black hover:bg-yellow-500 transition text-sm shadow-sm">
-                                <i class="fas fa-save"></i>
-                                Save
-                            </button>
-
-                            <!-- Toggle -->
-                            <button id="toggleJeepRoutes"
-                                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#35903A] text-white hover:bg-[#2f7a33] transition text-sm shadow-sm">
-                                <i class="fas fa-eye"></i>
-                                Toggle
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Map Container -->
-                <div class="flex flex-col w-full mb-4 gap-4">
-                    <div class="">
-                        <div id="map" class="border border-gray-300 rounded-lg  " style="height: 900px; width: 100%;"></div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
