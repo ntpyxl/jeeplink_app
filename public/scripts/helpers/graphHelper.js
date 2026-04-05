@@ -3,8 +3,8 @@ export class GraphHelper {
         this.graph = this.buildGraph(roadsGeoJSON, showDisabledRoads);
     }
 
-    coordKey(c) {
-        return `${c[0]},${c[1]}`;
+    coordKey(coord) {
+        return `${coord[0].toFixed(6)},${coord[1].toFixed(6)}`;
     }
 
     buildGraph(roads, showDisabledRoads) {
@@ -12,25 +12,24 @@ export class GraphHelper {
 
         roads.features.forEach(feature => {
             if (!showDisabledRoads && feature.properties.disabled) return;
+            if (feature.geometry.type !== "LineString") return;
 
             const coords = feature.geometry.coordinates;
 
             for (let i = 0; i < coords.length - 1; i++) {
-                if (feature.geometry.type !== "LineString") continue;
-
                 const a = coords[i];
                 const b = coords[i + 1];
 
                 const aKey = this.coordKey(a);
                 const bKey = this.coordKey(b);
 
+                // Haversine is faster than turf.distance for thousands of iterations. Or could try the function below?
                 const dist = turf.distance(
                     turf.point(a),
                     turf.point(b),
                     { units: "meters" }
                 );
 
-                // TODO: Above turf.distance() function can be slower, test this one instead? Faster but trading some accuracy.
                 function funcDist(a, b) {
                     const dx = a[0] - b[0];
                     const dy = a[1] - b[1];
@@ -40,8 +39,8 @@ export class GraphHelper {
                 if (!graph.has(aKey)) graph.set(aKey, []);
                 if (!graph.has(bKey)) graph.set(bKey, []);
 
-                graph.get(aKey).push({ to: bKey, weight: dist, coords: [a, b] });
-                graph.get(bKey).push({ to: aKey, weight: dist, coords: [b, a] });
+                graph.get(aKey).push({ to: bKey, weight: dist });
+                graph.get(bKey).push({ to: aKey, weight: dist });
             }
         });
 

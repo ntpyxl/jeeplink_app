@@ -6,12 +6,17 @@ import { RouteRenderer } from "./helpers/routeRenderer.js";
 const map = L.map("map", {
     renderer: L.canvas()
 }).setView([14.3272, 120.9404], 15);
+map.createPane("routePane");
+map.createPane("nodePane");
+map.getPane("routePane").style.zIndex = 400;
+map.getPane("nodePane").style.zIndex = 500;
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("../api/getRoadsGeoJson.js").then(r => r.json());
+const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
     feature.properties.id = `road-${index}`;
@@ -42,7 +47,7 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeEditor = new RouteEditor(map);
+const routeEditor = new RouteEditor(map, snapToRoad, graphHelper);
 const routeRenderer = new RouteRenderer(map);
 
 roadsLayer.on("click", async event => {
@@ -63,7 +68,8 @@ roadsLayer.on("click", async event => {
         id: crypto.randomUUID(),
         coordinates: snapped.coordinates,
         roadId: snapped.roadId,
-        graphKey: graphNodeKey
+        graphKey: graphNodeKey,
+        marker: null
     };
 
     routeEditor.addNode(node);
@@ -138,4 +144,36 @@ function snapToRoad(latlng) {
         segmentA: coords[segmentIndex],
         segmentB: coords[segmentIndex + 1]
     };
+}
+
+async function findInsertIndex(latlng) {
+
+    if (routeEditor.nodes.length < 2) return null;
+
+    const clicked = turf.point([latlng.lng, latlng.lat]);
+
+    let bestIndex = null;
+    let minDist = Infinity;
+
+    for (let i = 0; i < routeEditor.nodes.length - 1; i++) {
+
+        const a = routeEditor.nodes[i].coordinates;
+        const b = routeEditor.nodes[i + 1].coordinates;
+
+        const line = turf.lineString([a, b]);
+
+        const snap = turf.nearestPointOnLine(line, clicked);
+
+        const dist = snap.properties.dist;
+
+        if (dist < minDist) {
+            minDist = dist;
+            bestIndex = i + 1;
+        }
+    }
+
+    // Optional: limit how far the click can be
+    if (minDist > 0.02) return null;
+
+    return bestIndex;
 }

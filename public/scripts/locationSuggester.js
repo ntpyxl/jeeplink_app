@@ -36,15 +36,11 @@ export class LocationSuggester {
         await this.runSearch(normalizeText(this.input.val()));
     }
 
-    // Override this method to handle results (e.g., show a dropdown)
-    onResults(results) {
-        results;
-    }
+    onResults(results) {}
 }
 
 
-// TODO: Upload Dasma_Points.geojson to Vercel Blob
-const pointsGeoJSON = await fetch("/DasmaMapData/Dasma_Points.geojson").then(r => r.json());
+const pointsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json());
 
 const namedLocations = pointsGeoJSON.features
     .filter(feature => feature.properties?.name)
