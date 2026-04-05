@@ -43,7 +43,7 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeEditor = new RouteEditor(map);
+const routeEditor = new RouteEditor(map, snapToRoad, graphHelper);
 const routeRenderer = new RouteRenderer(map);
 
 roadsLayer.on("click", async event => {
@@ -64,7 +64,8 @@ roadsLayer.on("click", async event => {
         id: crypto.randomUUID(),
         coordinates: snapped.coordinates,
         roadId: snapped.roadId,
-        graphKey: graphNodeKey
+        graphKey: graphNodeKey,
+        marker: null
     };
 
     routeEditor.addNode(node);

@@ -1,11 +1,15 @@
 import { apiFetch } from "../jeeplinkApiFetcher.js";
 
 export class RouteEditor {
-    constructor(map) {
+    constructor(map, snapToRoad, graphHelper) {
         this.map = map;
+        this.snapToRoad = snapToRoad;
+        this.graphHelper = graphHelper;
+
         this.nodes = [];
-        this.markers = [];
         this.routeLine = null;
+        
+        this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
 
     addNode(node) {
@@ -14,24 +18,51 @@ export class RouteEditor {
     }
 
     drawNode(node) {
-        // TODO: Soon, color code the drawnNodes
-        const colors = {
-            start: "green",
-            end: "red",
-            turn: "blue"
-        };
-
         const marker = L.circleMarker(
             [node.coordinates[1], node.coordinates[0]],
             {
-                radius: 5,
+                radius: 6,
                 color: "green",
                 fillColor: "orange",
-                fillOpacity: 1
+                fillOpacity: 1,
+                weight: 2
             }
-        ).addTo(this.map);
+        ).addTo(this.nodeLayer);
 
-        this.markers.push(marker);
+        node.layer = marker;
+
+        let dragging = false;
+
+        marker.on("mousedown", () => {
+            dragging = true;
+            this.map.dragging.disable();
+        });
+
+        this.map.on("mousemove", (e) => {
+            if (!dragging) return;
+
+            const snapped = this.snapToRoad(e.latlng);
+            if (!snapped) return;
+
+            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+
+            node.coordinates = snapped.coordinates;
+            node.graphKey = graphNodeKey;
+
+            marker.setLatLng([
+                snapped.coordinates[1],
+                snapped.coordinates[0]
+            ]);
+        });
+
+        this.map.on("mouseup", async () => {
+            if (!dragging) return;
+
+            dragging = false;
+            this.map.dragging.enable();
+
+            await this.drawRoute();
+        });
     }
 
     async drawRoute() {
@@ -50,7 +81,6 @@ export class RouteEditor {
 
         const routePath = paths[0].map(k => k.split(",").map(Number).reverse());
 
-        // Remove previous line if exists
         if (this.routeLine) this.map.removeLayer(this.routeLine);
 
         this.routeLine = L.polyline(routePath, {
@@ -60,8 +90,7 @@ export class RouteEditor {
     }
 
     clear() {
-        this.markers.forEach(m => this.map.removeLayer(m));
-        this.markers = [];
+        this.nodeLayer.clearLayers();
         this.nodes = [];
 
         if (this.routeLine) {
