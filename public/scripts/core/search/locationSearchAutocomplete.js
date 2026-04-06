@@ -1,4 +1,4 @@
-import { createCurrentLocationItem, createLocationResultItem } from "../../ui/dropdownElements.js";
+import { createCurrentLocationItem, createPlacePinLocationItem, createLocationResultItem } from "../../ui/dropdownElements.js";
 
 export class LocationSearchAutocomplete {
     constructor(inputSelector, delay = 500, maxResults = 5) {
@@ -31,11 +31,20 @@ export class LocationSearchAutocomplete {
     }
 
     async flush() {
-        if (!this.typingTimer) return;
+        if (this.typingTimer) {
+            clearTimeout(this.typingTimer);
+            this.typingTimer = null;
+        }
 
-        clearTimeout(this.typingTimer);
-        this.typingTimer = null;
-        await this.runSearch(normalizeText(this.input.val()));
+        const query = normalizeText(this.input.val());
+        if (query.trim() !== "") {
+            const results = (await searchLocations(query)).slice(0, this.maxResults);
+            if (results.length > 0) {
+                this.onResults(results);
+                return results[0];
+            }
+        }
+        return null;
     }
 
     onResults(results) {}
@@ -106,7 +115,7 @@ function normalizeText(text) {
         .toLowerCase();
 }
 
-export function setupLocationSearch({ field, suggestionBox, onSelect }) {
+export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
     const search = new LocationSearchAutocomplete(field);
 
     field.on("focus click", async () => {
@@ -123,7 +132,29 @@ export function setupLocationSearch({ field, suggestionBox, onSelect }) {
             onSelect(location);
         });
 
+        const PlacePinLocationItem = createPlacePinLocationItem();
+        PlacePinLocationItem.on("click", async () => {
+            field.val("Place a pin on the map");
+            
+            const result = await new Promise(resolve => {
+                map.getContainer().style.cursor = "crosshair";
+
+                map.once("click", (e) => {
+                    map.getContainer().style.cursor = "";
+                    resolve({
+                        name: [e.latlng.lng, e.latlng.lat],
+                        searchName: "Pinned Location",
+                        coords: [e.latlng.lng, e.latlng.lat]
+                    });
+                });
+            });
+
+            field.val(result.name);
+            onSelect(result);
+        });
+
         suggestionBox.append(currentLocationItem);
+        suggestionBox.append(PlacePinLocationItem);
         suggestionBox.removeClass("hidden");
     });
 
@@ -141,7 +172,29 @@ export function setupLocationSearch({ field, suggestionBox, onSelect }) {
             onSelect(location);
         });
 
+        const PlacePinLocationItem = createPlacePinLocationItem();
+        PlacePinLocationItem.on("click", async () => {
+            field.val("Place a pin on the map");
+            
+            const result = await new Promise(resolve => {
+                map.getContainer().style.cursor = "crosshair";
+
+                map.once("click", (e) => {
+                    map.getContainer().style.cursor = "";
+                    resolve({
+                        name: [e.latlng.lng, e.latlng.lat],
+                        searchName: "Pinned Location",
+                        coords: [e.latlng.lng, e.latlng.lat]
+                    });
+                });
+            });
+
+            field.val(result.name);
+            onSelect(result);
+        });
+
         suggestionBox.append(currentLocationItem);
+        suggestionBox.append(PlacePinLocationItem);
         if (!results || results.length === 0) {
             suggestionBox.addClass("hidden");
             return;
@@ -165,7 +218,7 @@ export function setupLocationSearch({ field, suggestionBox, onSelect }) {
     return search;
 }
 
-function getCurrentLocation() {
+export function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
             alert("Geolocation not supported.");

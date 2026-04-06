@@ -77,7 +77,7 @@ roadsLayer.on("click", async event => {
         marker: null
     };
 
-    routeEditor.addNode(node);
+    routeEditor.addNode({node: node});
     await routeEditor.drawRoute();
 
     $("#startNodeText").text(routeEditor.getStartNode().graphKey);
