@@ -28,7 +28,11 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+    <!-- JQuery CDN and Alpine -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 <body>
     <div class="flex">
@@ -534,16 +538,8 @@
         </p>
     </div>
 
-
-    <!-- JQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
     <!-- Admin Front End Script -->
     <script src="../scripts/ui/adminStylingScript.js" type="module"></script>
-
-    <!-- Map Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <!-- Core Scripts -->
     <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
