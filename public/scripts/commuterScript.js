@@ -1,7 +1,7 @@
 import { GraphHelper } from "./core/graphHelper.js";
 import { RouteEditor } from "./core/routeEditor.js";
 import { RouteRenderer } from "./core/routeRenderer.js";
-import { setupLocationSearch } from "./core/search/locationSearchAutocomplete.js";
+import { setupLocationSearch, setupNamedLocations } from "./core/search/locationSearchAutocomplete.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -24,7 +24,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+// Fetch and setup required JSON files
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+    .then(r => r.json())
+    .then(setupNamedLocations);
+
+const roadsGeoJSON = await roadsPromise;
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {

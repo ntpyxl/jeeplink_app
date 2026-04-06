@@ -41,10 +41,9 @@ export class LocationSearchAutocomplete {
     onResults(results) {}
 }
 
-
-const pointsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json());
-
-const namedLocations = pointsGeoJSON.features
+let namedLocations = null;
+export function setupNamedLocations(pointsGeoJSON) {
+    namedLocations = pointsGeoJSON.features
     .filter(feature => feature.properties?.name)
     .map(feature => {
         const coords = feature.geometry.coordinates;
@@ -57,6 +56,7 @@ const namedLocations = pointsGeoJSON.features
             data: feature // TODO: Just resending all the data here again. Double check this soon.
         };
     });
+}
 
 async function searchLocations(query) {
     const normalizedQuery = normalizeText(query);
