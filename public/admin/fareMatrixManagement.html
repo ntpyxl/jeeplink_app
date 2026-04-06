@@ -314,8 +314,9 @@
                     <div class="fare-matrix-card" x-data>
 
                         <div class="fare-matrix-card-header">
-                            <h3 class="fare-matrix-card-title">
-                                PUJ GENERAL FARE GUIDE MATRIX
+                            <h3 class="fare-matrix-card-title"
+                                x-text="$store.fareMatrix?.matricesById?.['1']?.title || 'PUJ GENERAL FARE GUIDE'">
+                                PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -339,7 +340,7 @@
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
 
                             <div class="fare-matrix-card-actions">
-                                <button type="button" class="fare-matrix-card-action-btn">
+                                <button type="button" data-id="1" class="fare-matrix-card-action-btn fare-matrix-view-table-btn">
                                     View Matrix Table
                                 </button>
                                 <button type="button" data-id="1" class="fare-matrix-card-action-btn openUpdateMatrixModal">
@@ -347,7 +348,7 @@
                                 </button>
                             </div>
 
-                            <div class="fare-matrix-card-table-wrap">
+                            <div id="fare-matrix-table-wrap-1" class="fare-matrix-card-table-wrap fare-matrix-table-wrap-collapsed">
                                 <table class="fare-matrix-card-table">
                                     <thead>
                                         <tr>
@@ -367,8 +368,9 @@
                     <div class="fare-matrix-card" x-data>
 
                         <div class="fare-matrix-card-header">
-                            <h3 class="fare-matrix-card-title">
-                                NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                            <h3 class="fare-matrix-card-title"
+                                x-text="$store.fareMatrix?.matricesById?.['2']?.title || 'NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE'">
+                                NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -392,7 +394,7 @@
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
 
                             <div class="fare-matrix-card-actions">
-                                <button type="button" class="fare-matrix-card-action-btn">
+                                <button type="button" data-id="2" class="fare-matrix-card-action-btn fare-matrix-view-table-btn">
                                     View Matrix Table
                                 </button>
                                 <button type="button" data-id="2" class="fare-matrix-card-action-btn openUpdateMatrixModal">
@@ -400,7 +402,7 @@
                                 </button>
                             </div>
 
-                            <div class="fare-matrix-card-table-wrap">
+                            <div id="fare-matrix-table-wrap-2" class="fare-matrix-card-table-wrap fare-matrix-table-wrap-collapsed">
                                 <table class="fare-matrix-card-table">
                                     <thead>
                                         <tr>
@@ -420,8 +422,9 @@
                     <div class="fare-matrix-card" x-data>
 
                         <div class="fare-matrix-card-header">
-                            <h3 class="fare-matrix-card-title">
-                                AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                            <h3 class="fare-matrix-card-title"
+                                x-text="$store.fareMatrix?.matricesById?.['3']?.title || 'AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE'">
+                                AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -445,7 +448,7 @@
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
 
                             <div class="fare-matrix-card-actions">
-                                <button type="button" class="fare-matrix-card-action-btn">
+                                <button type="button" data-id="3" class="fare-matrix-card-action-btn fare-matrix-view-table-btn">
                                     View Matrix Table
                                 </button>
                                 <button type="button" data-id="3" class="fare-matrix-card-action-btn openUpdateMatrixModal">
@@ -453,7 +456,7 @@
                                 </button>
                             </div>
 
-                            <div class="fare-matrix-card-table-wrap">
+                            <div id="fare-matrix-table-wrap-3" class="fare-matrix-card-table-wrap fare-matrix-table-wrap-collapsed">
                                 <table class="fare-matrix-card-table">
                                     <thead>
                                         <tr>
@@ -481,7 +484,9 @@
                             Upload fare matrix
                         </h3>
                         <p id="updateMatrixModalDesc" class="fare-matrix-modal-desc">
-                            Replace the matrix with a new PDF. <span id="targetMatrixId" class="fare-matrix-modal-matrix-name"></span>
+                            Replace the matrix with a new PDF.
+                            <br />
+                            <span id="targetMatrixId" class="fare-matrix-modal-matrix-name"></span>
                         </p>
                     </div>
                     <button type="button" id="closeUpdateMatrixModalX"

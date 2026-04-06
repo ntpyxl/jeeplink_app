@@ -436,4 +436,8 @@ html, body {
         padding: 0.5rem 0.25rem;
         text-align: center;
     }
+
+    .fare-matrix-table-wrap-collapsed {
+        display: none !important;
+    }
 }
