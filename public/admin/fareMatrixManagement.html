@@ -199,163 +199,163 @@
                 </div>
 
                 <!-- Fare Matrices Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-stretch">
+                <div class="fare-matrix-grid">
 
                     <!-- LEFT: PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
+                    <div class="fare-matrix-card" x-data>
 
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            PUJ GENERAL FARE GUIDE MATRIX
-                        </h3>
+                        <div class="fare-matrix-card-header">
+                            <h3 class="fare-matrix-card-title">
+                                PUJ GENERAL FARE GUIDE MATRIX
+                            </h3>
+                        </div>
 
-                        <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: <span id="effective-1" x-text="$store.fareMatrix?.matricesById?.['1']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
-                            
-                            <br>
-                            <p>Computation of Fares: (Add-on Method)</p>
-                            
-                            <div>
-                                <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '13.00'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '1.80'"></span> per kilometer</p>
-                            </div>
-                            
-                            <div>
-                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '10.40'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '1.44'"></span> per kilometer</p>
-                            
+                        <div class="fare-matrix-card-body">
+                            <p class="fare-matrix-card-effective">Effective: <span id="effective-1" x-text="$store.fareMatrix?.matricesById?.['1']?.effectiveDate || 'JANUARY 01, 2000'"></span></p>
+
+                            <p class="fare-matrix-card-computation">Computation of Fares: (Add-on Method)</p>
+
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Regular</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '13.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
 
-                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '10.40'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                            </div>
 
-                            <div>
-                                <button href="#" class="cursor-pointer text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                            <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div class="fare-matrix-card-actions">
+                                <button type="button" class="fare-matrix-card-action-btn">
                                     View Matrix Table
                                 </button>
-
-                                <button data-id="1" class="cursor-pointer openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                <button type="button" data-id="1" class="fare-matrix-card-action-btn openUpdateMatrixModal">
                                     Update Matrix Table
                                 </button>
                             </div>
 
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="text-gray-500 text-sm border-b">
-                                        <th class="py-2">Distance (kms.)</th>
-                                        <th class="py-2">Regular</th>
-                                        <th class="py-2">Student / Elderly / Disabled</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="fare-table-body-1" class="text-gray-700 text-sm"></tbody>
-                            </table>
+                            <div class="fare-matrix-card-table-wrap">
+                                <table class="fare-matrix-card-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Distance (kms.)</th>
+                                            <th>Regular</th>
+                                            <th>Student / Elderly / Disabled</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fare-table-body-1"></tbody>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
 
                     <!-- MIDDLE: NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
+                    <div class="fare-matrix-card" x-data>
 
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
-                        </h3>
+                        <div class="fare-matrix-card-header">
+                            <h3 class="fare-matrix-card-title">
+                                NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                            </h3>
+                        </div>
 
-                        <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: <span id="effective-2" x-text="$store.fareMatrix?.matricesById?.['2']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
-                            
-                            <br>
-                            <p>Computation of Fares: (Add-on Method)</p>
-                            
-                            <div>
-                                <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '13.00'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '1.80'"></span> per kilometer</p>
-                            </div>
-                            
-                            <div>
-                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '10.40'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '1.44'"></span> per kilometer</p>
-                            
+                        <div class="fare-matrix-card-body">
+                            <p class="fare-matrix-card-effective">Effective: <span id="effective-2" x-text="$store.fareMatrix?.matricesById?.['2']?.effectiveDate || 'JANUARY 01, 2000'"></span></p>
+
+                            <p class="fare-matrix-card-computation">Computation of Fares: (Add-on Method)</p>
+
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Regular</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '13.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
 
-                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '10.40'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                            </div>
 
-                            <div>
-                                <button href="#" class="cursor-pointer text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                            <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div class="fare-matrix-card-actions">
+                                <button type="button" class="fare-matrix-card-action-btn">
                                     View Matrix Table
                                 </button>
-
-                                <button data-id="2" class="cursor-pointer openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                <button type="button" data-id="2" class="fare-matrix-card-action-btn openUpdateMatrixModal">
                                     Update Matrix Table
                                 </button>
                             </div>
 
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="text-gray-500 text-sm border-b">
-                                        <th class="py-2">Distance (kms.)</th>
-                                        <th class="py-2">Regular</th>
-                                        <th class="py-2">Student / Elderly / Disabled</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="fare-table-body-2" class="text-gray-700 text-sm"></tbody>
-                            </table>
+                            <div class="fare-matrix-card-table-wrap">
+                                <table class="fare-matrix-card-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Distance (kms.)</th>
+                                            <th>Regular</th>
+                                            <th>Student / Elderly / Disabled</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fare-table-body-2"></tbody>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
 
                     <!-- RIGHT: AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow" x-data>
+                    <div class="fare-matrix-card" x-data>
 
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
-                        </h3>
+                        <div class="fare-matrix-card-header">
+                            <h3 class="fare-matrix-card-title">
+                                AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE MATRIX
+                            </h3>
+                        </div>
 
-                        <div class="overflow-y-auto flex-1 max-h-[500px]">
-                            <p>Effective: <span id="effective-3" x-text="$store.fareMatrix?.matricesById?.['3']?.effectiveDate || 'OCTOBER 8, 2023'"></span></p>
-                            
-                            <br>
-                            <p>Computation of Fares: (Add-on Method)</p>
-                            
-                            <div>
-                                <p>REGULAR</p>
-                                <p>First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '13.00'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '1.80'"></span> per kilometer</p>
-                            </div>
-                            
-                            <div>
-                                <p>STUDENT/ELDERLY/DISABLED ( 20% Discount )</p>
-                                <p>First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '10.40'"></span></p>
-                                <p>Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '1.44'"></span> per kilometer</p>
-                            
+                        <div class="fare-matrix-card-body">
+                            <p class="fare-matrix-card-effective">Effective: <span id="effective-3" x-text="$store.fareMatrix?.matricesById?.['3']?.effectiveDate || 'JANUARY 01, 2000'"></span></p>
+
+                            <p class="fare-matrix-card-computation">Computation of Fares: (Add-on Method)</p>
+
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Regular</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '13.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '1.80'"></span> per kilometer</p>
                             </div>
 
-                            <p>NOTE: Fares are rounded off to the nearest 25 centavos</p>
+                            <div class="fare-matrix-card-section">
+                                <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '10.40'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                            </div>
 
-                            <div>
-                                <button href="#" class="cursor-pointer text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                            <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
+
+                            <div class="fare-matrix-card-actions">
+                                <button type="button" class="fare-matrix-card-action-btn">
                                     View Matrix Table
                                 </button>
-
-                                <button data-id="3" class="cursor-pointer openUpdateMatrixModal text-blue-500 hover:text-blue-700 mt-4 inline-block">
+                                <button type="button" data-id="3" class="fare-matrix-card-action-btn openUpdateMatrixModal">
                                     Update Matrix Table
                                 </button>
                             </div>
 
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="text-gray-500 text-sm border-b">
-                                        <th class="py-2">Distance (kms.)</th>
-                                        <th class="py-2">Regular</th>
-                                        <th class="py-2">Student / Elderly / Disabled</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="fare-table-body-3" class="text-gray-700 text-sm"></tbody>
-                            </table>
+                            <div class="fare-matrix-card-table-wrap">
+                                <table class="fare-matrix-card-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Distance (kms.)</th>
+                                            <th>Regular</th>
+                                            <th>Student / Elderly / Disabled</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fare-table-body-3"></tbody>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
@@ -364,12 +364,11 @@
             </div>
         </main>
 
-    <!-- FareMatrix Modal -->
-        <div id="updateMatrixModal" class="fare-matrix-modal" role="dialog" aria-modal="true" aria-labelledby="updateMatrixModalTitle"aria-describedby="updateMatrixModalDesc">
+        <div id="updateMatrixModal" class="fare-matrix-modal" role="dialog" aria-modal="true" aria-labelledby="updateMatrixModalTitle" aria-describedby="updateMatrixModalDesc">
             <div class="fare-matrix-modal-panel" onclick="event.stopPropagation()">
                 <div class="fare-matrix-modal-header">
                     <div>
-                        <h3 id="updateMatrixModalTitle" class="fare-matrix-modal_title">
+                        <h3 id="updateMatrixModalTitle" class="fare-matrix-modal-title">
                             Upload fare matrix
                         </h3>
                         <p id="updateMatrixModalDesc" class="fare-matrix-modal-desc">
@@ -379,15 +378,16 @@
                     <button type="button" id="closeUpdateMatrixModalX"
                         class="fare-matrix-modal-close"
                         aria-label="Close">
-                        <i class="fas fa-times text-lg"></i>
+                        <i class="fas fa-times fare-matrix-modal-close-icon"></i>
                     </button>
                 </div>
                 <div class="fare-matrix-modal-body">
-                    <label for="modalPdfInput" class="fare-matrix-modal-label">PDF file</label>
+                    <label for="modalPdfInput" class="fare-matrix-modal-field-label">PDF file</label>
                     <div class="fare-matrix-modal-dropzone">
-                        <i class="fas fa-file-pdf"></i>
-                        <input type="file" id="modalPdfInput" accept="application/pdf"
-                            class="fare-matrix-modal-file-input">
+                        <i class="fas fa-file-pdf fare-matrix-modal-dropzone-icon" aria-hidden="true"></i>
+                        <p id="modalPdfFilename" class="fare-matrix-modal-filename" role="status">No file chosen</p>
+                        <label for="modalPdfInput" class="fare-matrix-modal-file-trigger">Choose file</label>
+                        <input type="file" id="modalPdfInput" accept="application/pdf" class="fare-matrix-modal-file-input">
                     </div>
                 </div>
                 <div class="fare-matrix-modal-footer">
@@ -397,7 +397,7 @@
                     </button>
                     <button type="button" id="uploadFareMatrixFile"
                         class="fare-matrix-modal-btn-submit">
-                        <i class="fas fa-upload"></i>Upload &amp; process
+                        <i class="fas fa-upload fare-matrix-modal-btn-submit-icon" aria-hidden="true"></i>Upload &amp; process
                     </button>
                 </div>
             </div>
