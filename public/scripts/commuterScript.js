@@ -1,7 +1,7 @@
 import { GraphHelper } from "./core/graphHelper.js";
 import { RouteEditor } from "./core/routeEditor.js";
 import { RouteRenderer } from "./core/routeRenderer.js";
-import { setupLocationSearch } from "./core/search/locationSearchAutocomplete.js";
+import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -24,7 +24,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+// Fetch and setup required JSON files
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+    .then(r => r.json())
+    .then(setupNamedLocations);
+
+const roadsGeoJSON = await roadsPromise;
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -66,7 +72,7 @@ $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 })
 
-function addRouteNode(data) {
+function addRouteNode(data, type = null) {
     const randomUUID = crypto.randomUUID();
     const node = {
         id: randomUUID,
@@ -75,7 +81,7 @@ function addRouteNode(data) {
         graphKey: graphHelper.snapToGraphNode(data.coords)
     };
 
-    routeGenerated.addNode(node);
+    routeGenerated.addNode({node: node, type: type});
 }
 
 let startingPoint = null;
@@ -98,38 +104,53 @@ if (start && destination) {
 
     routeGenerated.clear();
 
-    addRouteNode(startingPoint);
-    addRouteNode(destinationPoint);
+    addRouteNode(startingPoint, "start");
+    addRouteNode(destinationPoint, "destination");
 
     await routeGenerated.drawRoute();
 }
 
 const startingPointSearch = setupLocationSearch({
     field: $("#startingPointField"),
+    map: map,
     suggestionBox: $("#startingSuggestions"),
     onSelect: (location) => {
         startingPoint = location;
+        addRouteNode(startingPoint, "start");
         isStartingPointSelectedLocation = true;
     }
 });
 
 const destinationPointSearch = setupLocationSearch({
     field: $("#destinationPointField"),
+    map: map,
     suggestionBox: $("#destinationSuggestions"),
     onSelect: (location) => {
         destinationPoint = location;
+        addRouteNode(destinationPoint, "destination");
         isDestinationPointSelectedLocation = true;
     }
 });
 
 $("#calculateRouteButton").on("click", async () => {
-    if(!isStartingPointSelectedLocation) await startingPointSearch.flush();
-    if(!isDestinationPointSelectedLocation) await destinationPointSearch.flush();
+    if(!isStartingPointSelectedLocation && startingPoint) {
+        startingPoint = await startingPointSearch.flush();
+        $("#startingPointField").val(startingPoint.name);
+    }
+    if(!isDestinationPointSelectedLocation) {
+        destinationPoint = await destinationPointSearch.flush();
+        $("#destinationPointField").val(destinationPoint.name);
+    }
+    if(!startingPoint) {
+        startingPoint = await getCurrentLocation();
+        $("#startingPointField").val(startingPoint.name);
+    }
+    if(!destinationPoint) return;
 
     routeGenerated.clear();
 
-    addRouteNode(startingPoint);
-    addRouteNode(destinationPoint);
+    addRouteNode(startingPoint, "start");
+    addRouteNode(destinationPoint, "destination");
 
     // TODO: Still using Dijkstra, should be A* now
     // TODO: Also should return three routes (shortest, cheapest, minimal transfer)

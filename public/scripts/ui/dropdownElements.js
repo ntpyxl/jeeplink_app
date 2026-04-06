@@ -9,6 +9,17 @@ export function createCurrentLocationItem() {
     `);
 }
 
+export function createPlacePinLocationItem() {
+    return $(`
+        <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b">
+            <i class="fa-solid fa-thumbtack text-blue-600 text-lg"></i>
+            <span class="text-[blue-600] font-semibold">
+                Pin a location
+            </span>
+        </div>
+    `);
+}
+
 export function createLocationResultItem(text) {
     return $(`
         <div class="flex items-center gap-4 px-5 py-4 cursor-pointer
