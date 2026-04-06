@@ -2,6 +2,11 @@
     font-family: 'Roboto', cursive;
 }
 
+:root {
+    --jl-green: #35903a;
+    --jl-green-hover: #2f7a33;
+}
+
 html, body {
     height: 100%;
 }
@@ -16,185 +21,419 @@ html, body {
     }
 }
 
-/* FareMatrix Modal CSS */
-:root {
-    --fare-modal-green: #35903a;
-    --fare-modal-green-hover: #2d7a32;
-}
+@layer components {
+    .fare-matrix-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background-color: rgb(0 0 0 / 0.5);
+        backdrop-filter: blur(4px);
+    }
 
-.fare-matrix-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
+    .fare-matrix-modal.fare-matrix-modal--open {
+        display: flex;
+    }
 
-.fare-matrix-modal.fare-matrix-modal--open {
-    display: flex;
-}
+    .fare-matrix-modal-panel {
+        width: 100%;
+        max-width: 28rem;
+        cursor: default;
+        overflow: hidden;
+        border-radius: 1rem;
+        border: 1px solid #e5e7eb;
+        background-color: #fff;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    }
 
-.fare-matrix-modal-panel {
-    background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    max-width: 28rem;
-    width: 100%;
-    overflow: hidden;
-    border: 1px solid #f3f4f6;
-}
+    .fare-matrix-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid rgb(0 0 0 / 0.12);
+        background-color: var(--jl-green);
+        padding: 1rem 1.5rem;
+    }
 
-.fare-matrix-modal-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f3f4f6;
-    background: linear-gradient(to right, rgba(53, 144, 58, 0.1), transparent);
-}
+    .fare-matrix-modal-title {
+        margin: 0;
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        font-weight: 600;
+        color: #fff;
+    }
 
-.fare-matrix-modal-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
-}
+    .fare-matrix-modal-desc {
+        margin: 0.25rem 0 0;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: rgb(255 255 255 / 0.9);
+    }
 
-.fare-matrix-modal-desc {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0.25rem 0 0;
-}
+    .fare-matrix-modal-matrix-name {
+        font-weight: 600;
+        color: #fff;
+    }
 
-.fare-matrix-modal-matrix-name {
-    font-weight: 500;
-    color: #374151;
-}
+    .fare-matrix-modal-close {
+        display: flex;
+        width: 2.25rem;
+        height: 2.25rem;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 0.5rem;
+        background-color: transparent;
+        color: rgb(255 255 255 / 0.85);
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
 
-.fare-matrix-modal-close {
-    flex-shrink: 0;
-    width: 2.25rem;
-    height: 2.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 0.5rem;
-    background: transparent;
-    color: #6b7280;
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-}
+    .fare-matrix-modal-close:hover {
+        background-color: rgb(255 255 255 / 0.15);
+        color: #fff;
+    }
 
-.fare-matrix-modal-close:hover {
-    background: #f3f4f6;
-    color: #1f2937;
-}
+    .fare-matrix-modal-close-icon {
+        font-size: 1.125rem;
+        line-height: 1;
+    }
 
-.fare-matrix-modal-body {
-    padding: 1.25rem 1.5rem;
-}
+    .fare-matrix-modal-body {
+        padding: 1.25rem 1.5rem;
+    }
 
-.fare-matrix-modal-label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-}
+    .fare-matrix-modal-field-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        color: #374151;
+    }
 
-.fare-matrix-modal-dropzone {
-    border-radius: 0.75rem;
-    border: 2px dashed #e5e7eb;
-    background: rgba(249, 250, 251, 0.8);
-    padding: 1.5rem 1rem;
-    text-align: center;
-    transition: border-color 0.15s;
-}
+    .fare-matrix-modal-dropzone {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        border-radius: 0.75rem;
+        border: 2px dashed #d1d5db;
+        background-color: rgb(249 250 251 / 0.8);
+        padding: 2rem 1rem;
+        transition: border-color 0.15s ease;
+    }
 
-.fare-matrix-modal-dropzone:hover {
-    border-color: rgba(53, 144, 58, 0.4);
-}
+    .fare-matrix-modal-dropzone:hover {
+        border-color: rgb(53 144 58 / 0.4);
+    }
 
-.fare-matrix-modal-dropzone .fa-file-pdf {
-    font-size: 1.875rem;
-    color: var(--fare-modal-green);
-    margin-bottom: 0.5rem;
-    display: block;
-}
+    .fare-matrix-modal-dropzone-icon {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+        color: #35903a;
+    }
 
-.fare-matrix-modal-file-input {
-    display: block;
-    width: 100%;
-    font-size: 0.875rem;
-    color: #4b5563;
-    cursor: pointer;
-}
+    .fare-matrix-modal-filename {
+        margin: 0;
+        min-height: 1.25rem;
+        text-align: center;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: #4b5563;
+    }
 
-.fare-matrix-modal-file-input::file-selector-button {
-    margin-right: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    border: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background: var(--fare-modal-green);
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.15s;
-}
+    .fare-matrix-modal-file-trigger {
+        display: inline-flex;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        background-color: #35903a;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        color: #fff;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        transition: background-color 0.15s ease;
+    }
 
-.fare-matrix-modal-file-input:hover::file-selector-button {
-    background: var(--fare-modal-green-hover);
-}
+    .fare-matrix-modal-file-trigger:hover {
+        background-color: #2f7a33;
+    }
 
-.fare-matrix-modal-footer {
-    padding: 1rem 1.5rem;
-    background: #f9fafb;
-    border-top: 1px solid #f3f4f6;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.5rem;
-}
+    .fare-matrix-modal-file-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        white-space: nowrap;
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+    }
 
-.fare-matrix-modal-btn-cancel {
-    padding: 0.625rem 1rem;
-    font-size: 1rem;
-    color: #374151;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    cursor: pointer;
-    transition: background-color 0.15s;
-}
+    .fare-matrix-modal-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        border-top: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        padding: 1rem 1.5rem;
+    }
 
-.fare-matrix-modal-btn-cancel:hover {
-    background: #f9fafb;
-}
+    .fare-matrix-modal-btn-cancel {
+        cursor: pointer;
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        background-color: #fff;
+        padding: 0.625rem 1rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        color: #374151;
+        transition: background-color 0.15s ease;
+    }
 
-.fare-matrix-modal-btn-submit {
-    padding: 0.625rem 1rem;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    background: var(--fare-modal-green);
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.15s;
-}
+    .fare-matrix-modal-btn-cancel:hover {
+        background-color: #f9fafb;
+    }
 
-.fare-matrix-modal-btn-submit:hover {
-    background: var(--fare-modal-green-hover);
-}
+    .fare-matrix-modal-btn-submit {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        border: none;
+        border-radius: 0.5rem;
+        background-color: #35903a;
+        padding: 0.625rem 1rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 500;
+        color: #fff;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        transition: background-color 0.15s ease;
+    }
 
-.fare-matrix-modal-btn-submit .fa-upload {
-    margin-right: 0.5rem;
+    .fare-matrix-modal-btn-submit:hover {
+        background-color: #2f7a33;
+    }
+
+    .fare-matrix-modal-btn-submit-icon {
+        margin-right: 0.5rem;
+    }
+
+    .fare-matrix-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        align-items: stretch;
+    }
+
+    @media (min-width: 1024px) {
+        .fare-matrix-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    .fare-matrix-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 100%;
+        align-self: stretch;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        background-color: #fff;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+    }
+
+    .fare-matrix-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        min-height: 6.75rem;
+        padding: 1rem 1rem;
+        text-align: center;
+        background-color: var(--jl-green);
+    }
+
+    @media (min-width: 1024px) {
+        .fare-matrix-card-header {
+            min-height: 7.25rem;
+        }
+    }
+
+    .fare-matrix-card-title {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #fff;
+    }
+
+    @media (min-width: 640px) {
+        .fare-matrix-card-title {
+            font-size: 1rem;
+        }
+    }
+
+    .fare-matrix-card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1 1 auto;
+        min-height: 0;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #374151;
+        overflow-x: hidden;
+        overflow-y: visible;
+    }
+
+    .fare-matrix-card-effective,
+    .fare-matrix-card-computation {
+        margin: 0;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .fare-matrix-card-computation {
+        margin-top: 0.75rem;
+    }
+
+    .fare-matrix-card-section {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1rem;
+        max-width: 24rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .fare-matrix-card-section-title {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+        text-transform: uppercase;
+        color: var(--jl-green);
+    }
+
+    @media (min-width: 640px) {
+        .fare-matrix-card-section-title {
+            font-size: 0.875rem;
+        }
+    }
+
+    .fare-matrix-card-section-title + .fare-matrix-card-section-line {
+        margin: 0.75rem 0 0;
+    }
+
+    .fare-matrix-card-section-line + .fare-matrix-card-section-line {
+        margin: 0.25rem 0 0;
+    }
+
+    .fare-matrix-card-note {
+        margin: 1rem auto 0;
+        max-width: 28rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        text-transform: uppercase;
+        color: #4b5563;
+    }
+
+    .fare-matrix-card-actions {
+        margin-top: 1.25rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        column-gap: 1.5rem;
+        row-gap: 0.5rem;
+    }
+
+    .fare-matrix-card-action-btn {
+        border: none;
+        background: none;
+        padding: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--jl-green);
+        cursor: pointer;
+        transition: color 0.15s ease;
+    }
+
+    .fare-matrix-card-action-btn:hover {
+        color: var(--jl-green-hover);
+    }
+
+    .fare-matrix-card-table-wrap {
+        margin-top: auto;
+        padding-top: 1.5rem;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .fare-matrix-card-table {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        min-width: 260px;
+        max-width: 24rem;
+        border-collapse: collapse;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+        .fare-matrix-card-table {
+            font-size: 0.875rem;
+        }
+    }
+
+    .fare-matrix-card-table thead tr {
+        border-bottom: 1px solid #e5e7eb;
+        color: #6b7280;
+    }
+
+    .fare-matrix-card-table th {
+        padding: 0.5rem 0.25rem;
+        font-weight: 500;
+    }
+
+    .fare-matrix-card-table tbody {
+        color: #374151;
+    }
+
+    .fare-matrix-card-table-row {
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .fare-matrix-card-table-row:hover {
+        background-color: rgb(249 250 251 / 0.8);
+    }
+
+    .fare-matrix-card-table-cell {
+        padding: 0.5rem 0.25rem;
+        text-align: center;
+    }
 }

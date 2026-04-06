@@ -11,6 +11,7 @@ const matrixLabels = {
 function closeUpdateMatrixModal() {
     $("#updateMatrixModal").removeClass("fare-matrix-modal--open");
     $("#modalPdfInput").val("");
+    $("#modalPdfFilename").text("No file chosen");
     document.body.style.overflow = "";
 }
 
@@ -24,6 +25,11 @@ function openUpdateMatrixModal(matrixId) {
 
 $('.openUpdateMatrixModal').on('click', function() {
     openUpdateMatrixModal($(this).attr('data-id'));
+});
+
+$("#modalPdfInput").on("change", function () {
+    const file = this.files && this.files[0];
+    $("#modalPdfFilename").text(file ? file.name : "No file chosen");
 });
 
 $('#closeUpdateMatrixModalButton, #closeUpdateMatrixModalX').on('click', closeUpdateMatrixModal);
@@ -43,6 +49,8 @@ const roundToQuarter = value => Math.round(value * 4) / 4;
 const toMoney = value => roundToQuarter(value).toFixed(2);
 
 const MAX_TABLE_KM = 40;
+
+const DEFAULT_EFFECTIVE_DATE = "JANUARY 01, 2000";
 
 function roundToStep(value, step) {
     const s = toNum(step);
@@ -72,9 +80,9 @@ function buildTableRows(raw) {
 }
 
 function formatDate(raw) {
-    if (!raw) return "";
+    if (!raw) return DEFAULT_EFFECTIVE_DATE;
     const date = new Date(raw);
-    if (Number.isNaN(date.getTime())) return String(raw);
+    if (Number.isNaN(date.getTime())) return DEFAULT_EFFECTIVE_DATE;
     return date.toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -119,10 +127,10 @@ function renderFareTableBodies(matricesById) {
         if (!tbody || !matrix?.tableRows?.length) return;
         tbody.innerHTML = matrix.tableRows
             .map(
-                row => `<tr class="border-b hover:bg-gray-50">
-                <td class="py-2">${row.distance}</td>
-                <td class="py-2">${row.regular}</td>
-                <td class="py-2">${row.discounted}</td>
+                row => `<tr class="fare-matrix-card-table-row">
+                <td class="fare-matrix-card-table-cell">${row.distance}</td>
+                <td class="fare-matrix-card-table-cell">${row.regular}</td>
+                <td class="fare-matrix-card-table-cell">${row.discounted}</td>
             </tr>`
             )
             .join("");
