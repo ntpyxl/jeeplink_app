@@ -52,6 +52,7 @@ export class LocationSearchAutocomplete {
 
 let namedLocations = null;
 export function setupNamedLocations(pointsGeoJSON) {
+    console.log("setup named locations")
     namedLocations = pointsGeoJSON.features
     .filter(feature => feature.properties?.name)
     .map(feature => {
