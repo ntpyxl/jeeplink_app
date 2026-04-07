@@ -61,17 +61,23 @@ export class RouteEditor {
     async drawRoute() {
         if (this.nodes.length < 2) return;
 
+        // Collect definitions for any "temporary" nodes (clicked points in middle of roads)
+        const tempNodeDefinitions = this.nodes.map(node => ({
+            id: node.graphKey,
+            neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
+        }));
+
         const response = await apiFetch("/calculateRoute", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 algorithm: "dijkstra",
-                routes: [this.nodes.map(n => n.graphKey)]
+                routes: [this.nodes.map(n => n.graphKey)],
+                tempNodes: tempNodeDefinitions
             })
         });
 
         const { paths } = await response;
-
         const routePath = paths[0].map(k => k.split(",").map(Number).reverse());
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
@@ -134,7 +140,11 @@ export class RouteEditor {
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+            const graphNodeKey = this.graphHelper.insertTemporaryNode(
+                snapped.coordinates,
+                snapped.segmentA,
+                snapped.segmentB
+            );    
 
             node.coordinates = snapped.coordinates;
             node.graphKey = graphNodeKey;
@@ -203,7 +213,11 @@ export class RouteEditor {
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+            const graphNodeKey = graphHelper.insertTemporaryNode(
+                snapped.coordinates,
+                snapped.segmentA,
+                snapped.segmentB
+            );  
 
             const node = {
                 id: crypto.randomUUID(),
