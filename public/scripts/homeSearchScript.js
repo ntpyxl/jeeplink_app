@@ -1,5 +1,10 @@
 import { LocationSearchAutocomplete } from "./core/search/locationSearchAutocomplete.js";
 import { createCurrentLocationItem, createLocationResultItem } from "./ui/dropdownElements.js";
+import { setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
+
+fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+    .then(r => r.json())
+    .then(setupNamedLocations);
 
 const startingPointSearch = new LocationSearchAutocomplete($("#startingPointField"));
 const destinationPointSearch = new LocationSearchAutocomplete($("#destinationPointField"));
@@ -169,32 +174,3 @@ $(document).on("click", function(e) {
         $("#destinationSuggestions").addClass("hidden");
     }
 });
-
-function getCurrentLocation() {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                const locationData = {
-                    name: "Your Location",
-                    searchName: "Your Location",
-                    coords: [lon, lat]
-                };
-
-                resolve(locationData);
-            },
-            (error) => {
-                console.error(error);
-                alert("Failed to get location.");
-                reject(error);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            }
-        );
-    });
-}
