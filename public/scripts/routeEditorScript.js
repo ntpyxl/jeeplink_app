@@ -60,14 +60,14 @@ roadsLayer.on("click", async event => {
     if (!snapped) return;
 
     // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
+    /* TODO: Delete this old function when no issues arise with new function below!
     const graphNodeKey = graphHelper.snapToGraphNode(snapped.coordinates);
-    /*
+    */
     const graphNodeKey = graphHelper.insertTemporaryNode(
         snapped.coordinates,
         snapped.segmentA,
         snapped.segmentB
-    );
-    */
+    );    
 
     const node = {
         id: crypto.randomUUID(),
@@ -77,48 +77,12 @@ roadsLayer.on("click", async event => {
         marker: null
     };
 
-    routeEditor.addNode(node);
+    routeEditor.addNode({node: node});
     await routeEditor.drawRoute();
 
     $("#startNodeText").text(routeEditor.getStartNode().graphKey);
     if(routeEditor.nodes.length > 1) $("#endNodeText").text(routeEditor.getEndNode().graphKey);
 });
-
-$("#clearDrawnJeepRoute").on("click", async () => {
-    await clearDrawnJeepRoute();
-})
-
-async function clearDrawnJeepRoute() {
-    routeEditor.clear();
-    $("#drawnJeepRouteName").val("");
-    $("#startNodeText").text("");
-    $("#endNodeText").text("");
-}
-
-$("#saveDrawnJeepRoute").on("click", async () => {
-    try {
-        await apiFetch("/insertJeepRoute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val(),
-                nodes: routeEditor.nodes
-            })
-        });
-
-        clearDrawnJeepRoute();
-        $("#drawnJeepRouteName").val('');
-
-        alert("Successfully saved Jeepney Route!");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save Jeepney Route.");
-    }
-})
-
-$("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
-})
 
 function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
@@ -143,6 +107,9 @@ function snapToRoad(latlng) {
     const coords = closestRoad.geometry.coordinates;
     const segmentIndex = closestSnap.properties.index;
 
+    // Prevent overflow
+    if (segmentIndex >= coords.length - 1) segmentIndex = coords.length - 2;
+
     return {
         coordinates: closestSnap.geometry.coordinates,
         roadId: closestRoad.properties.id,
@@ -151,34 +118,57 @@ function snapToRoad(latlng) {
     };
 }
 
-async function findInsertIndex(latlng) {
+// TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
+// Takes around 6.7s to save
+// six sevennnnnnn
+$("#rebuildPublicRoadsGraph").on("click", async () => {
+    try {
+        const response = await fetch("/api/saveBlobFile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                filename: "Dasma_RoadGraph-PublicRoads.json",
+                fileData: Object.fromEntries(graphHelper.graph)
+            })
+        });
 
-    if (routeEditor.nodes.length < 2) return null;
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
 
-    const clicked = turf.point([latlng.lng, latlng.lat]);
-
-    let bestIndex = null;
-    let minDist = Infinity;
-
-    for (let i = 0; i < routeEditor.nodes.length - 1; i++) {
-
-        const a = routeEditor.nodes[i].coordinates;
-        const b = routeEditor.nodes[i + 1].coordinates;
-
-        const line = turf.lineString([a, b]);
-
-        const snap = turf.nearestPointOnLine(line, clicked);
-
-        const dist = snap.properties.dist;
-
-        if (dist < minDist) {
-            minDist = dist;
-            bestIndex = i + 1;
-        }
+        alert("Successfully saved new Public Roads Graph Data!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Public Roads Graph Data.");
     }
+});
 
-    // Optional: limit how far the click can be
-    if (minDist > 0.02) return null;
+$("#clearDrawnJeepRoute").on("click", () => {
+    routeEditor.clear();
+    $("#drawnJeepRouteName").val("");
+    $("#startNodeText, #endNodeText").text("");
+});
 
-    return bestIndex;
-}
+$("#saveDrawnJeepRoute").on("click", async () => {
+    try {
+        await apiFetch("/insertJeepRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                routeName: $("#drawnJeepRouteName").val(),
+                nodes: routeEditor.nodes
+            })
+        });
+
+        clearDrawnJeepRoute();
+        alert("Successfully saved Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Jeepney Route.");
+    }
+});
+
+$("#toggleJeepRoutes").on("click", async () => {
+    routeRenderer.toggle();
+});
