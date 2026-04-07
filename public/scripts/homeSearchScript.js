@@ -158,9 +158,16 @@ destinationPointSearch.onResults = async function(results) {
 };
 
 $("#calculateRouteButton").on("click", async () => {
-    if(!isStartingPointSelectedLocation) await startingPointSearch.flush();
-    if(!isDestinationPointSelectedLocation) await destinationPointSearch.flush();
-    
+    const tasks = [];
+
+    if (!isStartingPointSelectedLocation) {
+        tasks.push(startingPointSearch.flush());
+    }
+    if (!isDestinationPointSelectedLocation) {
+        tasks.push(destinationPointSearch.flush());
+    }
+
+    await Promise.all(tasks);
     window.location.href = "/map.html";
 });
 
