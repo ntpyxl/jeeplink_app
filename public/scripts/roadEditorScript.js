@@ -69,7 +69,7 @@ const graphHelper = new GraphHelper(roadsGeoJSON);
 
 // TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
 // TODO: May also want to implement a progress bar and disable other actions after clicking the save button.
-// TODO: Currently takes too long to save.. takes around 10s?
+// TODO: Currently takes too long to save.. takes around 8.2s
 $("#saveNewGeoJson").on("click", async function () {
     try {
         graphHelper.buildGraph(roadsGeoJSON, true); 
@@ -89,9 +89,7 @@ $("#saveNewGeoJson").on("click", async function () {
 async function saveRoadsGeoJson() {
     const response = await fetch("/api/saveBlobFile", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             filename: "Dasma_LineStrings-AllRoads.geojson",
             fileData: roadsGeoJSON
@@ -99,18 +97,13 @@ async function saveRoadsGeoJson() {
     });
 
     const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error);
-    }
+    if (!response.ok) throw new Error(result.error);
 }
 
 async function saveGraphJson() {
     const response = await fetch("/api/saveBlobFile", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             filename: "Dasma_RoadGraph-AllRoads.json",
             fileData: Object.fromEntries(graphHelper.graph)
@@ -118,8 +111,5 @@ async function saveGraphJson() {
     });
 
     const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error);
-    }
+    if (!response.ok) throw new Error(result.error);
 }

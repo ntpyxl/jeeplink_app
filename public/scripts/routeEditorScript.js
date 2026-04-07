@@ -84,42 +84,6 @@ roadsLayer.on("click", async event => {
     if(routeEditor.nodes.length > 1) $("#endNodeText").text(routeEditor.getEndNode().graphKey);
 });
 
-$("#clearDrawnJeepRoute").on("click", async () => {
-    await clearDrawnJeepRoute();
-})
-
-async function clearDrawnJeepRoute() {
-    routeEditor.clear();
-    $("#drawnJeepRouteName").val("");
-    $("#startNodeText").text("");
-    $("#endNodeText").text("");
-}
-
-$("#saveDrawnJeepRoute").on("click", async () => {
-    try {
-        await apiFetch("/insertJeepRoute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val(),
-                nodes: routeEditor.nodes
-            })
-        });
-
-        clearDrawnJeepRoute();
-        $("#drawnJeepRouteName").val('');
-
-        alert("Successfully saved Jeepney Route!");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save Jeepney Route.");
-    }
-})
-
-$("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
-})
-
 function snapToRoad(latlng) {
     const clicked = turf.point([latlng.lng, latlng.lat]);
 
@@ -150,3 +114,58 @@ function snapToRoad(latlng) {
         segmentB: coords[segmentIndex + 1]
     };
 }
+
+// TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
+// Takes around 6.7s to save
+// six sevennnnnnn
+$("#rebuildPublicRoadsGraph").on("click", async () => {
+    try {
+        const response = await fetch("/api/saveBlobFile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                filename: "Dasma_RoadGraph-PublicRoads.json",
+                fileData: Object.fromEntries(graphHelper.graph)
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+
+        alert("Successfully saved new Public Roads Graph Data!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Public Roads Graph Data.");
+    }
+});
+
+$("#clearDrawnJeepRoute").on("click", () => {
+    routeEditor.clear();
+    $("#drawnJeepRouteName").val("");
+    $("#startNodeText, #endNodeText").text("");
+});
+
+$("#saveDrawnJeepRoute").on("click", async () => {
+    try {
+        await apiFetch("/insertJeepRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                routeName: $("#drawnJeepRouteName").val(),
+                nodes: routeEditor.nodes
+            })
+        });
+
+        clearDrawnJeepRoute();
+        alert("Successfully saved Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Jeepney Route.");
+    }
+});
+
+$("#toggleJeepRoutes").on("click", async () => {
+    routeRenderer.toggle();
+});
