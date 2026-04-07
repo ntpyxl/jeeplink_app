@@ -13,12 +13,30 @@ export class RouteEditor {
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
 
-    addNode(node, index = null) {
-        if (index === null) {
-            this.nodes.push(node);
+    addNode({ node, index = null, type = null }) {
+        if (type === "start") {
+            if (this.nodes[0]) {
+                this.nodeLayer.removeLayer(this.nodes[0].layer);
+                this.nodes[0] = node;
+            } else {
+                this.nodes.unshift(node);
+            }
+        } else if (type === "destination") {
+            const lastIndex = this.nodes.length;
+            if (this.nodes[lastIndex]) {
+                this.nodeLayer.removeLayer(this.nodes[lastIndex].layer);
+                this.nodes[lastIndex] = node;
+            } else {
+                this.nodes.push(node);
+            }
         } else {
-            this.nodes.splice(index, 0, node);
+            if (index === null) {
+                this.nodes.push(node);
+            } else {
+                this.nodes.splice(index, 0, node);
+            }
         }
+
         this.drawNode(node);
     }
 
@@ -43,17 +61,23 @@ export class RouteEditor {
     async drawRoute() {
         if (this.nodes.length < 2) return;
 
+        // Collect definitions for any "temporary" nodes (clicked points in middle of roads)
+        const tempNodeDefinitions = this.nodes.map(node => ({
+            id: node.graphKey,
+            neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
+        }));
+
         const response = await apiFetch("/calculateRoute", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 algorithm: "dijkstra",
-                routes: [this.nodes.map(n => n.graphKey)]
+                routes: [this.nodes.map(n => n.graphKey)],
+                tempNodes: tempNodeDefinitions
             })
         });
 
         const { paths } = await response;
-
         const routePath = paths[0].map(k => k.split(",").map(Number).reverse());
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
@@ -116,7 +140,11 @@ export class RouteEditor {
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+            const graphNodeKey = this.graphHelper.insertTemporaryNode(
+                snapped.coordinates,
+                snapped.segmentA,
+                snapped.segmentB
+            );    
 
             node.coordinates = snapped.coordinates;
             node.graphKey = graphNodeKey;
@@ -161,7 +189,7 @@ export class RouteEditor {
 
             const clicked = turf.point([e.latlng.lng, e.latlng.lat]);
 
-            let bestIndex = null;
+            let nearestNodeIndex = null;
             let minDist = Infinity;
 
             for (let i = 0; i < this.nodes.length - 1; i++) {
@@ -176,16 +204,20 @@ export class RouteEditor {
 
                 if (dist < minDist) {
                     minDist = dist;
-                    bestIndex = i + 1;
+                    nearestNodeIndex = i + 1;
                 }
             }
 
-            if (bestIndex === null) return;
+            if (nearestNodeIndex === null) return;
 
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+            const graphNodeKey = graphHelper.insertTemporaryNode(
+                snapped.coordinates,
+                snapped.segmentA,
+                snapped.segmentB
+            );  
 
             const node = {
                 id: crypto.randomUUID(),
@@ -193,7 +225,7 @@ export class RouteEditor {
                 graphKey: graphNodeKey
             };
 
-            this.addNode(node, bestIndex);
+            this.addNode({node: node, index: nearestNodeIndex});
             this.drawRoute();
         })
     }
