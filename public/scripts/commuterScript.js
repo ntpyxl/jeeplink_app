@@ -65,6 +65,7 @@ const graphHelper = new GraphHelper(roadsGeoJSON);
 const routeRenderer = new RouteRenderer(map);
 const routeGenerated = new RouteEditor({
     map: map,
+    graphHelper: graphHelper,
     addInteractability: false
 });
 
@@ -73,6 +74,8 @@ $("#toggleJeepRoutes").on("click", async () => {
 })
 
 function addRouteNode(data, type = null) {
+    const latlng = data.coords;
+    const snapped = snapToRoad({ lat: latlng[1], lng: latlng[0] });
     const graphNodeKey = graphHelper.insertTemporaryNode(
         snapped.coordinates,
         snapped.segmentA,
@@ -82,11 +85,45 @@ function addRouteNode(data, type = null) {
     const node = {
         id: crypto.randomUUID(),
         coordinates: data.coords,
-        roadId: randomUUID,
+        roadId: snapped.roadId,
         graphKey: graphNodeKey
     };
 
     routeGenerated.addNode({node: node, type: type});
+}
+
+function snapToRoad(latlng) {
+    const clicked = turf.point([latlng.lng, latlng.lat]);
+
+    let closestRoad = null;
+    let closestSnap = null;
+    let minDist = Infinity;
+
+    roadsGeoJSON.features.forEach(road => {
+        const snap = turf.nearestPointOnLine(road, clicked);
+        const dist = snap.properties.dist;
+
+        if (dist < minDist) {
+            minDist = dist;
+            closestRoad = road;
+            closestSnap = snap;
+        }
+    });
+
+    if (!closestRoad) return null;
+
+    const coords = closestRoad.geometry.coordinates;
+    let segmentIndex = closestSnap.properties.index;
+
+    // Prevent overflow
+    if (segmentIndex >= coords.length - 1) segmentIndex = coords.length - 2;
+
+    return {
+        coordinates: closestSnap.geometry.coordinates,
+        roadId: closestRoad.properties.id,
+        segmentA: coords[segmentIndex],
+        segmentB: coords[segmentIndex + 1]
+    };
 }
 
 let startingPoint = null;

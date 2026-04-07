@@ -107,6 +107,9 @@ function snapToRoad(latlng) {
     const coords = closestRoad.geometry.coordinates;
     const segmentIndex = closestSnap.properties.index;
 
+    // Prevent overflow
+    if (segmentIndex >= coords.length - 1) segmentIndex = coords.length - 2;
+
     return {
         coordinates: closestSnap.geometry.coordinates,
         roadId: closestRoad.properties.id,
