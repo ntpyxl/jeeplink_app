@@ -73,11 +73,17 @@ $("#toggleJeepRoutes").on("click", async () => {
 })
 
 function addRouteNode(data, type = null) {
+    const graphNodeKey = graphHelper.insertTemporaryNode(
+        snapped.coordinates,
+        snapped.segmentA,
+        snapped.segmentB
+    );    
+
     const node = {
         id: crypto.randomUUID(),
         coordinates: data.coords,
         roadId: randomUUID,
-        graphKey: graphHelper.snapToGraphNode(data.coords)
+        graphKey: graphNodeKey
     };
 
     routeGenerated.addNode({node: node, type: type});

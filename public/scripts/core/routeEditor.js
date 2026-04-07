@@ -213,7 +213,11 @@ export class RouteEditor {
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = this.graphHelper.snapToGraphNode(snapped.coordinates);
+            const graphNodeKey = graphHelper.insertTemporaryNode(
+                snapped.coordinates,
+                snapped.segmentA,
+                snapped.segmentB
+            );  
 
             const node = {
                 id: crypto.randomUUID(),
