@@ -72,22 +72,19 @@ export class GraphHelper {
     // TODO: Fix route jumping through roads.
     insertTemporaryNode(coord, a, b) {
         const key = this.coordKey(coord);
-
-        if (this.graph.has(key)) return key;
-
         const aKey = this.coordKey(a);
         const bKey = this.coordKey(b);
+
+        if (this.graph.has(key)) return key;
 
         const distA = turf.distance(turf.point(coord), turf.point(a), { units: "meters" });
         const distB = turf.distance(turf.point(coord), turf.point(b), { units: "meters" });
 
-        this.graph.set(key, []);
-
-        this.graph.get(key).push({ to: aKey, weight: distA });
-        this.graph.get(key).push({ to: bKey, weight: distB });
-
-        this.graph.get(aKey).push({ to: key, weight: distA });
-        this.graph.get(bKey).push({ to: key, weight: distB });
+        // Store the neighbors using the EXACT string keys
+        this.graph.set(key, [
+            { to: aKey, weight: distA },
+            { to: bKey, weight: distB }
+        ]);
 
         return key;
     }

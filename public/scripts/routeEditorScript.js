@@ -60,14 +60,14 @@ roadsLayer.on("click", async event => {
     if (!snapped) return;
 
     // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
+    /* TODO: Delete this old function when no issues arise with new function below!
     const graphNodeKey = graphHelper.snapToGraphNode(snapped.coordinates);
-    /*
+    */
     const graphNodeKey = graphHelper.insertTemporaryNode(
         snapped.coordinates,
         snapped.segmentA,
         snapped.segmentB
-    );
-    */
+    );    
 
     const node = {
         id: crypto.randomUUID(),
