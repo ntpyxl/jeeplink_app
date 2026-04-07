@@ -23,18 +23,20 @@ export class GraphHelper {
                 const aKey = this.coordKey(a);
                 const bKey = this.coordKey(b);
 
-                // Haversine is faster than turf.distance for thousands of iterations. Or could try the function below?
+                // Haversine or turf.distance() would be more precise but slower.
+                // Consider using this function instead if there is a want to make the buildGraph function faster.
+                // Have to manually rebuild ALL graphs should the function used be ever changed!
+                function calculateDistance(a, b) {
+                    const dx = a[0] - b[0];
+                    const dy = a[1] - b[1];
+                    return Math.sqrt(dx*dx + dy*dy) * 111320;
+                }
+
                 const dist = turf.distance(
                     turf.point(a),
                     turf.point(b),
                     { units: "meters" }
                 );
-
-                function funcDist(a, b) {
-                    const dx = a[0] - b[0];
-                    const dy = a[1] - b[1];
-                    return Math.sqrt(dx*dx + dy*dy) * 111320;
-                }
 
                 if (!graph.has(aKey)) graph.set(aKey, []);
                 if (!graph.has(bKey)) graph.set(bKey, []);
@@ -47,6 +49,7 @@ export class GraphHelper {
         return graph;
     }
 
+    // TODO: No longer used. Delete if insertTemporaryNode below has no problems. May want to rename it too.
     snapToGraphNode(coord) {
         let closestKey = null;
         let minDist = Infinity;
@@ -69,7 +72,6 @@ export class GraphHelper {
         return closestKey;
     }
 
-    // TODO: Fix route jumping through roads.
     insertTemporaryNode(coord, a, b) {
         const key = this.coordKey(coord);
         const aKey = this.coordKey(a);

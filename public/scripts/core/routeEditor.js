@@ -64,7 +64,7 @@ export class RouteEditor {
         // Collect definitions for any "temporary" nodes (clicked points in middle of roads)
         const tempNodeDefinitions = this.nodes.map(node => ({
             id: node.graphKey,
-            neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segmentA and segmentB
+            neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
         }));
 
         const response = await apiFetch("/calculateRoute", {

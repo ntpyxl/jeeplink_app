@@ -73,9 +73,8 @@ $("#toggleJeepRoutes").on("click", async () => {
 })
 
 function addRouteNode(data, type = null) {
-    const randomUUID = crypto.randomUUID();
     const node = {
-        id: randomUUID,
+        id: crypto.randomUUID(),
         coordinates: data.coords,
         roadId: randomUUID,
         graphKey: graphHelper.snapToGraphNode(data.coords)
