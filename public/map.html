@@ -49,9 +49,59 @@
             <div class="hidden md:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
                 <a href="index.html" class="hover:text-black transition">Home</a>
                 <a href="map.html" class="hover:text-black transition">Map</a>
-                <a href="report.html" class="hover:text-black transition">Report</a>
-                <a href="guide.html" class="hover:text-black transition">Guide</a>
-                <a href="faqs.html" class="hover:text-black transition">FAQs</a>
+                <a href="report.html" class="hover:text-black transition">Report</a>      
+
+                <!-- Help -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Help
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="guide.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Guide
+                            </a>
+
+                            <a href="faqs.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            FAQs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Legal
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="privacy.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Privacy Policy
+                            </a>
+
+                            <a href="terms.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Terms of Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Hamburger Button -->
@@ -76,6 +126,8 @@
                 <a href="report.html" class="hover:text-black text-center transition">Report</a>
                 <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
                 <a href="faqs.html" class="hover:text-black text-center transition">FAQs</a>
+                <a href="privacy.html" class="hover:text-black text-center transition">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-black text-center transition">Terms of Service</a>
             </div>
         </div>
     </nav>

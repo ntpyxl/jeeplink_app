@@ -26,7 +26,7 @@ html, body {
     background-repeat: no-repeat;
 }
 
-.report-grid-bg {
+.report-grid-bg, .privacy-grid-bg {
     background-color: #f8fbf7;
     background-image:
         linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
@@ -64,7 +64,7 @@ html, body {
 
 }
 
-.report-hero-bg, .guide-hero-bg {
+.report-hero-bg, .guide-hero-bg, .privacy-hero-bg {
     background: linear-gradient(180deg, #335c35 0%, #61ad64 100%);
 }
 

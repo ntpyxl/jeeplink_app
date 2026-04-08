@@ -8,14 +8,16 @@
     <!-- JeepLink Tab Logo -->
     <link rel="icon" type="image/png" href="images/tab-logo.png">
 
-    <!-- Tailwind Cdn (Install Tailwind) -->
+    <!-- Tailwind Cdn -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- Google Font (Install if possible) -->
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
@@ -44,8 +46,58 @@
                 <a href="index.html" class="hover:text-black transition">Home</a>
                 <a href="map.html" class="hover:text-black transition">Map</a>
                 <a href="report.html" class="hover:text-black transition">Report</a>
-                <a href="guide.html" class="hover:text-black transition">Guide</a>
-                <a href="faqs.html" class="hover:text-black transition">FAQs</a>
+                                
+                <!-- Help -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Help
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="guide.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Guide
+                            </a>
+
+                            <a href="faqs.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            FAQs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Legal
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="privacy.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Privacy Policy
+                            </a>
+
+                            <a href="terms.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Terms of Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Hamburger Button -->
