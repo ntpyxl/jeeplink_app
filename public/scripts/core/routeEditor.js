@@ -72,7 +72,7 @@ export class RouteEditor {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 algorithm: "dijkstra",
-                routes: [this.nodes.map(n => n.graphKey)],
+                nodes: [this.nodes.map(n => n.graphKey)],
                 tempNodes: tempNodeDefinitions
             })
         });
@@ -213,7 +213,7 @@ export class RouteEditor {
             const snapped = this.snapToRoad(e.latlng);
             if (!snapped) return;
 
-            const graphNodeKey = graphHelper.insertTemporaryNode(
+            const graphNodeKey = this.graphHelper.insertTemporaryNode(
                 snapped.coordinates,
                 snapped.segmentA,
                 snapped.segmentB

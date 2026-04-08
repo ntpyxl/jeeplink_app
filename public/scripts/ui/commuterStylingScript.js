@@ -1,4 +1,3 @@
-// TODO: This script is never used.
 $(document).ready(function () {
     // Nav bar
     $("#menuBtn").on("click", function () {

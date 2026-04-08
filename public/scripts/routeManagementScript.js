@@ -53,7 +53,11 @@ const routeEditor = new RouteEditor({
     graphHelper: graphHelper,
     addInteractability: true
 });
-const routeRenderer = new RouteRenderer(map);
+const routeRenderer = new RouteRenderer({
+    map: map, 
+    snapToRoad: snapToRoad,
+    graphHelper: graphHelper
+});
 
 roadsLayer.on("click", async event => {
     const snapped = snapToRoad(event.latlng);
@@ -144,20 +148,31 @@ $("#rebuildPublicRoadsGraph").on("click", async () => {
     }
 });
 
-$("#clearDrawnJeepRoute").on("click", () => {
+function clearDrawnJeepRoute() {
     routeEditor.clear();
     $("#drawnJeepRouteName").val("");
     $("#startNodeText, #endNodeText").text("");
+}
+
+$("#clearDrawnJeepRoute").on("click", () => {
+    clearDrawnJeepRoute();
 });
 
 $("#saveDrawnJeepRoute").on("click", async () => {
     try {
+        const nodes = routeEditor.nodes.map(node => ({
+            id: node.id,
+            roadId: node.roadId,
+            graphKey: node.graphKey,
+            coordinates: node.coordinates
+        }));
+
         await apiFetch("/insertJeepRoute", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val(),
-                nodes: routeEditor.nodes
+                routeName: $("#drawnJeepRouteName").val() || "Unnamed Jeep Route",
+                nodes: nodes
             })
         });
 
@@ -172,3 +187,14 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 });
+
+try {
+    const jeepRoutesData = await apiFetch("/getJeepRoutes", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    console.log(jeepRoutesData);
+} catch (err) {
+    console.error(err);
+}
