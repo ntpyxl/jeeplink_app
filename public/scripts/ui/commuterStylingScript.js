@@ -16,4 +16,19 @@ $(document).ready(function () {
         $("#commuteContent").hide();   
         $("#arrow").addClass("rotate-180"); 
     } 
+
+    // Terms & Privacy
+    const accepted = localStorage.getItem("jeepLink_termsAccepted");
+
+    // Show modal if not accepted
+    if (!accepted) {
+        $("#termsModal").removeClass("hidden");
+    }
+
+    // Accept button click
+    $("#acceptTermsBtn").on("click", function () {
+        localStorage.setItem("jeepLink_termsAccepted", "true");
+        $("#termsModal").fadeOut(200);
+    });
+
 });
