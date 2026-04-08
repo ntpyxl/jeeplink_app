@@ -1,8 +1,11 @@
 import { apiFetch } from "../core/jeeplinkApiFetcher.js";
 
 export class RouteRenderer {
-    constructor(map) {
+    constructor({ map, snapToRoad, graphHelper }) {
         this.map = map;
+        this.snapToRoad = snapToRoad;
+        this.graphHelper = graphHelper;
+
         this.routes = null;
         this.routeLines = [];
         this.calculatedRoutes = null;
@@ -13,9 +16,35 @@ export class RouteRenderer {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
-        this.routes = queryData.queryData.map(route =>
-            route.nodes.map(node => `${node.longitude},${node.latitude}`)
-        );
+
+        this.routes = [];
+        this.tempNodes = [];
+
+        queryData.queryData.forEach(route => {
+            const routeGraphKeys = [];
+
+            route.nodes.forEach(node => {
+                const snapped = this.snapToRoad({
+                    lat: node.latitude,
+                    lng: node.longitude
+                });
+
+                if (!snapped) return;
+                const graphKey = this.graphHelper.insertTemporaryNode(
+                    snapped.coordinates,
+                    snapped.segmentA,
+                    snapped.segmentB
+                );
+
+                routeGraphKeys.push(graphKey);
+                this.tempNodes.push({
+                    id: graphKey,
+                    neighbors: this.graphHelper.graph.get(graphKey) || []
+                });
+            });
+            
+            this.routes.push(routeGraphKeys);
+        });
     }
 
     async display() {
@@ -26,7 +55,8 @@ export class RouteRenderer {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     algorithm: "dijkstra",
-                    routes: this.routes
+                    nodes: this.routes,
+                    tempNodes: this.tempNodes
                 })
             });
         }

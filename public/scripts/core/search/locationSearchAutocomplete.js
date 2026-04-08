@@ -57,7 +57,6 @@ export function setupNamedLocations(pointsGeoJSON) {
     .map(feature => {
         const coords = feature.geometry.coordinates;
 
-        // TODO: Doesn't snap to the map grid so it may fuck up?
         return {
             name: feature.properties.name,
             searchName: normalizeText(feature.properties.name),
@@ -71,7 +70,6 @@ async function searchLocations(query) {
     const normalizedQuery = normalizeText(query);
 
     try {
-	    // TODO: Maybe try Nominatim if cannot be searched, but otherwise, resort to just placing down a pin on the map.
         let results = namedLocations.filter(place =>
             place.searchName.startsWith(normalizedQuery)
         );
