@@ -187,3 +187,14 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 });
+
+try {
+    const jeepRoutesData = await apiFetch("/getJeepRoutes", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    console.log(jeepRoutesData);
+} catch (err) {
+    console.error(err);
+}
