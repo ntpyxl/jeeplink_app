@@ -340,58 +340,15 @@
                                 <tr class="text-gray-500 text-sm border-b">
                                     <th class="py-3">Route ID</th>
                                     <th class="py-3">Route Name</th>
-                                    <th class="py-3">Start</th>
-                                    <th class="py-3">End</th>
+                                    <th class="py-3">Parent Route ID</th>
                                     <th class="py-3">Status</th>
+                                    <th class="py-3">Route Type</th>
                                     <th class="py-3 text-center">Actions</th>
                                 </tr>
                             </thead>
 
-                            <tbody class="text-gray-700 text-sm">
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R001</td>
-                                    <td class="py-3">Dasma Bayan</td>
-                                    <td class="py-3">SM Dasma</td>
-                                    <td class="py-3">Robinsons</td>
-                                    <td class="py-3">
-                                        <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs">Active</span>
-                                    </td>
-                                    <td class="py-3 text-center space-x-2">
-                                        <button class="text-blue-500 hover:underline">Edit</button>
-                                        <button class="text-red-500 hover:underline">Delete</button>
-                                    </td>
-                                </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R002</td>
-                                    <td class="py-3">Paliparan</td>
-                                    <td class="py-3">Salawag</td>
-                                    <td class="py-3">SM Molino</td>
-                                    <td class="py-3">
-                                        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-xs">Pending</span>
-                                    </td>
-                                    <td class="py-3 text-center space-x-2">
-                                        <button class="text-blue-500 hover:underline">Edit</button>
-                                        <button class="text-red-500 hover:underline">Delete</button>
-                                    </td>
-                                </tr>
-
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="py-3">R003</td>
-                                    <td class="py-3">Imus Loop</td>
-                                    <td class="py-3">Anabu</td>
-                                    <td class="py-3">District Imus</td>
-                                    <td class="py-3">
-                                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Inactive</span>
-                                    </td>
-                                    <td class="py-3 text-center space-x-2">
-                                        <button class="text-blue-500 hover:underline">Edit</button>
-                                        <button class="text-red-500 hover:underline">Delete</button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
+                            <!-- Render Routes Table -->
+                            <tbody id="routesTableBody" class="text-gray-700 text-sm"></tbody>
                         </table>
                     </div>
 
