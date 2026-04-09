@@ -66,18 +66,6 @@ export class RouteEditor {
             id: node.graphKey,
             neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
         }));
-
-        /* Commented blocks are for testing whether the jeep edge weights prio work or not
-        const response_uw = await apiFetch("/calculateRoute_Unweighted", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                algorithm: "dijkstra",
-                nodes: [this.nodes.map(n => n.graphKey)],
-                tempNodes: tempNodeDefinitions
-            })
-        });
-        */
         
         const response = await apiFetch("/calculateRoute", {
             method: "POST",
@@ -90,29 +78,33 @@ export class RouteEditor {
         });
 
         const { paths } = await response;
-        const routePath = paths[0].map(edge => edge.to.split(",").map(Number).reverse());
+        const edges = paths[0];
 
-        /*
-        const { paths_uw } = await response_uw;
-        const routePath_uw = paths_uw[0].map(k => k.split(",").map(Number).reverse());
-        */
+        // TODO: Route instructions to be displayed on the UI
+        const routeInstructions = formatInstructions(buildRouteInstructions(edges));
+        console.log(routeInstructions);
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
-        // if (this.routeLine_uw) this.map.removeLayer(this.routeLine_uw);
 
-        this.routeLine = L.polyline(routePath, {
-            color: "black",
-            weight: 5,
-            pane: "routePane"
-        }).addTo(this.map);
+        this.routeLine = L.layerGroup().addTo(this.map);
+        const keyToLatLng = k => k.split(",").map(Number).reverse();
+        for (const edge of edges) {
+            const from = keyToLatLng(edge.from);
+            const to = keyToLatLng(edge.to);
+            
+            const style = edge.mode === "jeep"
+                ? { color: "#1E90FF", weight: 6 }
+                : { color: "#666", weight: 4, dashArray: "6 6" };
 
-        /*
-        this.routeLine_uw = L.polyline(routePath_uw, {
-            color: "red",
-            weight: 2,
-            pane: "routePane"
-        }).addTo(this.map);
-        */
+            const segment = L.polyline([from, to], {
+                color: style.color,
+                dashArray: style.dashArray ?? "1",
+                weight: style.weight,
+                pane: "routePane"
+            });
+
+            this.routeLine.addLayer(segment);
+        }
 
         if(this.addInteractability) this.addRouteInteractability(this.routeLine);
     }
@@ -255,4 +247,64 @@ export class RouteEditor {
             this.drawRoute();
         })
     }
+}
+
+function buildRouteInstructions(edges) {
+    const instructions = [];
+
+    let currentMode = null;
+    let currentRoute = null;
+    let start = null;
+    let distance = 0;
+
+    for (const edge of edges) {
+        if (!currentMode) {
+            currentMode = edge.mode;
+            currentRoute = edge.route_name || null;
+            start = edge.from;
+        }
+
+        const modeChanged = edge.mode !== currentMode;
+        const routeChanged = edge.route_name !== currentRoute;
+
+        if (modeChanged || routeChanged) {
+            instructions.push({
+                mode: currentMode,
+                route_name: currentRoute,
+                start,
+                end: edge.from,
+                distance
+            });
+
+            currentMode = edge.mode;
+            currentRoute = edge.route_name || null;
+            start = edge.from;
+            distance = 0;
+        }
+
+        distance += edge.weight;
+    }
+
+    if (edges.length) {
+        instructions.push({
+            mode: currentMode,
+            route_name: currentRoute,
+            start,
+            end: edges[edges.length - 1].to,
+            distance
+        });
+    }
+
+    return instructions;
+}
+
+function formatInstructions(steps) {
+    return steps.map(step => {
+        if (step.mode === "walk") {
+            return `Walk ${step.distance.toFixed(0)} meters`;
+        }
+        if (step.mode === "jeep") {
+            return `Ride jeep (${step.route_name}) for ${step.distance.toFixed(0)} meters`;
+        }
+    });
 }
