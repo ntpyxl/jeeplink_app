@@ -25,7 +25,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 // Fetch and setup required JSON files
-const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
 fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
     .then(r => r.json())
     .then(setupNamedLocations);
