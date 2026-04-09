@@ -33,6 +33,17 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    <style>
+        body { display: none; }
+    </style>
+
+    <script type="module">
+        import { checkAuth } from "../scripts/core/accountHandler.js";
+
+        checkAuth();
+        document.body.style.display = "block";
+    </script>
+
 </head>
 <body>
     <div class="flex">
