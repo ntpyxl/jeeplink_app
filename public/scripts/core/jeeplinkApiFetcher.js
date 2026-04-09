@@ -24,7 +24,7 @@ async function getAPIBase() {
     return baseAPI;
 }
 
-export async function apiFetch(endpoint, options = {}, requireAuth = true, redirectOn401 = true) {
+export async function apiFetch(endpoint, options = {}, requireAuth = true) {
     const base = await getAPIBase();
 
     if (requireAuth) {
@@ -39,17 +39,9 @@ export async function apiFetch(endpoint, options = {}, requireAuth = true, redir
 
     const res = await fetch(base + endpoint, options);
 
-    // if (!res.ok) {
-    //     // Optional: handle 401 globally
-    //     if (res.status === 401 && requireAuth) {
-    //         localStorage.removeItem("token");
-    //         window.location.href = "./admin/login.html";
-    //     }
-    //     throw new Error(`API request failed: ${res.status}`);
-    // }
-
     if (!res.ok) {
-        if (res.status === 401 && requireAuth && redirectOn401) {
+        // Optional: handle 401 globally
+        if (res.status === 401 && requireAuth) {
             localStorage.removeItem("token");
             window.location.href = "./admin/login.html";
         }

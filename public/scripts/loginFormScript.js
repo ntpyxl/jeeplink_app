@@ -48,7 +48,7 @@ $(document).ready(function () {
                     username: usernameValue,
                     password: passwordValue
                 })
-            }, false, false);
+            }, false);
 
             if (response.access_token) {
                 localStorage.setItem("token", response.access_token);
