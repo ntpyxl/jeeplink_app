@@ -67,6 +67,18 @@ export class RouteEditor {
             neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
         }));
 
+        /* Commented blocks are for testing whether the jeep edge weights prio work or not
+        const response_uw = await apiFetch("/calculateRoute_Unweighted", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                algorithm: "dijkstra",
+                nodes: [this.nodes.map(n => n.graphKey)],
+                tempNodes: tempNodeDefinitions
+            })
+        });
+        */
+        
         const response = await apiFetch("/calculateRoute", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -78,15 +90,29 @@ export class RouteEditor {
         });
 
         const { paths } = await response;
-        const routePath = paths[0].map(k => k.split(",").map(Number).reverse());
+        const routePath = paths[0].map(edge => edge.to.split(",").map(Number).reverse());
+
+        /*
+        const { paths_uw } = await response_uw;
+        const routePath_uw = paths_uw[0].map(k => k.split(",").map(Number).reverse());
+        */
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
+        // if (this.routeLine_uw) this.map.removeLayer(this.routeLine_uw);
 
         this.routeLine = L.polyline(routePath, {
-            color: "orange",
+            color: "black",
             weight: 5,
             pane: "routePane"
         }).addTo(this.map);
+
+        /*
+        this.routeLine_uw = L.polyline(routePath_uw, {
+            color: "red",
+            weight: 2,
+            pane: "routePane"
+        }).addTo(this.map);
+        */
 
         if(this.addInteractability) this.addRouteInteractability(this.routeLine);
     }

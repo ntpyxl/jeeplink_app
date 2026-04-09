@@ -62,7 +62,7 @@ export class RouteRenderer {
         }
 
         this.calculatedRoutes.paths.forEach(path => {
-            const routePath = path.map(k => k.split(",").map(Number).reverse());
+            const routePath = path.map(edge => edge.to.split(",").map(Number).reverse());
 
             const line = L.polyline(routePath, {
                 color: "blue",

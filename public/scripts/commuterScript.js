@@ -62,8 +62,18 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeRenderer = new RouteRenderer(map);
+const routeRenderer = new RouteRenderer({
+    map: map, 
+    snapToRoad: snapToRoad,
+    graphHelper: graphHelper
+});
 const routeGenerated = new RouteEditor({
+    map: map,
+    graphHelper: graphHelper,
+    addInteractability: false
+});
+
+const debugMarkers = new RouteEditor({
     map: map,
     graphHelper: graphHelper,
     addInteractability: false
