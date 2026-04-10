@@ -1,10 +1,11 @@
 import { apiFetch } from "../core/jeeplinkApiFetcher.js";
 
 export class RouteEditor {
-    constructor({ map, snapToRoad, graphHelper, addInteractability = false }) {
+    constructor({ map, snapToRoad, graphHelper, fareMatrix, addInteractability = false }) {
         this.map = map;
         this.snapToRoad = snapToRoad;
         this.graphHelper = graphHelper;
+        this.fareMatrix = fareMatrix;
         this.addInteractability = addInteractability;
 
         this.nodes = [];
@@ -81,8 +82,16 @@ export class RouteEditor {
         const edges = paths[0];
 
         // TODO: Route instructions to be displayed on the UI
-        const routeInstructions = formatInstructions(buildRouteInstructions(edges));
-        console.log(routeInstructions);
+        const routeInstructions = buildRouteInstructions(edges);
+        const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
+
+        const completeRouteInformation = {
+            shortest: {
+                routeInformation: routeInformation,
+                routeInstructions: formatInstructions(routeInstructions)
+            }
+        }
+        console.log(completeRouteInformation);
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
 
@@ -298,13 +307,93 @@ function buildRouteInstructions(edges) {
     return instructions;
 }
 
-function formatInstructions(steps) {
-    return steps.map(step => {
-        if (step.mode === "walk") {
-            return `Walk ${step.distance.toFixed(0)} meters`;
-        }
+function buildRouteInformation(steps, fareMatrix) {
+    const routeDistance = ((steps.reduce((sum, step) => sum + step.distance, 0)) / 1000).toFixed(2); // Convert to kilometer if >= 1000 meters
+    const jeepRideCount = steps.filter(step => step.mode === "jeep").length;
+    
+    // TODO: Very tentative and perhaps inaccurate as it does not consider traffic yet.
+    const speeds = {
+        walk: 1.2, // m/s
+        jeep: 6    // m/s
+    };
+
+    const tripDuration = steps.reduce((duration, step) => {
+        const speed = speeds[step.mode];
+        return speed ? duration + (step.distance / speed) : duration;
+    }, 0);
+
+    const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
-            return `Ride jeep (${step.route_name}) for ${step.distance.toFixed(0)} meters`;
+            const rideDistanceKm = Math.round(step.distance.toFixed(0) / 1000);
+
+            const traditionalFares = fareCalculator(rideDistanceKm, fareMatrix[0]);
+            const nonAcModernFares = fareCalculator(rideDistanceKm, fareMatrix[1]);
+            const acModernFares = fareCalculator(rideDistanceKm, fareMatrix[2]);
+
+            totals.regular.traditional += traditionalFares.regularPrice;
+            totals.regular.nonAcModern += nonAcModernFares.regularPrice;
+            totals.regular.acModern += acModernFares.regularPrice;
+
+            totals.discounted.traditional += traditionalFares.discountedPrice;
+            totals.discounted.nonAcModern += nonAcModernFares.discountedPrice;
+            totals.discounted.acModern += acModernFares.discountedPrice;
+        }
+
+        return totals;
+    }, {
+        regular: {
+            traditional: 0,
+            nonAcModern: 0,
+            acModern: 0
+        },
+        discounted: {
+            traditional: 0,
+            nonAcModern: 0,
+            acModern: 0
         }
     });
+    
+    return {
+        routeDistance: routeDistance,
+        jeepRideCount: jeepRideCount,
+        tripDuration: tripDuration,
+        routeCost: routeCost
+    }
+}
+
+function formatInstructions(steps) {
+    const routeinstructions = steps.map(step => {
+        const stepDistance = step.distance.toFixed(0);
+        if (step.mode === "walk") {
+            return `Walk ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;
+        }
+        if (step.mode === "jeep") {
+            return `Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;  
+        }
+    });
+
+    return routeinstructions
+}
+
+function fareCalculator(distanceKm, fareMatrix) {
+    const regular = distanceKm <= fareMatrix.base_distance_km
+                        ? Math.round(fareMatrix.regular_base_fare / fareMatrix.rounding) * fareMatrix.rounding
+                        : Math.round(
+                            (fareMatrix.regular_base_fare + (
+                                (Math.round(distanceKm) - fareMatrix.base_distance_km) * fareMatrix.regular_per_km)
+                            ) / fareMatrix.rounding
+                        ) * fareMatrix.rounding
+
+    const discounted = distanceKm <= fareMatrix.base_distance_km
+                        ? Math.round(fareMatrix.discount_base_fare / fareMatrix.rounding) * fareMatrix.rounding
+                        : Math.round(
+                            (fareMatrix.discount_base_fare + (
+                                (Math.round(distanceKm) - fareMatrix.base_distance_km) * fareMatrix.discount_per_km)
+                            ) / fareMatrix.rounding
+                        ) * fareMatrix.rounding
+
+    return {
+        regularPrice: regular,
+        discountedPrice: discounted
+    }
 }
