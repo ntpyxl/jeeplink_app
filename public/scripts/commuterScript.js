@@ -2,6 +2,7 @@ import { GraphHelper } from "./core/graphHelper.js";
 import { RouteEditor } from "./core/routeEditor.js";
 import { RouteRenderer } from "./core/routeRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
+import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -25,9 +26,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 // Fetch and setup required JSON files
-const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
-fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
-    .then(r => r.json())
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
+const fareMatrix = await apiFetch("/getFareMatrix", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ matrixId: 0 })
+});
+fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json())
     .then(setupNamedLocations);
 
 const roadsGeoJSON = await roadsPromise;
@@ -62,10 +67,15 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeRenderer = new RouteRenderer(map);
+const routeRenderer = new RouteRenderer({
+    map: map, 
+    snapToRoad: snapToRoad,
+    graphHelper: graphHelper
+});
 const routeGenerated = new RouteEditor({
     map: map,
     graphHelper: graphHelper,
+    fareMatrix: fareMatrix,
     addInteractability: false
 });
 

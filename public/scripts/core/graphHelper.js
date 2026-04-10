@@ -41,8 +41,8 @@ export class GraphHelper {
                 if (!graph.has(aKey)) graph.set(aKey, []);
                 if (!graph.has(bKey)) graph.set(bKey, []);
 
-                graph.get(aKey).push({ to: bKey, weight: dist });
-                graph.get(bKey).push({ to: aKey, weight: dist });
+                graph.get(aKey).push({ to: bKey, weight: dist, mode: "walk" });
+                graph.get(bKey).push({ to: aKey, weight: dist, mode: "walk" });
             }
         });
 
@@ -84,8 +84,8 @@ export class GraphHelper {
 
         // Store the neighbors using the EXACT string keys
         this.graph.set(key, [
-            { to: aKey, weight: distA },
-            { to: bKey, weight: distB }
+            { to: aKey, weight: distA, mode: "walk" },
+            { to: bKey, weight: distB, mode: "walk" }
         ]);
 
         return key;

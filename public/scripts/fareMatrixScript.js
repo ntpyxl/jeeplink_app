@@ -145,7 +145,7 @@ async function loadFareMatrices() {
         const response = await apiFetch("/getFareMatrix", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ matrixId: "0" })
+            body: JSON.stringify({ matrixId: 0 })
         });
 
         const source = Array.isArray(response)
