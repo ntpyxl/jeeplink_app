@@ -409,8 +409,32 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
                             </div>
 
-                            <!-- Add Button -->
-                            <button class="cursor-pointer bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap">
+                            <!-- Edit-only fields -->
+                            <div id="editRouteFields" class="hidden flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                                <div class="relative w-full sm:w-48">
+                                    <input type="text" id="drawnJeepRouteParentId" placeholder="Parent Route ID"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                </div>
+
+                                <div class="relative w-full sm:w-40">
+                                    <select id="drawnJeepRouteStatus"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                        <option value="enabled">Enabled</option>
+                                        <option value="disabled">Disabled</option>
+                                    </select>
+                                </div>
+
+                                <div class="relative w-full sm:w-40">
+                                    <select id="drawnJeepRouteType"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                        <option value="main">Main</option>
+                                        <option value="temporary">Temporary</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Add / Save Button -->
+                            <button id="saveDrawnJeepRoute" class="cursor-pointer bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap">
                                 + Add Route
                             </button>
                         </div>
@@ -430,13 +454,6 @@
                                 class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm">
                                 <i class="fas fa-trash-alt text-gray-600"></i>
                                 Clear
-                            </button>
-
-                            <!-- Save -->
-                            <button id="saveDrawnJeepRoute"
-                                class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-400 text-black hover:bg-yellow-500 transition text-sm shadow-sm">
-                                <i class="fas fa-save"></i>
-                                Save
                             </button>
 
                             <!-- Toggle -->
@@ -463,73 +480,7 @@
         </main>
     </div>
 
-    <!-- Edit Route Modal -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-9999 backdrop-blur-sm">
-
-        <div class="relative bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden">
-
-            <!-- Header Bar -->
-            <div class="bg-gradient-to-r from-[#84C177] to-[#2E7D32] px-6 py-4">
-                <h2 class="text-lg font-semibold text-white">
-                    Edit Route
-                </h2>
-            </div>
-
-            <div class="p-6">
-                <input type="hidden" id="editRouteId">
-
-                <div class="space-y-4">
-
-                    <!-- Route Name -->
-                    <div>
-                        <label class="text-sm text-gray-600">Route Name</label>
-                        <input id="editRouteName" type="text" placeholder="Enter route name"
-                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg 
-                            focus:outline-none focus:ring-2 focus:ring-[#84C177] focus:border-[#84C177] transition">
-                    </div>
-
-                    <!-- Route Type -->
-                    <div>
-                        <label class="text-sm text-gray-600">Route Type</label>
-                        <select id="editRouteType"
-                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg 
-                            focus:outline-none focus:ring-2 focus:ring-[#84C177] focus:border-[#84C177] transition">
-                            <option value="main">Main</option>
-                            <option value="temporary">Temporary</option>
-                        </select>
-                    </div>
-
-                    <!-- Status -->
-                    <div>
-                        <label class="text-sm text-gray-600">Status</label>
-                        <select id="editRouteStatus"
-                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg 
-                            focus:outline-none focus:ring-2 focus:ring-[#84C177] focus:border-[#84C177] transition">
-                            <option value="enabled">Enabled</option>
-                            <option value="disabled">Disabled</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Buttons -->
-                <div class="flex justify-end mt-6 gap-3">
-                    <button id="closeEditModal"
-                        class="cursor-pointer px-4 py-2 rounded-lg bg-gray-200 text-gray-700 
-                        hover:bg-gray-300 transition text-sm shadow-sm">
-                        Cancel
-                    </button>
-
-                    <button id="saveEditRoute"
-                        class="cursor-pointer px-4 py-2 rounded-lg 
-                        bg-[#2E7D32] text-white 
-                        hover:bg-[#256628] transition text-sm shadow-md">
-                        Save Changes
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- TODO: Implement delete route functionality -->
     <!-- Delete Route Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-9999 backdrop-blur-sm">
 

@@ -59,6 +59,44 @@ const routeRenderer = new RouteRenderer({
     graphHelper: graphHelper
 });
 
+let jeepRoutes = [];
+let editingRouteId = null;
+const routeNameInput = $("#drawnJeepRouteName");
+const routeParentInput = $("#drawnJeepRouteParentId");
+const routeStatusSelect = $("#drawnJeepRouteStatus");
+const routeTypeSelect = $("#drawnJeepRouteType");
+const editRouteFields = $("#editRouteFields");
+
+function enterEditMode(route) {
+    editingRouteId = route.id;
+    routeNameInput.val(route.name || "");
+    routeParentInput.val(route.parent_route_id ?? "");
+    routeStatusSelect.val((route.status || "enabled").toLowerCase());
+    routeTypeSelect.val((route.type || "main").toLowerCase());
+    editRouteFields.removeClass("hidden");
+
+    const saveButton = $("#saveDrawnJeepRoute");
+    saveButton
+        .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .addClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .html('<i class="fas fa-save"></i><span> Save Route</span>');
+}
+
+function exitEditMode() {
+    editingRouteId = null;
+    routeNameInput.val("");
+    routeParentInput.val("");
+    routeStatusSelect.val("enabled");
+    routeTypeSelect.val("main");
+    editRouteFields.addClass("hidden");
+
+    const saveButton = $("#saveDrawnJeepRoute");
+    saveButton
+        .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .text("+ Add Route");
+}
+
 roadsLayer.on("click", async event => {
     const snapped = snapToRoad(event.latlng);
     if (!snapped) return;
@@ -150,8 +188,12 @@ $("#rebuildPublicRoadsGraph").on("click", async () => {
 
 function clearDrawnJeepRoute() {
     routeEditor.clear();
-    $("#drawnJeepRouteName").val("");
+    routeNameInput.val("");
+    routeParentInput.val("");
+    routeStatusSelect.val("enabled");
+    routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
+    exitEditMode();
 }
 
 $("#clearDrawnJeepRoute").on("click", () => {
@@ -159,7 +201,36 @@ $("#clearDrawnJeepRoute").on("click", () => {
 });
 
 $("#saveDrawnJeepRoute").on("click", async () => {
+    const routeName = routeNameInput.val().trim();
+    if (!routeName) {
+        alert("Route name is required.");
+        return;
+    }
+
     try {
+        if (editingRouteId) {
+            const updatedRoute = {
+                id: editingRouteId,
+                name: routeName,
+                parent_route_id: routeParentInput.val().trim() || null,
+                status: routeStatusSelect.val(),
+                type: routeTypeSelect.val()
+            };
+
+            const index = jeepRoutes.findIndex(route => route.id === editingRouteId);
+            if (index !== -1) {
+                jeepRoutes[index] = {
+                    ...jeepRoutes[index],
+                    ...updatedRoute
+                };
+                renderRoutesTable(jeepRoutes);
+            }
+
+            clearDrawnJeepRoute();
+            alert("Route changes have been applied locally. Save changes with the backend update endpoint when available.");
+            return;
+        }
+
         const nodes = routeEditor.nodes.map(node => ({
             id: node.id,
             roadId: node.roadId,
@@ -171,7 +242,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val() || "Unnamed Jeep Route",
+                routeName: routeName || "Unnamed Jeep Route",
                 nodes: nodes
             })
         });
@@ -188,15 +259,22 @@ $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 });
 
+$("#routesTableBody").on("click", ".edit-route-btn", function() {
+    const routeId = $(this).data("route-id");
+    const route = jeepRoutes.find(route => route.id === routeId);
+    if (!route) return;
+
+    enterEditMode(route);
+});
+
 try {
     const jeepRoutesData = await apiFetch("/getJeepRoutes", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });
 
-    console.log("Fetched Jeep Routes Data:", jeepRoutesData);
-
-    renderRoutesTable(jeepRoutesData.queryData);
+    jeepRoutes = jeepRoutesData.queryData || [];
+    renderRoutesTable(jeepRoutes);
 } catch (err) {
     console.error(err);
 }
