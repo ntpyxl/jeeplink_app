@@ -20,12 +20,15 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
 let jeepRoutes = null;
 
-const { queryData: jeepRoutesData } = await apiFetch("/getJeepRoutes", {
-    method: "GET",
+const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        page_number: 1
+    })
 });
 
-jeepRoutes = jeepRoutesData || [];
+jeepRoutes = route_data || [];
 renderRoutesTable(jeepRoutes, $("#routesTableBody"));
 
 // Assigns a road ID to each road
@@ -133,6 +136,7 @@ function exitEditMode() {
     routeTypeSelect.val("main");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
+    clearDrawnJeepRoute();
 
     $("#saveDrawnJeepRoute")
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
@@ -267,10 +271,10 @@ $("#cancelEditRoute").on("click", () => {
 
 $("#routesTableBody").on("click", ".edit-route-btn", function() {
     const routeId = parseInt($(this).data("route-id"));
-    const route = jeepRoutes.find(route => route.id === routeId);
-    if (!route) return;
+    const routeData = jeepRoutes.find(route => route.id === routeId);
+    if (!routeData) return;
 
-    enterEditMode(route);
+    enterEditMode(routeData);
 });
 
 $("#routesTableBody").on("click", ".delete-route-btn", async function() {
@@ -278,8 +282,12 @@ $("#routesTableBody").on("click", ".delete-route-btn", async function() {
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
+    // TODO: Preview route to be deleted
+
     // TODO: Tentative route deletion modal
-    if(!confirm(`Are you sure you want to delete ${routeData.name}?`)) return;
+    if(!confirm(`Are you sure you want to delete ${routeData.name}?`)) {
+        return;
+    }
 
     try {
         await apiFetch("/deleteJeepRoute", {
@@ -306,15 +314,17 @@ function clearDrawnJeepRoute() {
     routeStatusSelect.val("enabled");
     routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
-    exitEditMode();
 }
 
-async function reloadJeepRouteData() {
-    const { queryData: jeepRoutesData } = await apiFetch("/getJeepRoutes", {
-        method: "GET",
+async function reloadJeepRouteData(pageNumber = 1) {
+    const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            page_number: pageNumber
+        })
     });
 
-    jeepRoutes = jeepRoutesData || [];
+    jeepRoutes = route_data || [];
     renderRoutesTable(jeepRoutes, $("#routesTableBody"));
 }
