@@ -80,6 +80,8 @@ function enterEditMode(route) {
         .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .addClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .html('<i class="fas fa-save"></i><span> Save Route</span>');
+
+    $("#cancelEditRoute").removeClass("hidden");
 }
 
 function exitEditMode() {
@@ -95,6 +97,8 @@ function exitEditMode() {
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .text("+ Add Route");
+
+    $("#cancelEditRoute").addClass("hidden");
 }
 
 roadsLayer.on("click", async event => {
@@ -253,6 +257,10 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         console.error(err);
         alert("Failed to save Jeepney Route.");
     }
+});
+
+$("#cancelEditRoute").on("click", () => {
+    exitEditMode();
 });
 
 $("#toggleJeepRoutes").on("click", async () => {
