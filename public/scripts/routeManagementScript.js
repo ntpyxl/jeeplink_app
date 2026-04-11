@@ -1,7 +1,8 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { GraphHelper } from "./core/graphHelper.js";
 import { RouteEditor } from "./core/routeEditor.js";
-import { RouteRenderer } from "./core/routeRenderer.js";
+import { snapToRoad } from "./helper/snapToRoadFunction.js";
+import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { renderRoutesTable } from "./ui/routeTableRowScript.js";
 
 const map = L.map("map", {
@@ -57,14 +58,14 @@ map.on("zoomend", () => {
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const routeEditor = new RouteEditor({
-    map: map, 
-    snapToRoad: snapToRoad,
+    map: map,
+    roadsGeoJSON: roadsGeoJSON,
     graphHelper: graphHelper,
     addInteractability: true
 });
-const routeRenderer = new RouteRenderer({
-    map: map, 
-    snapToRoad: snapToRoad,
+const savedRouteRenderer = new SavedRouteRenderer({
+    map: map,
+    roadsGeoJSON: roadsGeoJSON,
     graphHelper: graphHelper
 });
 
@@ -100,7 +101,7 @@ async function enterEditMode(route) {
     routeEditor.clear();
 
     for(let node of jeepRouteData.nodes) {
-        const snapped = snapToRoad({lat: node.latitude, lng: node.longitude})
+        const snapped = snapToRoad({lat: node.latitude, lng: node.longitude}, roadsGeoJSON)
         if (!snapped) return;
 
         const graphNodeKey = graphHelper.insertTemporaryNode(
@@ -136,8 +137,8 @@ function exitEditMode() {
         .text("+ Add Route");
 }
 
-roadsLayer.on("click", async event => {
-    const snapped = snapToRoad(event.latlng);
+roadsLayer.on("click", async e => {
+    const snapped = snapToRoad(e.latlng, roadsGeoJSON);
     if (!snapped) return;
 
     // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
@@ -195,7 +196,7 @@ $("#clearDrawnJeepRoute").on("click", () => {
 });
 
 $("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
+    savedRouteRenderer.toggle();
 });
 
 $("#saveDrawnJeepRoute").on("click", async () => {
@@ -287,39 +288,7 @@ $("#routesTableBody").on("click", ".delete-route-btn", async function() {
     }
 });
 
-function snapToRoad(latlng) {
-    const clicked = turf.point([latlng.lng, latlng.lat]);
 
-    let closestRoad = null;
-    let closestSnap = null;
-    let minDist = Infinity;
-
-    roadsGeoJSON.features.forEach(road => {
-        const snap = turf.nearestPointOnLine(road, clicked);
-        const dist = snap.properties.dist;
-
-        if (dist < minDist) {
-            minDist = dist;
-            closestRoad = road;
-            closestSnap = snap;
-        }
-    });
-
-    if (!closestRoad) return null;
-
-    const coords = closestRoad.geometry.coordinates;
-    const segmentIndex = closestSnap.properties.index;
-
-    // Prevent overflow
-    if (segmentIndex >= coords.length - 1) segmentIndex = coords.length - 2;
-
-    return {
-        coordinates: closestSnap.geometry.coordinates,
-        roadId: closestRoad.properties.id,
-        segmentA: coords[segmentIndex],
-        segmentB: coords[segmentIndex + 1]
-    };
-}
 
 function clearDrawnJeepRoute() {
     routeEditor.clear();

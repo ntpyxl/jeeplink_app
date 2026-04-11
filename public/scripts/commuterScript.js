@@ -1,8 +1,9 @@
 import { GraphHelper } from "./core/graphHelper.js";
-import { RouteEditor } from "./core/routeEditor.js";
-import { RouteRenderer } from "./core/routeRenderer.js";
+import { CommuterRouter } from "./core/commuterRouter.js";
+import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
+import { snapToRoad } from "./helper/snapToRoadFunction.js";
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -67,25 +68,26 @@ map.on("zoomend", () => {
 
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
-const routeRenderer = new RouteRenderer({
-    map: map, 
-    snapToRoad: snapToRoad,
+const savedRouteRenderer = new SavedRouteRenderer({
+    map: map,
+    roadsGeoJSON: roadsGeoJSON,
     graphHelper: graphHelper
 });
-const routeGenerated = new RouteEditor({
+const routeGenerated = new CommuterRouter({
     map: map,
+    roadsGeoJSON: roadsGeoJSON,
     graphHelper: graphHelper,
     fareMatrix: fareMatrix,
     addInteractability: false
 });
 
 $("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
+    savedRouteRenderer.toggle();
 })
 
 function addRouteNode(data, type = null) {
     const latlng = data.coords;
-    const snapped = snapToRoad({ lat: latlng[1], lng: latlng[0] });
+    const snapped = snapToRoad({lat: latlng[1], lng: latlng[0]}, roadsGeoJSON);
     const graphNodeKey = graphHelper.insertTemporaryNode(
         snapped.coordinates,
         snapped.segmentA,
@@ -100,40 +102,6 @@ function addRouteNode(data, type = null) {
     };
 
     routeGenerated.addNode({node: node, type: type});
-}
-
-function snapToRoad(latlng) {
-    const clicked = turf.point([latlng.lng, latlng.lat]);
-
-    let closestRoad = null;
-    let closestSnap = null;
-    let minDist = Infinity;
-
-    roadsGeoJSON.features.forEach(road => {
-        const snap = turf.nearestPointOnLine(road, clicked);
-        const dist = snap.properties.dist;
-
-        if (dist < minDist) {
-            minDist = dist;
-            closestRoad = road;
-            closestSnap = snap;
-        }
-    });
-
-    if (!closestRoad) return null;
-
-    const coords = closestRoad.geometry.coordinates;
-    let segmentIndex = closestSnap.properties.index;
-
-    // Prevent overflow
-    if (segmentIndex >= coords.length - 1) segmentIndex = coords.length - 2;
-
-    return {
-        coordinates: closestSnap.geometry.coordinates,
-        roadId: closestRoad.properties.id,
-        segmentA: coords[segmentIndex],
-        segmentB: coords[segmentIndex + 1]
-    };
 }
 
 let startingPoint = null;

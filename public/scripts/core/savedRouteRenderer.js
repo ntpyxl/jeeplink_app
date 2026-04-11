@@ -1,9 +1,10 @@
-import { apiFetch } from "../core/jeeplinkApiFetcher.js";
+import { apiFetch } from "./jeeplinkApiFetcher.js";
+import { snapToRoad } from "../helper/snapToRoadFunction.js";
 
-export class RouteRenderer {
-    constructor({ map, snapToRoad, graphHelper }) {
+export class SavedRouteRenderer {
+    constructor({ map, roadsGeoJSON, graphHelper }) {
         this.map = map;
-        this.snapToRoad = snapToRoad;
+        this.roadsGeoJSON = roadsGeoJSON;
         this.graphHelper = graphHelper;
 
         this.routes = null;
@@ -24,10 +25,7 @@ export class RouteRenderer {
             const routeGraphKeys = [];
 
             route.nodes.forEach(node => {
-                const snapped = this.snapToRoad({
-                    lat: node.latitude,
-                    lng: node.longitude
-                });
+                const snapped = snapToRoad({lat: node.latitude, lng: node.longitude}, this.roadsGeoJSON);
 
                 if (!snapped) return;
                 const graphKey = this.graphHelper.insertTemporaryNode(
