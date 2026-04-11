@@ -132,13 +132,12 @@ function exitEditMode() {
     routeStatusSelect.val("enabled");
     routeTypeSelect.val("main");
     editRouteFields.addClass("hidden");
+    $("#cancelEditRoute").addClass("hidden");
 
     $("#saveDrawnJeepRoute")
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .text("+ Add Route");
-
-    $("#cancelEditRoute").addClass("hidden");
 }
 
 roadsLayer.on("click", async e => {
@@ -264,10 +263,6 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 
 $("#cancelEditRoute").on("click", () => {
     exitEditMode();
-});
-
-$("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
 });
 
 $("#routesTableBody").on("click", ".edit-route-btn", function() {
