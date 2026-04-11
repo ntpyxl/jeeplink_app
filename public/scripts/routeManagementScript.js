@@ -206,7 +206,12 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         return;
     }
 
-    try {
+    if(routeEditor.nodes.length <= 1) {
+        alert("No routes have been drawn yet.");
+        return;
+    }
+
+    try {       
         if (editingRouteId) {
             const nodes = routeEditor.nodes.map(node => ({
                 id: node.id,
