@@ -3,27 +3,36 @@ import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 let currentMatrixId = null;
 
 const matrixLabels = {
-    "1": "PUJ general fare guide",
-    "2": "Non-aircon modern & electric PUJ",
-    "3": "Aircon modern & electric PUJ"
+    "1": "PUJ GENERAL FARE GUIDE",
+    "2": "NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE",
+    "3": "AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE"
 };
 
 function closeUpdateMatrixModal() {
     $("#updateMatrixModal").removeClass("fare-matrix-modal--open");
     $("#modalPdfInput").val("");
+    $("#modalPdfFilename").text("No file chosen");
     document.body.style.overflow = "";
 }
 
 function openUpdateMatrixModal(matrixId) {
     currentMatrixId = matrixId;
-    const label = matrixLabels[matrixId] || `Matrix ${matrixId}`;
-    $("#targetMatrixId").text(label);
+    const storeMatrix = typeof window.getFareMatrixById === "function"
+        ? window.getFareMatrixById(matrixId)
+        : null;
+    const title = storeMatrix?.title || matrixLabels[matrixId] || `Matrix ${matrixId}`;
+    $("#targetMatrixId").text(title);
     $("#updateMatrixModal").addClass("fare-matrix-modal--open");
     document.body.style.overflow = "hidden";
 }
 
 $('.openUpdateMatrixModal').on('click', function() {
     openUpdateMatrixModal($(this).attr('data-id'));
+});
+
+$("#modalPdfInput").on("change", function () {
+    const file = this.files && this.files[0];
+    $("#modalPdfFilename").text(file ? file.name : "No file chosen");
 });
 
 $('#closeUpdateMatrixModalButton, #closeUpdateMatrixModalX').on('click', closeUpdateMatrixModal);
@@ -42,39 +51,40 @@ const toNum = value => Number.parseFloat(value) || 0;
 const roundToQuarter = value => Math.round(value * 4) / 4;
 const toMoney = value => roundToQuarter(value).toFixed(2);
 
-const MAX_TABLE_KM = 40;
+const MAX_TABLE_KM = 50;
 
-function roundToStep(value, step) {
-    const s = toNum(step);
-    if (!s || s <= 0) return value;
-    return Math.round(value / s) * s;
-}
+const DEFAULT_EFFECTIVE_DATE = "JANUARY 01, 2000";
 
 function buildTableRows(raw) {
-    const baseKm = Math.max(1, toNum(raw?.base_distance_km ?? raw?.baseDistanceKm ?? 4));
+    const baseKm = Math.max(0, toNum(raw?.base_distance_km ?? raw?.baseDistanceKm ?? 4));
     const regBase = toNum(raw?.regular_base_fare ?? raw?.regularBaseFare);
     const regPer = toNum(raw?.regular_per_km ?? raw?.regularPerKm);
     const discBase = toNum(raw?.discount_base_fare ?? raw?.discountBaseFare);
     const discPer = toNum(raw?.discount_per_km ?? raw?.discountPerKm);
-    const step = raw?.rounding != null ? toNum(raw.rounding) : 0.25;
+    const rounding = raw?.rounding != null ? toNum(raw.rounding) : 0.25;
+    const referenceKm = 4; 
 
     const rows = [];
-    for (let d = 1; d <= MAX_TABLE_KM; d++) {
-        const regRaw = d <= baseKm ? regBase : regBase + (d - baseKm) * regPer;
-        const discRaw = d <= baseKm ? discBase : discBase + (d - baseKm) * discPer;
+    for (let km = 1; km <= MAX_TABLE_KM; km++) {
+        const regRaw = km <= baseKm ? regBase : regBase + (km - referenceKm) * regPer;
+        const regRounded = Math.round(regRaw * 4) / 4;
+
+        const discRaw = km <= baseKm ? discBase : discBase + (km - referenceKm) * discPer;
+        const discRounded = rounding > 0 ? Math.round(discRaw / rounding) * rounding : discRaw;
+
         rows.push({
-            distance: d,
-            regular: roundToStep(regRaw, step).toFixed(2),
-            discounted: roundToStep(discRaw, step).toFixed(2)
+            distance: km,
+            regular: toMoney(regRounded),
+            discounted: toMoney(discRounded)
         });
     }
     return rows;
 }
 
 function formatDate(raw) {
-    if (!raw) return "";
+    if (!raw) return DEFAULT_EFFECTIVE_DATE;
     const date = new Date(raw);
-    if (Number.isNaN(date.getTime())) return String(raw);
+    if (Number.isNaN(date.getTime())) return DEFAULT_EFFECTIVE_DATE;
     return date.toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -85,6 +95,7 @@ function formatDate(raw) {
 function normalizeMatrix(matrix) {
     return {
         matrixId: String(matrix?.matrixId ?? matrix?.id ?? matrix?.matrix_id ?? ""),
+        title: String(matrix?.title ?? matrix?.matrix_title ?? ""),
         effectiveDate: formatDate(matrix?.effectiveDate ?? matrix?.dateEffective ?? matrix?.updated_at ?? matrix?.effective_date ?? ""),
         regularBaseFare: toMoney(toNum(matrix?.regularBaseFare ?? matrix?.first4kmFare ?? matrix?.regular_base_fare ?? matrix?.baseFare)),
         regularPerKm: toMoney(toNum(matrix?.regularPerKm ?? matrix?.perKmFare ?? matrix?.regular_per_km ?? matrix?.succeedingKmFare)),
@@ -119,10 +130,10 @@ function renderFareTableBodies(matricesById) {
         if (!tbody || !matrix?.tableRows?.length) return;
         tbody.innerHTML = matrix.tableRows
             .map(
-                row => `<tr class="border-b hover:bg-gray-50">
-                <td class="py-2">${row.distance}</td>
-                <td class="py-2">${row.regular}</td>
-                <td class="py-2">${row.discounted}</td>
+                row => `<tr class="fare-matrix-card-table-row">
+                <td class="fare-matrix-card-table-cell">${row.distance}</td>
+                <td class="fare-matrix-card-table-cell">${row.regular}</td>
+                <td class="fare-matrix-card-table-cell">${row.discounted}</td>
             </tr>`
             )
             .join("");
@@ -202,3 +213,19 @@ $('#uploadFareMatrixFile').on('click', async () => {
 });
 
 loadFareMatrices();
+
+function setupMatrixTableToggles() {
+    document.querySelectorAll(".fare-matrix-view-table-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-id");
+            if (!id) return;
+
+            const wrap = document.getElementById(`fare-matrix-table-wrap-${id}`);
+            if (!wrap) return;
+
+            wrap.classList.toggle("fare-matrix-table-wrap-collapsed");
+        });
+    });
+}
+
+setupMatrixTableToggles();

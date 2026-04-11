@@ -59,6 +59,44 @@ const routeRenderer = new RouteRenderer({
     graphHelper: graphHelper
 });
 
+let jeepRoutes = [];
+let editingRouteId = null;
+const routeNameInput = $("#drawnJeepRouteName");
+const routeParentInput = $("#drawnJeepRouteParentId");
+const routeStatusSelect = $("#drawnJeepRouteStatus");
+const routeTypeSelect = $("#drawnJeepRouteType");
+const editRouteFields = $("#editRouteFields");
+
+function enterEditMode(route) {
+    editingRouteId = route.id;
+    routeNameInput.val(route.name || "");
+    routeParentInput.val(route.parent_route_id ?? "");
+    routeStatusSelect.val((route.status || "enabled").toLowerCase());
+    routeTypeSelect.val((route.type || "main").toLowerCase());
+    editRouteFields.removeClass("hidden");
+
+    const saveButton = $("#saveDrawnJeepRoute");
+    saveButton
+        .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .addClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .html('<i class="fas fa-save"></i><span> Save Route</span>');
+}
+
+function exitEditMode() {
+    editingRouteId = null;
+    routeNameInput.val("");
+    routeParentInput.val("");
+    routeStatusSelect.val("enabled");
+    routeTypeSelect.val("main");
+    editRouteFields.addClass("hidden");
+
+    const saveButton = $("#saveDrawnJeepRoute");
+    saveButton
+        .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .text("+ Add Route");
+}
+
 roadsLayer.on("click", async event => {
     const snapped = snapToRoad(event.latlng);
     if (!snapped) return;
@@ -150,8 +188,12 @@ $("#rebuildPublicRoadsGraph").on("click", async () => {
 
 function clearDrawnJeepRoute() {
     routeEditor.clear();
-    $("#drawnJeepRouteName").val("");
+    routeNameInput.val("");
+    routeParentInput.val("");
+    routeStatusSelect.val("enabled");
+    routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
+    exitEditMode();
 }
 
 $("#clearDrawnJeepRoute").on("click", () => {
@@ -159,7 +201,36 @@ $("#clearDrawnJeepRoute").on("click", () => {
 });
 
 $("#saveDrawnJeepRoute").on("click", async () => {
+    const routeName = routeNameInput.val().trim();
+    if (!routeName) {
+        alert("Route name is required.");
+        return;
+    }
+
     try {
+        if (editingRouteId) {
+            const updatedRoute = {
+                id: editingRouteId,
+                name: routeName,
+                parent_route_id: routeParentInput.val().trim() || null,
+                status: routeStatusSelect.val(),
+                type: routeTypeSelect.val()
+            };
+
+            const index = jeepRoutes.findIndex(route => route.id === editingRouteId);
+            if (index !== -1) {
+                jeepRoutes[index] = {
+                    ...jeepRoutes[index],
+                    ...updatedRoute
+                };
+                renderRoutesTable(jeepRoutes);
+            }
+
+            clearDrawnJeepRoute();
+            alert("Route changes have been applied locally. Save changes with the backend update endpoint when available.");
+            return;
+        }
+
         const nodes = routeEditor.nodes.map(node => ({
             id: node.id,
             roadId: node.roadId,
@@ -171,7 +242,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                routeName: $("#drawnJeepRouteName").val() || "Unnamed Jeep Route",
+                routeName: routeName || "Unnamed Jeep Route",
                 nodes: nodes
             })
         });
@@ -188,13 +259,78 @@ $("#toggleJeepRoutes").on("click", async () => {
     routeRenderer.toggle();
 });
 
+$("#routesTableBody").on("click", ".edit-route-btn", function() {
+    const routeId = $(this).data("route-id");
+    const route = jeepRoutes.find(route => route.id === routeId);
+    if (!route) return;
+
+    enterEditMode(route);
+});
+
 try {
     const jeepRoutesData = await apiFetch("/getJeepRoutes", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });
 
-    console.log(jeepRoutesData);
+    jeepRoutes = jeepRoutesData.queryData || [];
+    renderRoutesTable(jeepRoutes);
 } catch (err) {
     console.error(err);
+}
+
+// Dynamically renders the table of jeep routes based on the provided data + adds edit/delete button functionality (to be implemented)
+function renderRoutesTable(routes) {
+    const tableBody = $("#routesTableBody");
+    tableBody.empty();
+
+    routes.forEach(route => {
+        const statusStyle = getStatusStyle(route.status);
+        const routeTypeStyle = getRouteTypeStyle(route.type);
+
+        const row = $(`
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-3">${route.id}</td>
+                <td class="py-3">${route.name}</td>
+                <td class="py-3">${route.parent_route_id ?? "—"}</td>
+                <td class="py-3">
+                    <span class="${statusStyle.class}">${route.status}</span>
+                </td>
+                <td class="py-3">
+                    <span class="${routeTypeStyle.class}">${route.type}</span>
+                </td>
+                <td class="py-3 text-center space-x-2">
+                    <button class="text-blue-500 hover:underline cursor-pointer edit-route-btn" data-route-id="${route.id}">Edit</button>
+                    <button class="text-red-500 hover:underline cursor-pointer delete-route-btn" data-route-id="${route.id}">Delete</button>
+                </td>
+            </tr>
+        `);
+        tableBody.append(row);
+    });
+}
+
+function getStatusStyle(status) {
+    const formattedStatus = status.toLowerCase();
+
+    switch (formattedStatus) {
+        case "enabled":
+            return { class: "bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs" };
+        case "disabled":
+            return { class: "bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs" };
+        default:
+            return { class: "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs" };
+    }
+}
+
+function getRouteTypeStyle(type) {
+    const formattedType = type.toLowerCase();
+
+    switch (formattedType) {
+        case "main":
+            return { class: "bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs" };
+        case "temporary":
+            return { class: "bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs" };
+        default:
+            return { class: "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs" };
+    }
 }

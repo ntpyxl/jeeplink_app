@@ -8,21 +8,21 @@
     <!-- JeepLink Tab Logo -->
     <link rel="icon" type="image/png" href="../images/tab-logo.png">
 
-    <!-- Tailwind Cdn (Install Tailwind) -->
+    <!-- Tailwind Cdn -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <!-- Google Font (Install if possible) -->
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
      <!-- Custom CSS -->
-    <link rel="stylesheet" href="../styles/custom.css">
+    <link rel="stylesheet" href="styles/admin.css">
 
-    <!-- Font Awesome (Install if possible) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- JQuery -->
+    <!-- JQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 
@@ -58,7 +58,8 @@
         </div>
 
         <!-- Right Side -->
-        <div class="col-span-1 lg:col-span-2 flex flex-col items-center justify-start lg:justify-center px-4 py-10">
+        <div class="col-span-1 lg:col-span-2 flex flex-col items-center justify-start lg:justify-center px-4 py-10 
+            bg-gradient-to-b from-[#1F3720] to-[#519154] lg:bg-none">
             <div class="flex justify-center mb-6 lg:hidden">
                 <img src="../images/JeepLink-Logo2.png"
                     class="h-40 bg-[#F0F0F0] rounded-full p-3 shadow-md"
@@ -86,9 +87,24 @@
                         <i id="togglePassword" class="fas fa-eye absolute right-3 cursor-pointer "></i>
                     </div>
 
+                    <!-- Error Message -->
+                     <div id="errorMessage" class="hidden text-red-400 text-sm text-center bg-red-100 p-3 rounded-lg"></div>
+
                     <!-- Button -->
-                    <button type="submit" class="w-full mt-4 self-center px-8 py-3 bg-gradient-to-r from-[#519154] to-[#D2E781] text-white rounded-xl hover:from-[#1B5E20] hover:to-[#0D47A1] focus:outline-none focus:ring-2 focus:ring-green-500 transition">
-                        Login
+                    <button id="loginBtn" type="submit"
+                        class="w-full mt-2 flex items-center justify-center gap-2 px-8 py-3 
+                                bg-gradient-to-r from-[#519154] to-[#D2E781] 
+                                text-white rounded-xl cursor-pointer
+                                hover:from-[#1F3720] hover:to-[#519154] 
+                                focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+
+                        <!-- Spinner -->
+                        <div id="loadingSpinner"
+                            class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin">
+                        </div>
+
+                        <!-- Text -->
+                        <span id="btnText" class="text-md">Login</span>
                     </button>
                 </form>
 
@@ -100,7 +116,10 @@
         </div>
     </main>
 
+    <!-- Core Script -->
     <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
+
+    <!-- Login Form Script -->
     <script src="../scripts/loginFormScript.js" type="module"></script>
 </body>
 </html>

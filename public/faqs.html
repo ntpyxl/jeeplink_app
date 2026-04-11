@@ -8,146 +8,259 @@
     <!-- JeepLink Tab Logo -->
     <link rel="icon" type="image/png" href="images/tab-logo.png">
 
-    <!-- Tailwind Cdn (Install Tailwind) -->
+    <!-- Tailwind Cdn -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- Google Font (Install if possible) -->
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/custom.css">
+
+    <!-- JQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
-    </head>
-    <body>
-        <!-- Start of Navigation Bar -->
-        <nav class="bg-white shadow relative z-50">
-            <div class="container mx-auto flex justify-between items-center px-4 py-3">
+</head>
+<body>
+    <!-- Start of Navigation Bar -->
+    <nav class="bg-white shadow relative z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-3">
 
-                <!-- Logo -->
-                <a href="index.html" class="flex items-center">
-                    <img src="images/JeepLink-Logo.png" 
-                        alt="JeepLink Logo" 
-                        class="h-24 sm:h-20 md:h-28 lg:h-32 transition-all">
-                </a>
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center">
+                <img src="images/JeepLink-Logo.png" 
+                    alt="JeepLink Logo" 
+                    class="h-24 sm:h-20 md:h-28 lg:h-32 transition-all">
+            </a>
 
-                <!-- Desktop links -->
-                <div class="hidden md:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
-                    <a href="index.html" class="hover:text-black transition">Home</a>
-                    <a href="map.html" class="hover:text-black transition">Map</a>
-                    <a href="report.html" class="hover:text-black transition">Report</a>
-                    <a href="guide.html" class="hover:text-black transition">Guide</a>
-                    <a href="faqs.html" class="hover:text-black transition">FAQs</a>
+            <!-- Desktop links -->
+            <div class="hidden md:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
+                <a href="index.html" class="hover:text-black transition">Home</a>
+                <a href="map.html" class="hover:text-black transition">Map</a>
+                <a href="report.html" class="hover:text-black transition">Report</a>
+                                
+                <!-- Help -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Help
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="guide.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Guide
+                            </a>
+
+                            <a href="faqs.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            FAQs
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Hamburger Button -->
-                <button id="menuBtn" class="md:hidden p-2 rounded-lg">
-                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
-                        <rect x="3" y="5" width="18" height="2" rx="1" fill="#0B5A2B"/>
-                        <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B"/>
-                        <rect x="3" y="17" width="18" height="2" rx="1" fill="#0B5A2B"/>
-                    </svg>
-                </button>
+                <!-- Legal -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1">
+                        Legal
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="privacy.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Privacy Policy
+                            </a>
+
+                            <a href="terms.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Terms of Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Mobile Menu -->
-            <div id="mobileMenu" 
-                class="md:hidden absolute left-0 top-full w-full 
-                        bg-white rounded-b-2xl shadow-lg overflow-hidden
-                        max-h-0 transition-all duration-300 ease-in-out">
+            <!-- Hamburger Button -->
+            <button id="menuBtn" class="md:hidden p-2 rounded-lg">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="17" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                </svg>
+            </button>
+        </div>
 
-                <div class="flex flex-col gap-3 text-[#2E7D32] text-lg py-4">
-                    <a href="index.html" class="hover:text-black text-center transition">Home</a>
-                    <a href="map.html" class="hover:text-black text-center transition">Map</a>
-                    <a href="report.html" class="hover:text-black text-center transition">Report</a>
-                    <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
-                    <a href="faqs.html" class="py-2 bg-[#2E7D32] text-white hover:text-black text-center transition">FAQs</a>
-                </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" 
+            class="md:hidden absolute left-0 top-full w-full 
+                    bg-white rounded-b-2xl shadow-lg overflow-hidden
+                    max-h-0 transition-all duration-300 ease-in-out">
+
+            <div class="flex flex-col gap-3 text-[#2E7D32] text-lg py-4">
+                <a href="index.html" class="hover:text-black text-center transition">Home</a>
+                <a href="map.html" class="hover:text-black text-center transition">Map</a>
+                <a href="report.html" class="hover:text-black text-center transition">Report</a>
+                <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
+                <a href="faqs.html" class="py-2 bg-[#2E7D32] text-white hover:text-black text-center transition">FAQs</a>
             </div>
-        </nav>
-        <!-- End of Navigation Bar -->
+        </div>
+    </nav>
+    <!-- End of Navigation Bar -->
 
-        <!-- FAQs Section -->
-        <main class="min-h-screen flex flex-col">
-            <!-- Banner -->
-            <section class="report-hero-bg border-b-4 border-[#2D4B30]">
-                <div class="container mx-auto px-4 sm:px-6 md:px-10 py-16 text-center text-white">
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl leading-tight">
-                        Frequently Asked <span class="text-[#E9CD2D]">Questions</span>
-                    </h1>
-                    <p class="mt-4 text-lg sm:text-xl md:text-2xl tracking-wide">
-                        Answer to common questions about using JeepLink
-                    </p>
-                </div>
-            </section>
+    <!-- FAQs Section -->
+    <main class="min-h-screen flex flex-col">
+        <!-- Banner -->
+        <section class="report-hero-bg border-b-4 border-[#2D4B30]">
+            <div class="container mx-auto px-4 sm:px-6 md:px-10 py-16 text-center text-white">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl leading-tight">
+                    Frequently Asked <span class="text-[#E9CD2D]">Questions</span>
+                </h1>
+                <p class="mt-4 text-lg sm:text-xl md:text-2xl tracking-wide">
+                    Answer to common questions about using JeepLink
+                </p>
+            </div>
+        </section>
 
-            <!-- FAQs Table -->
-            <section class="py-10 sm:py-14 report-grid-bg flex-1">
-                <div class="container mx-auto px-4 sm:px-6 md:px-10 flex flex-col gap-4 max-w-4xl">
-                    
-                    <!-- FAQ 1 -->
-                    <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
-                        <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
-                            <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
-                                <div class="text-2xl sm:text-3xl">?</div>
-                                <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
-                                    What is JeepLink?
-                                </span>
-                            </div>
-                            <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
-                                keyboard_arrow_down
+        <!-- FAQs Table -->
+        <section class="py-10 sm:py-14 report-grid-bg flex-1">
+            <div class="container mx-auto px-4 sm:px-6 md:px-10 flex flex-col gap-4 max-w-4xl">
+                
+                <!-- FAQ 1 -->
+                <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
+                    <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
+                        <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
+                            <div class="text-2xl sm:text-3xl">?</div>
+                            <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
+                                What is JeepLink?
                             </span>
-                        </summary>
-                        <div class="dropdown-content overflow-hidden">
-                            <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
-                                <p class="text-base sm:text-lg leading-relaxed">
-                                    JeepLink is a platform that connects Jeep owners with each other and with official Jeep resources. It helps users navigate routes efficiently and access official information easily.
-                                </p>
-                            </div>
                         </div>
-                    </details>
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
+                            keyboard_arrow_down
+                        </span>
+                    </summary>
+                    <div class="dropdown-content overflow-hidden">
+                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
+                            <p class="text-base sm:text-lg leading-relaxed">
+                                JeepLink is a platform that connects Jeep owners with each other and with official Jeep resources. It helps users navigate routes efficiently and access official information easily.
+                            </p>
+                        </div>
+                    </div>
+                </details>
 
-                    <!-- FAQ 2 -->
-                    <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
-                        <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
-                            <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
-                                <div class="text-2xl sm:text-3xl">?</div>
-                                <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
-                                    What is JeepLink?
-                                </span>
-                            </div>
-                            <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
-                                keyboard_arrow_down
+                <!-- FAQ 2 -->
+                <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
+                    <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
+                        <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
+                            <div class="text-2xl sm:text-3xl">?</div>
+                            <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
+                                What is JeepLink?
                             </span>
-                        </summary>
-                        <div class="dropdown-content overflow-hidden">
-                            <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
-                                <p class="text-base sm:text-lg leading-relaxed">
-                                    JeepLink is a platform that connects Jeep owners with each other and with official Jeep resources. It helps users navigate routes efficiently and access official information easily.
-                                </p>
-                            </div>
                         </div>
-                    </details>
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
+                            keyboard_arrow_down
+                        </span>
+                    </summary>
+                    <div class="dropdown-content overflow-hidden">
+                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
+                            <p class="text-base sm:text-lg leading-relaxed">
+                                JeepLink is a platform that connects Jeep owners with each other and with official Jeep resources. It helps users navigate routes efficiently and access official information easily.
+                            </p>
+                        </div>
+                    </div>
+                </details>
 
 
-                    <!-- Add more FAQs as needed -->
-                    
+                <!-- Add more FAQs as needed -->
+                
+            </div>
+        </section>
+        <!-- End of FAQs -->
+    </main>
+
+    <!-- Terms & Privacy Popup -->
+    <div id="termsModal" class="fixed inset-0 z-[9999] hidden">
+
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <!-- Modal -->
+        <div class="relative min-h-screen flex items-center justify-center px-8">
+
+            <div class="w-full max-w-lg rounded-2xl bg-white/90 backdrop-blur-xl shadow-2xl border border-white/40 p-7 md:p-8 space-y-6">
+
+                <!-- Icon -->
+                <div class="flex justify-center">
+                    <div class="w-16 h-16 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-lock text-[#2E7D32] text-3xl"></i>
+                    </div>
                 </div>
-            </section>
-            <!-- End of FAQs -->
-        </main>
 
-        <!-- JQuery CDN (Download) -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+                <!-- Title -->
+                <h2 class="text-center text-2xl md:text-3xl font-bold text-gray-800 leading-snug">
+                    Privacy & Terms Agreement
+                </h2>
 
-        <!-- Commuter Front End Script -->
-        <script src="scripts/ui/commuterStylingScript.js"></script>
-        
-        <script src="scripts/ui/dropdownAnimation.js"></script>
-    </body>
+                <!-- Description -->
+                <p class="text-center text-gray-700 text-base md:text-lg leading-relaxed">
+                    Before using <span class="font-semibold text-[#2E7D32]">JeepLink</span>, please review and accept our
+                    Terms of Service and Privacy Policy.
+                </p>
+
+                <!-- Links -->
+                <div class="flex justify-center gap-5 text-base">
+                    <a href="terms.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Terms
+                    </a>
+                    <span class="text-gray-300">•</span>
+                    <a href="privacy.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Privacy
+                    </a>
+                </div>
+
+                <!-- Buttons -->
+                <div class="space-y-3 pt-2">
+
+                    <button id="acceptTermsBtn"
+                        class="w-full bg-[#2E7D32] hover:bg-green-800 text-white py-3.5 rounded-xl text-base font-semibold transition shadow-md cursor-pointer">
+                        I Agree & Continue
+                    </button>
+
+                </div>
+
+                <!-- Footer note -->
+                <p class="text-xs md:text-sm text-gray-500 text-center leading-relaxed">
+                    By continuing, you agree to data processing required for navigation features and route optimization.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Commuter Front End Script -->
+    <script src="scripts/ui/commuterStylingScript.js"></script>
+    
+    <!-- Dropdown Animation Script -->
+    <script src="scripts/ui/dropdownAnimation.js"></script>
+</body>
 </html> 
