@@ -68,7 +68,8 @@ export class RouteEditor {
             neighbors: this.graphHelper.graph.get(node.graphKey) || [] // This includes the distances to segment A and segment B
         }));
         
-        const response = await apiFetch("/calculateRoute", {
+        // TODO: Unweighted for editors, weighted for commuters/users
+        const response = await apiFetch("/calculateRoute_Unweighted", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -78,23 +79,28 @@ export class RouteEditor {
             })
         });
 
-        const { paths } = await response;
-        const edges = paths[0];
+        // TODO: paths_uw for editors, paths for commuters/users
+        const { paths_uw } = await response;
+        const edges = paths_uw[0];
+        const routePath_uw = paths_uw[0].map(k => k.split(",").map(Number).reverse());
 
-        // TODO: Route instructions to be displayed on the UI
-        const routeInstructions = buildRouteInstructions(edges);
-        const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
+        if(this.fareMatrix) {
+            // TODO: Route instructions to be displayed on the UI
+            const routeInstructions = buildRouteInstructions(edges);
+            const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
 
-        const completeRouteInformation = {
-            shortest: {
-                routeInformation: routeInformation,
-                routeInstructions: formatInstructions(routeInstructions)
+            const completeRouteInformation = {
+                shortest: {
+                    routeInformation: routeInformation,
+                    routeInstructions: formatInstructions(routeInstructions)
+                }
             }
+            console.log(completeRouteInformation);
         }
-        console.log(completeRouteInformation);
 
         if (this.routeLine) this.map.removeLayer(this.routeLine);
 
+        /*
         this.routeLine = L.layerGroup().addTo(this.map);
         const keyToLatLng = k => k.split(",").map(Number).reverse();
         for (const edge of edges) {
@@ -113,7 +119,13 @@ export class RouteEditor {
             });
 
             this.routeLine.addLayer(segment);
-        }
+            */
+
+            this.routeLine = L.polyline(routePath_uw, {
+                color: "orange",
+                weight: 5,
+                pane: "routePane"
+            }).addTo(this.map);
 
         if(this.addInteractability) this.addRouteInteractability(this.routeLine);
     }

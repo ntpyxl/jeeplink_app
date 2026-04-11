@@ -2,6 +2,7 @@ import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { GraphHelper } from "./core/graphHelper.js";
 import { RouteEditor } from "./core/routeEditor.js";
 import { RouteRenderer } from "./core/routeRenderer.js";
+import { renderRoutesTable } from "./ui/routeTableRowScript.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -16,6 +17,14 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+const { queryData: jeepRoutesData } = await apiFetch("/getJeepRoutes", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+});
+
+let jeepRoutes = null;
+jeepRoutes = jeepRoutesData || [];
+renderRoutesTable(jeepRoutes, $("#routesTableBody"));
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -59,7 +68,6 @@ const routeRenderer = new RouteRenderer({
     graphHelper: graphHelper
 });
 
-let jeepRoutes = [];
 let editingRouteId = null;
 const routeNameInput = $("#drawnJeepRouteName");
 const routeParentInput = $("#drawnJeepRouteParentId");
@@ -67,19 +75,51 @@ const routeStatusSelect = $("#drawnJeepRouteStatus");
 const routeTypeSelect = $("#drawnJeepRouteType");
 const editRouteFields = $("#editRouteFields");
 
-function enterEditMode(route) {
+async function enterEditMode(route) {
     editingRouteId = route.id;
-    routeNameInput.val(route.name || "");
+
+    const jeepRouteData = await apiFetch("/getJeepRoutesWithNodesById", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            route_id: editingRouteId
+        })
+    });
+
+    routeNameInput.val(route.name);
     routeParentInput.val(route.parent_route_id ?? "");
-    routeStatusSelect.val((route.status || "enabled").toLowerCase());
-    routeTypeSelect.val((route.type || "main").toLowerCase());
+    routeStatusSelect.val((route.status).toLowerCase());
+    routeTypeSelect.val((route.type).toLowerCase());
     editRouteFields.removeClass("hidden");
 
-    const saveButton = $("#saveDrawnJeepRoute");
-    saveButton
+    $("#saveDrawnJeepRoute")
         .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .addClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .html('<i class="fas fa-save"></i><span> Save Route</span>');
+
+    routeEditor.clear();
+
+    for(let node of jeepRouteData.nodes) {
+        const snapped = snapToRoad({lat: node.latitude, lng: node.longitude})
+        if (!snapped) return;
+
+        const graphNodeKey = graphHelper.insertTemporaryNode(
+            snapped.coordinates,
+            snapped.segmentA,
+            snapped.segmentB
+        );   
+        
+        const formattedNode = {
+            id: crypto.randomUUID(),
+            coordinates: snapped.coordinates,
+            roadId: snapped.roadId,
+            graphKey: graphNodeKey,
+            marker: null
+        };
+
+        routeEditor.addNode({node: formattedNode});
+    }
+    await routeEditor.drawRoute();
 }
 
 function exitEditMode() {
@@ -90,8 +130,7 @@ function exitEditMode() {
     routeTypeSelect.val("main");
     editRouteFields.addClass("hidden");
 
-    const saveButton = $("#saveDrawnJeepRoute");
-    saveButton
+    $("#saveDrawnJeepRoute")
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .text("+ Add Route");
@@ -124,6 +163,128 @@ roadsLayer.on("click", async event => {
 
     $("#startNodeText").text(routeEditor.getStartNode().graphKey);
     if(routeEditor.nodes.length > 1) $("#endNodeText").text(routeEditor.getEndNode().graphKey);
+});
+
+// TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
+// Takes around 6.7s to save
+$("#rebuildPublicRoadsGraph").on("click", async () => {
+    try {
+        const response = await fetch("/api/saveBlobFile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                filename: "Dasma_RoadGraph-PublicRoads.json",
+                fileData: Object.fromEntries(graphHelper.graph)
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+
+        alert("Successfully saved new Public Roads Graph Data!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Public Roads Graph Data.");
+    }
+});
+
+$("#clearDrawnJeepRoute").on("click", () => {
+    clearDrawnJeepRoute();
+});
+
+$("#toggleJeepRoutes").on("click", async () => {
+    routeRenderer.toggle();
+});
+
+$("#saveDrawnJeepRoute").on("click", async () => {
+    const routeName = routeNameInput.val().trim();
+    if (!routeName) {
+        alert("Route name is required.");
+        return;
+    }
+
+    try {
+        if (editingRouteId) {
+            const nodes = routeEditor.nodes.map(node => ({
+                id: node.id,
+                roadId: node.roadId,
+                graphKey: node.graphKey,
+                coordinates: node.coordinates
+            }));
+
+            await apiFetch("/updateJeepRoute", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    route_id: editingRouteId,
+                    route_name: routeName || "Unnamed Jeep Route",
+                    route_status: routeStatusSelect.val(),
+                    route_type: routeTypeSelect.val(),
+                    nodes: nodes
+                })
+            });
+
+            clearDrawnJeepRoute();
+            alert("Route changes have been applied locally. Save changes with the backend update endpoint when available.");
+        } else {
+            const nodes = routeEditor.nodes.map(node => ({
+                id: node.id,
+                roadId: node.roadId,
+                graphKey: node.graphKey,
+                coordinates: node.coordinates
+            }));
+
+            await apiFetch("/insertJeepRoute", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    routeName: routeName || "Unnamed Jeep Route",
+                    nodes: nodes
+                })
+            });
+        }
+
+        clearDrawnJeepRoute();
+        alert("Successfully saved Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save Jeepney Route.");
+    }
+});
+
+$("#routesTableBody").on("click", ".edit-route-btn", function() {
+    const routeId = parseInt($(this).data("route-id"));
+    const route = jeepRoutes.find(route => route.id === routeId);
+    if (!route) return;
+
+    enterEditMode(route);
+});
+
+$("#routesTableBody").on("click", ".delete-route-btn", async function() {
+    const routeId = $(this).data("route-id");
+    const routeData = jeepRoutes.find(route => route.id === routeId);
+    if (!routeData) return;
+
+    // TODO: Tentative route deletion modal
+    if(!confirm(`Are you sure you want to delete ${routeData.name}?`)) return;
+
+    try {
+        await apiFetch("/deleteJeepRoute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                route_id: routeId
+            })
+        });
+
+        clearDrawnJeepRoute();
+        alert("Successfully deleted Jeepney Route!");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to delete Jeepney Route.");
+    }
 });
 
 function snapToRoad(latlng) {
@@ -160,32 +321,6 @@ function snapToRoad(latlng) {
     };
 }
 
-// TODO: Currently does NOT check if changes have been made before actually saving, wasting resources.
-// Takes around 6.7s to save
-// six sevennnnnnn
-$("#rebuildPublicRoadsGraph").on("click", async () => {
-    try {
-        const response = await fetch("/api/saveBlobFile", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                filename: "Dasma_RoadGraph-PublicRoads.json",
-                fileData: Object.fromEntries(graphHelper.graph)
-            })
-        });
-
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error);
-
-        alert("Successfully saved new Public Roads Graph Data!");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save Public Roads Graph Data.");
-    }
-});
-
 function clearDrawnJeepRoute() {
     routeEditor.clear();
     routeNameInput.val("");
@@ -194,143 +329,4 @@ function clearDrawnJeepRoute() {
     routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
     exitEditMode();
-}
-
-$("#clearDrawnJeepRoute").on("click", () => {
-    clearDrawnJeepRoute();
-});
-
-$("#saveDrawnJeepRoute").on("click", async () => {
-    const routeName = routeNameInput.val().trim();
-    if (!routeName) {
-        alert("Route name is required.");
-        return;
-    }
-
-    try {
-        if (editingRouteId) {
-            const updatedRoute = {
-                id: editingRouteId,
-                name: routeName,
-                parent_route_id: routeParentInput.val().trim() || null,
-                status: routeStatusSelect.val(),
-                type: routeTypeSelect.val()
-            };
-
-            const index = jeepRoutes.findIndex(route => route.id === editingRouteId);
-            if (index !== -1) {
-                jeepRoutes[index] = {
-                    ...jeepRoutes[index],
-                    ...updatedRoute
-                };
-                renderRoutesTable(jeepRoutes);
-            }
-
-            clearDrawnJeepRoute();
-            alert("Route changes have been applied locally. Save changes with the backend update endpoint when available.");
-            return;
-        }
-
-        const nodes = routeEditor.nodes.map(node => ({
-            id: node.id,
-            roadId: node.roadId,
-            graphKey: node.graphKey,
-            coordinates: node.coordinates
-        }));
-
-        await apiFetch("/insertJeepRoute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                routeName: routeName || "Unnamed Jeep Route",
-                nodes: nodes
-            })
-        });
-
-        clearDrawnJeepRoute();
-        alert("Successfully saved Jeepney Route!");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save Jeepney Route.");
-    }
-});
-
-$("#toggleJeepRoutes").on("click", async () => {
-    routeRenderer.toggle();
-});
-
-$("#routesTableBody").on("click", ".edit-route-btn", function() {
-    const routeId = $(this).data("route-id");
-    const route = jeepRoutes.find(route => route.id === routeId);
-    if (!route) return;
-
-    enterEditMode(route);
-});
-
-try {
-    const jeepRoutesData = await apiFetch("/getJeepRoutes", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-    });
-
-    jeepRoutes = jeepRoutesData.queryData || [];
-    renderRoutesTable(jeepRoutes);
-} catch (err) {
-    console.error(err);
-}
-
-// Dynamically renders the table of jeep routes based on the provided data + adds edit/delete button functionality (to be implemented)
-function renderRoutesTable(routes) {
-    const tableBody = $("#routesTableBody");
-    tableBody.empty();
-
-    routes.forEach(route => {
-        const statusStyle = getStatusStyle(route.status);
-        const routeTypeStyle = getRouteTypeStyle(route.type);
-
-        const row = $(`
-            <tr class="border-b hover:bg-gray-50">
-                <td class="py-3">${route.id}</td>
-                <td class="py-3">${route.name}</td>
-                <td class="py-3">${route.parent_route_id ?? "—"}</td>
-                <td class="py-3">
-                    <span class="${statusStyle.class}">${route.status}</span>
-                </td>
-                <td class="py-3">
-                    <span class="${routeTypeStyle.class}">${route.type}</span>
-                </td>
-                <td class="py-3 text-center space-x-2">
-                    <button class="text-blue-500 hover:underline cursor-pointer edit-route-btn" data-route-id="${route.id}">Edit</button>
-                    <button class="text-red-500 hover:underline cursor-pointer delete-route-btn" data-route-id="${route.id}">Delete</button>
-                </td>
-            </tr>
-        `);
-        tableBody.append(row);
-    });
-}
-
-function getStatusStyle(status) {
-    const formattedStatus = status.toLowerCase();
-
-    switch (formattedStatus) {
-        case "enabled":
-            return { class: "bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs" };
-        case "disabled":
-            return { class: "bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs" };
-        default:
-            return { class: "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs" };
-    }
-}
-
-function getRouteTypeStyle(type) {
-    const formattedType = type.toLowerCase();
-
-    switch (formattedType) {
-        case "main":
-            return { class: "bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs" };
-        case "temporary":
-            return { class: "bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs" };
-        default:
-            return { class: "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs" };
-    }
 }
