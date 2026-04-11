@@ -18,12 +18,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
+let jeepRoutes = null;
+
 const { queryData: jeepRoutesData } = await apiFetch("/getJeepRoutes", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
 });
 
-let jeepRoutes = null;
 jeepRoutes = jeepRoutesData || [];
 renderRoutesTable(jeepRoutes, $("#routesTableBody"));
 
@@ -231,9 +232,6 @@ $("#saveDrawnJeepRoute").on("click", async () => {
                     nodes: nodes
                 })
             });
-
-            clearDrawnJeepRoute();
-            alert("Route changes have been applied locally. Save changes with the backend update endpoint when available.");
         } else {
             const nodes = routeEditor.nodes.map(node => ({
                 id: node.id,
@@ -253,6 +251,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         }
 
         clearDrawnJeepRoute();
+        reloadJeepRouteData()
         alert("Successfully saved Jeepney Route!");
     } catch (err) {
         console.error(err);
@@ -286,14 +285,13 @@ $("#routesTableBody").on("click", ".delete-route-btn", async function() {
         });
 
         clearDrawnJeepRoute();
+        reloadJeepRouteData()
         alert("Successfully deleted Jeepney Route!");
     } catch (err) {
         console.error(err);
         alert("Failed to delete Jeepney Route.");
     }
 });
-
-
 
 function clearDrawnJeepRoute() {
     routeEditor.clear();
@@ -303,4 +301,14 @@ function clearDrawnJeepRoute() {
     routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
     exitEditMode();
+}
+
+async function reloadJeepRouteData() {
+    const { queryData: jeepRoutesData } = await apiFetch("/getJeepRoutes", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    jeepRoutes = jeepRoutesData || [];
+    renderRoutesTable(jeepRoutes, $("#routesTableBody"));
 }
