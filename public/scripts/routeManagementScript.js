@@ -79,6 +79,11 @@ const routeParentInput = $("#drawnJeepRouteParentId");
 const routeStatusSelect = $("#drawnJeepRouteStatus");
 const routeTypeSelect = $("#drawnJeepRouteType");
 const editRouteFields = $("#editRouteFields");
+const deleteModal = $("#deleteModal");
+const deleteRouteIdInput = $("#deleteRouteId");
+const deleteRouteNameLabel = $("#deleteRouteName");
+const cancelDeleteBtn = $("#cancelDelete");
+const confirmDeleteBtn = $("#confirmDelete");
 
 async function enterEditMode(route) {
     editingRouteId = route.id;
@@ -97,6 +102,7 @@ async function enterEditMode(route) {
     routeTypeSelect.val((route.type).toLowerCase());
     editRouteFields.removeClass("hidden");
     $("#cancelEditRoute").removeClass("hidden");
+    $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").addClass("hidden");
 
     $("#saveDrawnJeepRoute")
         .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
@@ -136,6 +142,7 @@ function exitEditMode() {
     routeTypeSelect.val("main");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
+    $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").removeClass("hidden");
     clearDrawnJeepRoute();
 
     $("#saveDrawnJeepRoute")
@@ -277,17 +284,22 @@ $("#routesTableBody").on("click", ".edit-route-btn", function() {
     enterEditMode(routeData);
 });
 
-$("#routesTableBody").on("click", ".delete-route-btn", async function() {
+$("#routesTableBody").on("click", ".delete-route-btn", function() {
     const routeId = $(this).data("route-id");
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
-    // TODO: Preview route to be deleted
+    deleteRouteIdInput.val(routeId);
+    deleteRouteNameLabel.text(routeData.name);
+    deleteModal.removeClass("hidden").addClass("flex");
+});
 
-    // TODO: Tentative route deletion modal
-    if(!confirm(`Are you sure you want to delete ${routeData.name}?`)) {
-        return;
-    }
+cancelDeleteBtn.on("click", () => {
+    deleteModal.removeClass("flex").addClass("hidden");
+});
+
+confirmDeleteBtn.on("click", async () => {
+    const routeId = deleteRouteIdInput.val();
 
     try {
         await apiFetch("/deleteJeepRoute", {
@@ -298,8 +310,9 @@ $("#routesTableBody").on("click", ".delete-route-btn", async function() {
             })
         });
 
+        deleteModal.removeClass("flex").addClass("hidden");
         clearDrawnJeepRoute();
-        reloadJeepRouteData()
+        reloadJeepRouteData();
         alert("Successfully deleted Jeepney Route!");
     } catch (err) {
         console.error(err);
