@@ -82,17 +82,18 @@ export class CommuterRouter {
 
         const { paths } = await response;
         console.log(paths.fastestRoute);
+        // TODO: May want to rename this to edges
         const edges = paths.fastestRoute.routePath;
 
         if(this.fareMatrix) {
             // TODO: Route instructions to be displayed on the UI
-            const routeInstructions = buildRouteInstructions(edges);
-            const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
+            const fastestRouteInstructions = buildRouteInstructions(edges);
+            const fastestRouteInformation = buildRouteInformation(paths.fastestRoute, fastestRouteInstructions, this.fareMatrix.fareMatrixData);
 
             const completeRouteInformation = {
-                fastest: {
-                    routeInformation: routeInformation,
-                    routeInstructions: formatInstructions(routeInstructions)
+                fastestRouteInformation: {
+                    routeInformation: fastestRouteInformation,
+                    fastestRouteInstructions: formatInstructions(fastestRouteInstructions)
                 }
             }
             console.log(completeRouteInformation);
@@ -312,20 +313,28 @@ function buildRouteInstructions(edges) {
     return instructions;
 }
 
-function buildRouteInformation(steps, fareMatrix) {
-    const routeDistance = ((steps.reduce((sum, step) => sum + step.distance, 0)) / 1000).toFixed(2); // Convert to kilometer if >= 1000 meters
-    const jeepRideCount = steps.filter(step => step.mode === "jeep").length;
-    
-    // TODO: Very tentative and perhaps inaccurate as it does not consider traffic yet.
-    const speeds = {
-        walk: 1.2, // m/s
-        jeep: 6    // m/s
-    };
+function buildRouteInformation(routeInformation, steps, fareMatrix) {
+    const routeDistance = `${(routeInformation.totalDistanceMeters / 1000).toFixed(2)} km`; // Convert to kilometer if >= 1000 meters
+    const jeepRidesCount = `${routeInformation.jeepRidesCount} jeep rides`;
+    const tripDurationSeconds = routeInformation.routeDurationSeconds;
 
-    const tripDuration = steps.reduce((duration, step) => {
-        const speed = speeds[step.mode];
-        return speed ? duration + (step.distance / speed) : duration;
-    }, 0);
+    const hours = Math.floor(tripDurationSeconds / 3600);
+    const minutes = Math.floor((tripDurationSeconds % 3600) / 60);
+    const seconds = Math.floor(tripDurationSeconds % 60);
+
+    const parts = [];
+
+    if (hours > 0) {
+        parts.push(`${hours} hr`);
+    }
+
+    if (minutes > 0 || hours > 0) {
+        parts.push(`${minutes} min`);
+    }
+
+    parts.push(`${seconds.toString().padStart(2, '0')} sec`);
+
+    const tripDurationFormatted = parts.join(' ');
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
@@ -360,8 +369,9 @@ function buildRouteInformation(steps, fareMatrix) {
     
     return {
         routeDistance: routeDistance,
-        jeepRideCount: jeepRideCount,
-        tripDuration: tripDuration,
+        jeepRidesCount: jeepRidesCount,
+        tripDurationSeconds: tripDurationSeconds,
+        tripDurationFormatted: tripDurationFormatted,
         routeCost: routeCost
     }
 }
