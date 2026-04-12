@@ -48,11 +48,11 @@ export class SavedRouteRenderer {
     async display() {
         if (!this.calculatedRoutes) {
             if (!this.routes) await this.loadRoutes();
-            this.calculatedRoutes = await apiFetch("/calculateRoute", {
+            this.calculatedRoutes = await apiFetch("/calculateRoute_Unweighted", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    algorithm: "dijkstra",
+                    algorithm: "a_star",
                     nodes: this.routes,
                     tempNodes: this.tempNodes
                 })
@@ -60,7 +60,7 @@ export class SavedRouteRenderer {
         }
 
         this.calculatedRoutes.paths.forEach(path => {
-            const routePath = path.map(edge => edge.to.split(",").map(Number).reverse());
+            const routePath = path.map(k => k.split(",").map(Number).reverse());
 
             const line = L.polyline(routePath, {
                 color: "blue",

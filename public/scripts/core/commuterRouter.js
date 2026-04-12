@@ -73,14 +73,16 @@ export class CommuterRouter {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                algorithm: "dijkstra",
+                // TODO: algorithm variable no longer being read in backend api. double check this for other calculateRoute calls
+                algorithm: "a_star",
                 nodes: [this.nodes.map(n => n.graphKey)],
                 tempNodes: tempNodeDefinitions
             })
         });
 
         const { paths } = await response;
-        const edges = paths[0];
+        console.log(paths.fastestRoute);
+        const edges = paths.fastestRoute.routePath;
 
         if(this.fareMatrix) {
             // TODO: Route instructions to be displayed on the UI
@@ -88,7 +90,7 @@ export class CommuterRouter {
             const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
 
             const completeRouteInformation = {
-                shortest: {
+                fastest: {
                     routeInformation: routeInformation,
                     routeInstructions: formatInstructions(routeInstructions)
                 }
@@ -294,7 +296,7 @@ function buildRouteInstructions(edges) {
             distance = 0;
         }
 
-        distance += edge.weight;
+        distance += edge.distance;
     }
 
     if (edges.length) {

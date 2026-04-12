@@ -174,8 +174,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    // TODO: Still using Dijkstra, should be A* now
-    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
+    // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
     await routeGenerated.drawRoute();
 })
 
