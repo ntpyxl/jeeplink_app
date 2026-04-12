@@ -131,25 +131,29 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
         });
 
         const PlacePinLocationItem = createPlacePinLocationItem();
-        PlacePinLocationItem.on("click", async () => {
-            field.val("Place a pin on the map");
-            
-            const result = await new Promise(resolve => {
-                map.getContainer().style.cursor = "crosshair";
+            PlacePinLocationItem.on("click", async () => {
+                if(map){
+                    field.val("Place a pin on the map");
+                    
+                    const result = await new Promise(resolve => {
+                        map.getContainer().style.cursor = "crosshair";
 
-                map.once("click", (e) => {
-                    map.getContainer().style.cursor = "";
-                    resolve({
-                        name: [e.latlng.lng, e.latlng.lat],
-                        searchName: "Pinned Location",
-                        coords: [e.latlng.lng, e.latlng.lat]
+                        map.once("click", (e) => {
+                            map.getContainer().style.cursor = "";
+                            resolve({
+                                name: [e.latlng.lng, e.latlng.lat],
+                                searchName: "Pinned Location",
+                                coords: [e.latlng.lng, e.latlng.lat]
+                            });
+                        });
                     });
-                });
-            });
 
-            field.val(result.name);
-            onSelect(result);
-        });
+                    field.val(result.name);
+                    onSelect(result);
+                } else {
+                    window.location.href="./map.html";
+                }
+            });
 
         suggestionBox.append(currentLocationItem);
         suggestionBox.append(PlacePinLocationItem);
@@ -172,23 +176,27 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
 
         const PlacePinLocationItem = createPlacePinLocationItem();
         PlacePinLocationItem.on("click", async () => {
-            field.val("Place a pin on the map");
-            
-            const result = await new Promise(resolve => {
-                map.getContainer().style.cursor = "crosshair";
+            if(map){
+                field.val("Place a pin on the map");
+                
+                const result = await new Promise(resolve => {
+                    map.getContainer().style.cursor = "crosshair";
 
-                map.once("click", (e) => {
-                    map.getContainer().style.cursor = "";
-                    resolve({
-                        name: [e.latlng.lng, e.latlng.lat],
-                        searchName: "Pinned Location",
-                        coords: [e.latlng.lng, e.latlng.lat]
+                    map.once("click", (e) => {
+                        map.getContainer().style.cursor = "";
+                        resolve({
+                            name: [e.latlng.lng, e.latlng.lat],
+                            searchName: "Pinned Location",
+                            coords: [e.latlng.lng, e.latlng.lat]
+                        });
                     });
                 });
-            });
 
-            field.val(result.name);
-            onSelect(result);
+                field.val(result.name);
+                onSelect(result);
+            } else {
+                window.location.href="./map.html";
+            }
         });
 
         suggestionBox.append(currentLocationItem);
