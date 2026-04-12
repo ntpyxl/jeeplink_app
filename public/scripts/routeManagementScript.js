@@ -207,10 +207,10 @@ $("#rebuildPublicRoadsGraph").on("click", async () => {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error);
 
-        alert("Successfully saved new Public Roads Graph Data!");
+        showSuccess("Successfully saved new Public Roads Graph Data!");
     } catch (err) {
         console.error(err);
-        alert("Failed to save Public Roads Graph Data.");
+        showError("Failed to save Public Roads Graph Data.");
     }
 });
 
@@ -225,12 +225,12 @@ $("#toggleJeepRoutes").on("click", async () => {
 $("#saveDrawnJeepRoute").on("click", async () => {
     const routeName = routeNameInput.val().trim();
     if (!routeName) {
-        alert("Route name is required.");
+        showError("Route name is required.");
         return;
     }
 
     if(routeEditor.nodes.length <= 1) {
-        alert("No routes have been drawn yet.");
+        showError("No routes have been drawn yet.");
         return;
     }
 
@@ -274,10 +274,11 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 
         clearDrawnJeepRoute();
         reloadJeepRouteData()
-        alert("Successfully saved Jeepney Route!");
+
+        showSuccess("Successfully saved Jeepney Route!");
     } catch (err) {
         console.error(err);
-        alert("Failed to save Jeepney Route.");
+        showError("Failed to save Jeepney Route.");
     }
 });
 
@@ -321,11 +322,12 @@ confirmDeleteBtn.on("click", async () => {
 
         deleteModal.removeClass("flex").addClass("hidden");
         clearDrawnJeepRoute();
+        exitEditMode();
         reloadJeepRouteData();
-        alert("Successfully deleted Jeepney Route!");
+        showSuccess("Successfully deleted Jeepney Route!");
     } catch (err) {
         console.error(err);
-        alert("Failed to delete Jeepney Route.");
+        showError("Failed to delete Jeepney Route.");
     }
 });
 
@@ -372,7 +374,7 @@ async function reloadJeepRouteData(pageNumber = 1) {
         renderPagination();
     } catch (err) {
         console.error(err);
-        alert("Failed to load Jeep Routes.");
+        showError("Failed to load Jeep Routes.");
     } finally {
         $("#tableLoading").addClass("hidden");
     }
