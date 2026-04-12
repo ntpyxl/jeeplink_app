@@ -20,16 +20,25 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const roadsGeoJSON = await fetch("../api/getBlobFile?filename=Dasma_LineStrings-PublicRoads.geojson").then(r => r.json());
 let jeepRoutes = null;
 
-const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        page_number: 1
-    })
-});
+let currentPage = 1;
+let totalPages = 1;
+let totalRows = 0;
+const rowsPerPage = 10;
 
-jeepRoutes = route_data || [];
-renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+// BEFORE
+// const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({
+//         page_number: 1
+//     })
+// });
+
+// jeepRoutes = route_data || [];
+// renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+
+// AFTER
+reloadJeepRouteData(1);
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -320,6 +329,19 @@ confirmDeleteBtn.on("click", async () => {
     }
 });
 
+// PAGINATION CONTROLS
+$("#prevBtn").on("click", () => {
+    if (currentPage > 1) {
+        reloadJeepRouteData(currentPage - 1);
+    }
+});
+
+$("#nextBtn").on("click", () => {
+    if (currentPage < totalPages) {
+        reloadJeepRouteData(currentPage + 1);
+    }
+});
+
 function clearDrawnJeepRoute() {
     routeEditor.clear();
     routeNameInput.val("");
@@ -330,14 +352,60 @@ function clearDrawnJeepRoute() {
 }
 
 async function reloadJeepRouteData(pageNumber = 1) {
-    const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            page_number: pageNumber
-        })
-    });
+    $("#tableLoading").removeClass("hidden");
 
-    jeepRoutes = route_data || [];
-    renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+    try {
+        const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                page_number: pageNumber
+            })
+        });
+
+        jeepRoutes = route_data || [];
+        currentPage = pageNumber;
+        totalPages = total_pages;
+        totalRows = row_count;
+
+        renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+        renderPagination();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load Jeep Routes.");
+    } finally {
+        $("#tableLoading").addClass("hidden");
+    }
+}
+
+function renderPagination() {
+    // INFO TEXT
+    const start = (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, totalRows);
+
+    $("#paginationInfo").text(
+        `Showing ${start} to ${end} of ${totalRows} entries`
+    );
+
+    // BUTTON STATES
+    $("#prevBtn").prop("disabled", currentPage === 1);
+    $("#nextBtn").prop("disabled", currentPage === totalPages);
+
+    // PAGE NUMBERS
+    const pageContainer = $("#pageNumbers");
+    pageContainer.empty();
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = $(`
+            <button class="px-3 py-1 border rounded-lg cursor-pointer ${
+                i === currentPage ? "bg-[#35903A] text-white " : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+            }">
+                ${i}
+            </button>
+        `);
+
+        btn.on("click", () => reloadJeepRouteData(i));
+
+        pageContainer.append(btn);
+    }
 }
