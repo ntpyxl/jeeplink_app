@@ -47,14 +47,14 @@
             </a>
 
             <!-- Desktop links -->
-            <div class="hidden md:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
+            <div class="hidden lg:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
                 <a href="index.html" class="hover:text-black transition">Home</a>
                 <a href="map.html" class="hover:text-black transition">Map</a>
                 <a href="report.html" class="hover:text-black transition">Report</a>
                 
                 <!-- Help -->
                 <div class="relative group">
-                    <button class="hover:text-black transition flex items-center gap-1">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
                         Help
                         <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
                     </button>
@@ -80,7 +80,7 @@
 
                 <!-- Legal -->
                 <div class="relative group">
-                    <button class="hover:text-black transition flex items-center gap-1">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
                         Legal
                         <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
                     </button>
@@ -106,7 +106,7 @@
             </div>
 
             <!-- Hamburger Button -->
-            <button id="menuBtn" class="md:hidden p-2 rounded-lg">
+            <button id="menuBtn" class="lg:hidden p-2 rounded-lg">
                 <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
                     <rect x="3" y="5" width="18" height="2" rx="1" fill="#0B5A2B"/>
                     <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B"/>
@@ -117,7 +117,7 @@
 
         <!-- Mobile Menu -->
         <div id="mobileMenu" 
-            class="md:hidden absolute left-0 top-full w-full 
+            class="lg:hidden absolute left-0 top-full w-full 
                     bg-white rounded-b-2xl shadow-lg overflow-hidden
                     max-h-0 transition-all duration-300 ease-in-out ">
 
@@ -136,7 +136,7 @@
 
     <!-- ── Hero Section ── -->
     <main class="hero-bg min-h-[88vh] flex items-center justify-center">
-        <div class="flex flex-col items-center text-center gap-5 px-4 w-full max-w-6xl">
+        <div class="flex flex-col items-center text-center gap-5 px-4 w-full max-w-6xl md:my-12">
 
             <!-- Headline -->
             <h1 class="text-4xl md:text-6xl text-white leading-tight">
@@ -221,7 +221,7 @@
                         active:scale-95 transition-all duration-150
                         rounded-2xl md:rounded-full shadow-md
                         flex items-center justify-center
-                        py-3 md:p-4">
+                        py-3 md:p-4 cursor-pointer">
 
                     <!-- Mobile: text + icon -->
                     <span class="flex items-center gap-2 text-white font-semibold text-lg md:hidden">
@@ -254,10 +254,10 @@
                     Recently Navigated:
                 </p>
 
-                <div class="flex flex-wrap gap-2 bg-[#FFF6C1] px-4 md:px-8 py-2 opacity-80 md:w-auto">
-                    <span class="recent-tag px-3 py-1 flex items-center gap-2 text-sm md:text-base">
+                <div class="flex flex-wrap gap-2 bg-[#FFF6C1] ps-4 md:px-8 py-2 opacity-80 md:w-auto">
+                    <span class="recent-tag px-2 py-1 flex items-center gap-4 text-sm md:text-base">
                         Emilio Aguinaldo College - Cavite
-                        <button class="text-gray-500 hover:text-red-500 transition font-bold leading-none">×</button>
+                        <button class="text-gray-500 hover:text-red-500 transition font-bold leading-none cursor-pointer">×</button>
                     </span>
                 </div>
             </div>
