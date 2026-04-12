@@ -343,7 +343,19 @@
                             </thead>
 
                             <!-- Render Routes Table -->
-                            <tbody id="routesTableBody" class="text-gray-700 text-sm"></tbody>
+                            <tbody id="routesTableBody" class="text-gray-700 text-sm">
+
+                                <!-- Loading Spinner Row -->
+                                <tr id="tableLoading" class="hidden">
+                                    <td colspan="6" class="py-6">
+                                        <!-- Loading Spinner -->
+                                        <div class="flex justify-center items-center">
+                                            <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
                         </table>
                     </div>
 
@@ -351,30 +363,22 @@
                     <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
 
                         <!-- Info -->
-                        <span class="text-sm text-gray-500">
+                        <span id="paginationInfo" class="text-sm text-gray-500">
                             Showing 1 to 3 of 10 entries
                         </span>
 
                         <!-- Controls -->
                         <div class="flex items-center gap-2">
 
-                            <button class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                            <button id="prevBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
                                 Prev
                             </button>
 
-                            <button class="cursor-pointer px-3 py-1 bg-[#84C177] text-black rounded-lg font-semibold">
-                                1
-                            </button>
+                            <div id="pageNumbers" class="flex gap-2 cursor-pointer">
+                                <!-- Pages will be generated here -->
+                            </div>
 
-                            <button class="cursor-pointer px-3 py-1 border rounded-lg hover:bg-gray-100">
-                                2
-                            </button>
-
-                            <button class="cursor-pointer px-3 py-1 border rounded-lg hover:bg-gray-100">
-                                3
-                            </button>
-
-                            <button class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                            <button id="nextBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
                                 Next
                             </button>
 
