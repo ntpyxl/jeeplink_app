@@ -106,9 +106,16 @@ async function enterEditMode(route) {
     });
 
     routeNameInput.val(route.name);
-    routeParentInput.val(route.parent_route_id ?? "");
     routeStatusSelect.val((route.status).toLowerCase());
-    routeTypeSelect.val((route.type).toLowerCase());
+    const parentSelect = routeParentInput;
+    parentSelect.empty();
+    parentSelect.append('<option value="">—</option>');
+    for(let r of jeepRoutes) {
+        if (r.id !== route.id) {
+            parentSelect.append(`<option value="${r.id}">${r.name}</option>`);
+        }
+    }
+    parentSelect.val(route.parent_route_id || "");
     editRouteFields.removeClass("hidden");
     $("#cancelEditRoute").removeClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").addClass("hidden");
@@ -148,7 +155,6 @@ function exitEditMode() {
     routeNameInput.val("");
     routeParentInput.val("");
     routeStatusSelect.val("enabled");
-    routeTypeSelect.val("main");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").removeClass("hidden");
@@ -250,7 +256,8 @@ $("#saveDrawnJeepRoute").on("click", async () => {
                     route_id: editingRouteId,
                     route_name: routeName || "Unnamed Jeep Route",
                     route_status: routeStatusSelect.val(),
-                    route_type: routeTypeSelect.val(),
+                    route_type: routeParentInput.val() ? "temporary" : "main",
+                    parent_route_id: routeParentInput.val() || null,
                     nodes: nodes
                 })
             });
@@ -274,6 +281,10 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 
         clearDrawnJeepRoute();
         reloadJeepRouteData()
+
+        if (editingRouteId) {
+            exitEditMode();
+        }
 
         showSuccess("Successfully saved Jeepney Route!");
     } catch (err) {
