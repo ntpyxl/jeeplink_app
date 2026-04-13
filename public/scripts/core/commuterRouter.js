@@ -117,6 +117,7 @@ export class CommuterRouter {
             }
 
             console.log(completeRouteInformation); // TODO: Remove debug line
+            return completeRouteInformation;
         }
     }
 

@@ -175,7 +175,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
-    await routeGenerated.getAndDisplayRoutes();
+    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
 })
 
 $(document).on("click", e => {
