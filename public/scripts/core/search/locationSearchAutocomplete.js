@@ -141,7 +141,7 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
                         map.once("click", (e) => {
                             map.getContainer().style.cursor = "";
                             resolve({
-                                name: [e.latlng.lng, e.latlng.lat],
+                                name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
                                 searchName: "Pinned Location",
                                 coords: [e.latlng.lng, e.latlng.lat]
                             });
@@ -185,7 +185,7 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
                     map.once("click", (e) => {
                         map.getContainer().style.cursor = "";
                         resolve({
-                            name: [e.latlng.lng, e.latlng.lat],
+                            name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
                             searchName: "Pinned Location",
                             coords: [e.latlng.lng, e.latlng.lat]
                         });
