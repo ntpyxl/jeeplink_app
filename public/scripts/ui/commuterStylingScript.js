@@ -6,9 +6,33 @@ $(document).ready(function () {
 
     // map.html
     // Toggle when clicked
-    $("#toggleCommute").click(function () {
+    function isMobile() {
+        return window.innerWidth < 768;
+    }
+
+    // Toggle commute
+    $("#toggleCommute").on("click", function () {
         $("#commuteContent").stop().slideToggle(250);
         $("#arrow").toggleClass("rotate-180");
+    });
+
+    // AUTO CLOSE on mobile
+    function autoCloseCommute() {
+        if (isMobile()) {
+            $("#commuteContent").hide();
+            $("#arrow").addClass("rotate-180");
+        } else {
+            $("#commuteContent").show();
+            $("#arrow").removeClass("rotate-180");
+        }
+    }
+
+    // Run on load
+    autoCloseCommute();
+
+    // Run on resize (important)
+    $(window).on("resize", function () {
+        autoCloseCommute();
     });
 
     // Initially hide content on mobile
@@ -32,6 +56,7 @@ $(document).ready(function () {
     });
 
     // Route Panel 
+
     let currentRoute = 0;
 
     const $slider = $("#routeSlider");
