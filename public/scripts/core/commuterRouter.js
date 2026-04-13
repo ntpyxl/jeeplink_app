@@ -10,7 +10,11 @@ export class CommuterRouter {
         this.addInteractability = addInteractability;
 
         this.nodes = [];
-        this.routeLine = null;
+        this.routeLayers = {
+            fastest: null,
+            cheapest: null,
+            minimalTransfers: null
+        };
         
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
@@ -60,7 +64,7 @@ export class CommuterRouter {
         if(this.addInteractability) this.addNodeInteractability(node, marker, this.map);
     }
 
-    async drawRoute() {
+    async getAndDisplayRoutes() {
         if (this.nodes.length < 2) return;
 
         // Collect definitions for any "temporary" nodes (clicked points in middle of roads)
@@ -73,39 +77,64 @@ export class CommuterRouter {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                algorithm: "dijkstra",
+                // TODO: algorithm variable no longer being read in backend api. double check this for other calculateRoute calls
+                algorithm: "a_star",
                 nodes: [this.nodes.map(n => n.graphKey)],
                 tempNodes: tempNodeDefinitions
             })
         });
 
         const { paths } = await response;
-        const edges = paths[0];
+        console.log(response); // TODO: Remove debug line
 
-        if(this.fareMatrix) {
-            // TODO: Route instructions to be displayed on the UI
-            const routeInstructions = buildRouteInstructions(edges);
-            const routeInformation = buildRouteInformation(routeInstructions, this.fareMatrix.fareMatrixData);
+        this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF");
+        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e");
+        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e");
 
-            const completeRouteInformation = {
-                shortest: {
-                    routeInformation: routeInformation,
-                    routeInstructions: formatInstructions(routeInstructions)
-                }
+        if (this.fareMatrix) {
+            const routeTypes = {
+                fastest: paths.fastestRoute,
+                cheapest: paths.cheapestRoute,
+                minimalTransfer: paths.minimalTransferRoute
+            };
+
+            const completeRouteInformation = {};
+
+            for (const [key, route] of Object.entries(routeTypes)) {
+                if (!route) continue;
+
+                const instructions = buildRouteInstructions(route.routePath);
+                const info = buildRouteInformation(
+                    route,
+                    instructions,
+                    this.fareMatrix.fareMatrixData
+                );
+
+                completeRouteInformation[`${key}RouteInformation`] = {
+                    routeInformation: info,
+                    [`${key}RouteInstructions`]: formatInstructions(instructions)
+                };
             }
-            console.log(completeRouteInformation);
+
+            console.log(completeRouteInformation); // TODO: Remove debug line
+        }
+    }
+
+    drawSingleRoute(edges, type, jeep_color) {
+        // Remove existing layer for this route type
+        if (this.routeLayers[type]) {
+            this.map.removeLayer(this.routeLayers[type]);
         }
 
-        if (this.routeLine) this.map.removeLayer(this.routeLine);
-
-        this.routeLine = L.layerGroup().addTo(this.map);
+        const layerGroup = L.layerGroup().addTo(this.map);
         const keyToLatLng = k => k.split(",").map(Number).reverse();
+
         for (const edge of edges) {
             const from = keyToLatLng(edge.from);
             const to = keyToLatLng(edge.to);
-            
+
             const style = edge.mode === "jeep"
-                ? { color: "#1E90FF", weight: 6 }
+                ? { color: jeep_color, weight: 6 }
                 : { color: "#666", weight: 4, dashArray: "6 6" };
 
             const segment = L.polyline([from, to], {
@@ -115,10 +144,14 @@ export class CommuterRouter {
                 pane: "routePane"
             });
 
-            this.routeLine.addLayer(segment);
+            layerGroup.addLayer(segment);
         }
 
-        if(this.addInteractability) this.addRouteInteractability(this.routeLine);
+        this.routeLayers[type] = layerGroup;
+
+        if (this.addInteractability) {
+            this.addRouteInteractability(layerGroup);
+        }
     }
 
     removeNode(nodeId) {
@@ -294,7 +327,7 @@ function buildRouteInstructions(edges) {
             distance = 0;
         }
 
-        distance += edge.weight;
+        distance += edge.distance;
     }
 
     if (edges.length) {
@@ -310,20 +343,28 @@ function buildRouteInstructions(edges) {
     return instructions;
 }
 
-function buildRouteInformation(steps, fareMatrix) {
-    const routeDistance = ((steps.reduce((sum, step) => sum + step.distance, 0)) / 1000).toFixed(2); // Convert to kilometer if >= 1000 meters
-    const jeepRideCount = steps.filter(step => step.mode === "jeep").length;
-    
-    // TODO: Very tentative and perhaps inaccurate as it does not consider traffic yet.
-    const speeds = {
-        walk: 1.2, // m/s
-        jeep: 6    // m/s
-    };
+function buildRouteInformation(routeInformation, steps, fareMatrix) {
+    const routeDistance = `${(routeInformation.totalDistanceMeters / 1000).toFixed(2)} km`; // Convert to kilometer if >= 1000 meters
+    const jeepRidesCount = `${routeInformation.jeepRidesCount} jeep rides`;
+    const tripDurationSeconds = routeInformation.routeDurationSeconds;
 
-    const tripDuration = steps.reduce((duration, step) => {
-        const speed = speeds[step.mode];
-        return speed ? duration + (step.distance / speed) : duration;
-    }, 0);
+    const hours = Math.floor(tripDurationSeconds / 3600);
+    const minutes = Math.floor((tripDurationSeconds % 3600) / 60);
+    const seconds = Math.floor(tripDurationSeconds % 60);
+
+    const parts = [];
+
+    if (hours > 0) {
+        parts.push(`${hours} hr`);
+    }
+
+    if (minutes > 0 || hours > 0) {
+        parts.push(`${minutes} min`);
+    }
+
+    parts.push(`${seconds.toString().padStart(2, '0')} sec`);
+
+    const tripDurationFormatted = parts.join(' ');
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
@@ -358,8 +399,9 @@ function buildRouteInformation(steps, fareMatrix) {
     
     return {
         routeDistance: routeDistance,
-        jeepRideCount: jeepRideCount,
-        tripDuration: tripDuration,
+        jeepRidesCount: jeepRidesCount,
+        tripDurationSeconds: tripDurationSeconds,
+        tripDurationFormatted: tripDurationFormatted,
         routeCost: routeCost
     }
 }

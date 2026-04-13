@@ -88,11 +88,51 @@ const routeParentInput = $("#drawnJeepRouteParentId");
 const routeStatusSelect = $("#drawnJeepRouteStatus");
 const routeTypeSelect = $("#drawnJeepRouteType");
 const editRouteFields = $("#editRouteFields");
+const parentRouteSuggestions = $("#parentRouteSuggestions");
 const deleteModal = $("#deleteModal");
 const deleteRouteIdInput = $("#deleteRouteId");
 const deleteRouteNameLabel = $("#deleteRouteName");
 const cancelDeleteBtn = $("#cancelDelete");
 const confirmDeleteBtn = $("#confirmDelete");
+
+function setupParentRouteAutocomplete() {
+    routeParentInput.off("input").on("input", function() {
+        const input = $(this).val().toLowerCase();
+        const suggestions = parentRouteSuggestions;
+        suggestions.empty();
+
+        if (!input) {
+            suggestions.addClass("hidden");
+            return;
+        }
+
+        const filtered = jeepRoutes.filter(r => {
+            return r.id !== editingRouteId && r.name.toLowerCase().includes(input);
+        });
+
+        if (filtered.length === 0) {
+            suggestions.addClass("hidden");
+            return;
+        }
+
+        filtered.forEach(route => {
+            const item = $(`<div class="px-4 py-2 cursor-pointer hover:bg-[#84C177]/20 transition"><span class="text-gray-700">${route.name}</span></div>`);
+            item.on("click", function() {
+                routeParentInput.val(route.name);
+                suggestions.addClass("hidden");
+            });
+            suggestions.append(item);
+        });
+
+        suggestions.removeClass("hidden");
+    });
+
+    $(document).off("click.parentRoute").on("click.parentRoute", function(e) {
+        if (!$(e.target).closest("#drawnJeepRouteParentId, #parentRouteSuggestions").length) {
+            parentRouteSuggestions.addClass("hidden");
+        }
+    });
+}
 
 async function enterEditMode(route) {
     editingRouteId = route.id;
@@ -106,9 +146,10 @@ async function enterEditMode(route) {
     });
 
     routeNameInput.val(route.name);
-    routeParentInput.val(route.parent_route_id ?? "");
     routeStatusSelect.val((route.status).toLowerCase());
-    routeTypeSelect.val((route.type).toLowerCase());
+    const parentRoute = jeepRoutes.find(r => r.id === route.parent_route_id);
+    routeParentInput.val(parentRoute ? parentRoute.name : "");
+    setupParentRouteAutocomplete();
     editRouteFields.removeClass("hidden");
     $("#cancelEditRoute").removeClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").addClass("hidden");
@@ -148,7 +189,7 @@ function exitEditMode() {
     routeNameInput.val("");
     routeParentInput.val("");
     routeStatusSelect.val("enabled");
-    routeTypeSelect.val("main");
+    parentRouteSuggestions.addClass("hidden");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").removeClass("hidden");
@@ -207,10 +248,10 @@ $("#rebuildPublicRoadsGraph").on("click", async () => {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error);
 
-        alert("Successfully saved new Public Roads Graph Data!");
+        showSuccess("Successfully saved new Public Roads Graph Data!");
     } catch (err) {
         console.error(err);
-        alert("Failed to save Public Roads Graph Data.");
+        showError("Failed to save Public Roads Graph Data.");
     }
 });
 
@@ -225,13 +266,20 @@ $("#toggleJeepRoutes").on("click", async () => {
 $("#saveDrawnJeepRoute").on("click", async () => {
     const routeName = routeNameInput.val().trim();
     if (!routeName) {
-        alert("Route name is required.");
+        showError("Route name is required.");
         return;
     }
 
     if(routeEditor.nodes.length <= 1) {
-        alert("No routes have been drawn yet.");
+        showError("No routes have been drawn yet.");
         return;
+    }
+
+    // Validate parent route input
+    const parentRouteName = routeParentInput.val().trim();
+    const validParentRoute = parentRouteName ? jeepRoutes.find(r => r.name === parentRouteName) : null;
+    if (parentRouteName && !validParentRoute) {
+        routeParentInput.val("");
     }
 
     try {       
@@ -250,7 +298,8 @@ $("#saveDrawnJeepRoute").on("click", async () => {
                     route_id: editingRouteId,
                     route_name: routeName || "Unnamed Jeep Route",
                     route_status: routeStatusSelect.val(),
-                    route_type: routeTypeSelect.val(),
+                    route_type: validParentRoute ? "temporary" : "main",
+                    parent_route_id: validParentRoute?.id || null,
                     nodes: nodes
                 })
             });
@@ -274,10 +323,15 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 
         clearDrawnJeepRoute();
         reloadJeepRouteData()
-        alert("Successfully saved Jeepney Route!");
+
+        if (editingRouteId) {
+            exitEditMode();
+        }
+
+        showSuccess("Successfully saved Jeepney Route!");
     } catch (err) {
         console.error(err);
-        alert("Failed to save Jeepney Route.");
+        showError("Failed to save Jeepney Route.");
     }
 });
 
@@ -321,11 +375,12 @@ confirmDeleteBtn.on("click", async () => {
 
         deleteModal.removeClass("flex").addClass("hidden");
         clearDrawnJeepRoute();
+        exitEditMode();
         reloadJeepRouteData();
-        alert("Successfully deleted Jeepney Route!");
+        showSuccess("Successfully deleted Jeepney Route!");
     } catch (err) {
         console.error(err);
-        alert("Failed to delete Jeepney Route.");
+        showError("Failed to delete Jeepney Route.");
     }
 });
 
@@ -369,10 +424,11 @@ async function reloadJeepRouteData(pageNumber = 1) {
         totalRows = row_count;
 
         renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+        console.log("Jeep Routes loaded:", jeepRoutes);
         renderPagination();
     } catch (err) {
         console.error(err);
-        alert("Failed to load Jeep Routes.");
+        showError("Failed to load Jeep Routes.");
     } finally {
         $("#tableLoading").addClass("hidden");
     }

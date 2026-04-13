@@ -112,23 +112,25 @@ let isDestinationPointSelectedLocation = false;
 const start = sessionStorage.getItem("start");
 const destination = sessionStorage.getItem("destination");
 
-if (start && destination) {
+routeGenerated.clear();
+
+if (start) {
+    console.log(start)
     startingPoint = JSON.parse(start);
-    destinationPoint = JSON.parse(destination);
-
     sessionStorage.removeItem("start");
-    sessionStorage.removeItem("destination");
-
     $("#startingPointField").val(startingPoint.name);
-    $("#destinationPointField").val(destinationPoint.name);
-
-    routeGenerated.clear();
-
     addRouteNode(startingPoint, "start");
-    addRouteNode(destinationPoint, "destination");
-
-    await routeGenerated.drawRoute();
 }
+
+if (destination) {
+    console.log(destination)
+    destinationPoint = JSON.parse(destination);
+    sessionStorage.removeItem("destination");
+    $("#destinationPointField").val(destinationPoint.name);
+    addRouteNode(destinationPoint, "destination");
+}
+
+if (start && destination) await routeGenerated.getAndDisplayRoutes();
 
 const startingPointSearch = setupLocationSearch({
     field: $("#startingPointField"),
@@ -172,9 +174,8 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    // TODO: Still using Dijkstra, should be A* now
-    // TODO: Also should return three routes (shortest, cheapest, minimal transfer)
-    await routeGenerated.drawRoute();
+    // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
+    await routeGenerated.getAndDisplayRoutes();
 })
 
 $(document).on("click", e => {

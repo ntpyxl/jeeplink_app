@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-     <!-- Custom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/admin.css">
 
     <!-- Font Awesome -->
@@ -28,7 +28,9 @@
 
     <!-- JQuery CDN-->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
+
+    <!-- Swal CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         body { display: none; }
@@ -422,11 +424,17 @@
                                 </div>
 
                                 <div class="relative w-full sm:w-40">
-                                    <select id="drawnJeepRouteType"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                                        <option value="main">Main</option>
-                                        <option value="temporary">Temporary</option>
-                                    </select>
+                                    <input type="text" id="drawnJeepRouteParentId" autocomplete="off"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]"
+                                        placeholder="Parent Route">
+
+                                    <!-- Parent Route Suggestions -->
+                                    <div id="parentRouteSuggestions"
+                                        class="absolute left-0 top-full w-full mt-2 hidden z-999
+                                            bg-white/95 backdrop-blur-md
+                                            rounded-lg shadow-lg border border-gray-300
+                                            max-h-48 overflow-y-auto">
+                                    </div>
                                 </div>
                             </div>
 
@@ -436,8 +444,9 @@
                                     Cancel
                                 </button>
 
-                                <button id="saveDrawnJeepRoute" class="cursor-pointer w-full sm:w-auto bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap">
-                                    + Add Route
+                                <button id="saveDrawnJeepRoute" class="cursor-pointer w-full sm:w-auto bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap flex items-center justify-center gap-2">
+                                    <i class="fas fa-plus fa-xs"></i>
+                                    <span>Add Route</span>
                                 </button>
                             </div>
                         </div>
@@ -563,6 +572,9 @@
 
     <!-- Admin Front End Script -->
     <script src="../scripts/ui/adminStylingScript.js" type="module"></script>
+
+    <!-- Custom Swal Script -->
+    <script src="../scripts/ui/customSwal.js"></script>
 
     <!-- Map Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
