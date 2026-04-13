@@ -10,7 +10,11 @@ export class CommuterRouter {
         this.addInteractability = addInteractability;
 
         this.nodes = [];
-        this.routeLine = null;
+        this.routeLayers = {
+            fastest: null,
+            cheapest: null,
+            minimalTransfers: null
+        };
         
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
@@ -60,7 +64,7 @@ export class CommuterRouter {
         if(this.addInteractability) this.addNodeInteractability(node, marker, this.map);
     }
 
-    async drawRoute() {
+    async getAndDisplayRoutes() {
         if (this.nodes.length < 2) return;
 
         // Collect definitions for any "temporary" nodes (clicked points in middle of roads)
@@ -81,34 +85,56 @@ export class CommuterRouter {
         });
 
         const { paths } = await response;
-        console.log(paths.fastestRoute);
-        // TODO: May want to rename this to edges
-        const edges = paths.fastestRoute.routePath;
+        console.log(response); // TODO: Remove debug line
 
-        if(this.fareMatrix) {
-            // TODO: Route instructions to be displayed on the UI
-            const fastestRouteInstructions = buildRouteInstructions(edges);
-            const fastestRouteInformation = buildRouteInformation(paths.fastestRoute, fastestRouteInstructions, this.fareMatrix.fareMatrixData);
+        this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF");
+        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e");
+        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e");
 
-            const completeRouteInformation = {
-                fastestRouteInformation: {
-                    routeInformation: fastestRouteInformation,
-                    fastestRouteInstructions: formatInstructions(fastestRouteInstructions)
-                }
+        if (this.fareMatrix) {
+            const routeTypes = {
+                fastest: paths.fastestRoute,
+                cheapest: paths.cheapestRoute,
+                minimalTransfer: paths.minimalTransferRoute
+            };
+
+            const completeRouteInformation = {};
+
+            for (const [key, route] of Object.entries(routeTypes)) {
+                if (!route) continue;
+
+                const instructions = buildRouteInstructions(route.routePath);
+                const info = buildRouteInformation(
+                    route,
+                    instructions,
+                    this.fareMatrix.fareMatrixData
+                );
+
+                completeRouteInformation[`${key}RouteInformation`] = {
+                    routeInformation: info,
+                    [`${key}RouteInstructions`]: formatInstructions(instructions)
+                };
             }
-            console.log(completeRouteInformation);
+
+            console.log(completeRouteInformation); // TODO: Remove debug line
+        }
+    }
+
+    drawSingleRoute(edges, type, jeep_color) {
+        // Remove existing layer for this route type
+        if (this.routeLayers[type]) {
+            this.map.removeLayer(this.routeLayers[type]);
         }
 
-        if (this.routeLine) this.map.removeLayer(this.routeLine);
-
-        this.routeLine = L.layerGroup().addTo(this.map);
+        const layerGroup = L.layerGroup().addTo(this.map);
         const keyToLatLng = k => k.split(",").map(Number).reverse();
+
         for (const edge of edges) {
             const from = keyToLatLng(edge.from);
             const to = keyToLatLng(edge.to);
-            
+
             const style = edge.mode === "jeep"
-                ? { color: "#1E90FF", weight: 6 }
+                ? { color: jeep_color, weight: 6 }
                 : { color: "#666", weight: 4, dashArray: "6 6" };
 
             const segment = L.polyline([from, to], {
@@ -118,10 +144,14 @@ export class CommuterRouter {
                 pane: "routePane"
             });
 
-            this.routeLine.addLayer(segment);
+            layerGroup.addLayer(segment);
         }
 
-        if(this.addInteractability) this.addRouteInteractability(this.routeLine);
+        this.routeLayers[type] = layerGroup;
+
+        if (this.addInteractability) {
+            this.addRouteInteractability(layerGroup);
+        }
     }
 
     removeNode(nodeId) {
