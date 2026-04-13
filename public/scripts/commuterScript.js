@@ -169,6 +169,11 @@ $("#calculateRouteButton").on("click", async () => {
     }
     if(!destinationPoint) return;
 
+    $("#routePanel")
+                    .hide()
+                    .removeClass("hidden")
+                    .fadeIn(200);
+
     routeGenerated.clear();
 
     addRouteNode(startingPoint, "start");
@@ -176,6 +181,7 @@ $("#calculateRouteButton").on("click", async () => {
 
     // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
     const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    renderRoutes(completeRouteInformation);
 })
 
 $(document).on("click", e => {

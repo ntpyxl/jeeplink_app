@@ -226,7 +226,7 @@
 
                         <!-- Route Details Container -->
                         <div id="routePanel"
-                            class="fixed bottom-0 left-0 w-full z-[600] flex justify-center
+                            class="hidden fixed bottom-0 left-0 w-full z-[600] flex justify-center
                                 md:fixed md:left-8 md:bottom-8 md:w-auto md:justify-start">
 
                             <!-- Wrapper -->
@@ -242,134 +242,18 @@
                                     class="w-12 h-1.5 bg-[#004F11]/20 rounded-full mx-auto mb-2 md:hidden cursor-pointer">
                                 </div>
 
-                                <!-- Header (optional upgrade feel) -->
+                                <!-- Header  -->
                                 <div class="flex items-center justify-between px-1">
                                     <h3 class="text-md font-semibold text-[#004F11]">
                                         Suggested Routes
                                     </h3>
-                                    <span class="text-md text-gray-500">Cheapest / Fastest / Minimal</span>
+                                    <span id="routeTypesLabel" class="text-md text-gray-500"></span>
                                 </div>
 
                                 <!-- Slider -->
                                 <div class="w-full overflow-hidden rounded-2xl">
-                                    <div id="routeSlider"
-                                        class="flex transition-transform duration-300 w-full">
-
-                                        <!-- ROUTE CARD -->
-                                        <div class="min-w-full px-1">
-                                            <div class="bg-gradient-to-br from-[#004F11] to-[#1f7a3a]
-                                                        rounded-2xl shadow-lg overflow-hidden
-                                                        border border-white/10">
-
-                                                <details class="route-details group">
-
-                                                    <!-- SUMMARY -->
-                                                    <summary class="flex items-center justify-between gap-3
-                                                                p-4 cursor-pointer list-none
-                                                                hover:bg-white/5 transition">
-
-                                                        <div class="flex items-center gap-3">
-                                                            <div class="w-9 h-9 rounded-full
-                                                                        bg-[#E9CD2D] text-[#004F11]
-                                                                        flex items-center justify-center
-                                                                        shadow-md">
-                                                                <i class="fa-solid fa-route text-sm"></i>
-                                                            </div>
-
-                                                            <div class="flex flex-col leading-tight">
-                                                                <span class="text-[#E9CD2D] font-semibold text-sm">
-                                                                    Route 1
-                                                                </span>
-                                                                <span class="text-white/70 text-xs">
-                                                                    2 rides • ~25 mins
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <span class="material-symbols-outlined text-[#E9CD2D]
-                                                                    transition-transform duration-300 group-open:rotate-180">
-                                                            keyboard_arrow_down
-                                                        </span>
-                                                    </summary>
-
-                                                    <!-- DETAILS -->
-                                                    <div class="bg-white/95 text-sm text-gray-800
-                                                                px-5 py-4 border-t border-black/5">
-
-                                                        <div class="space-y-2">
-                                                            <div class="flex gap-2">
-                                                                <span class="text-[#004F11] font-semibold">1.</span>
-                                                                <p>Ride Jeepney A</p>
-                                                            </div>
-                                                            <div class="flex gap-2">
-                                                                <span class="text-[#004F11] font-semibold">2.</span>
-                                                                <p>Drop at Stop 1</p>
-                                                            </div>
-                                                            <div class="flex gap-2">
-                                                                <span class="text-[#004F11] font-semibold">3.</span>
-                                                                <p>Walk 200m</p>
-                                                            </div>
-                                                            <div class="flex gap-2">
-                                                                <span class="text-[#004F11] font-semibold">4.</span>
-                                                                <p>Ride Jeepney B</p>
-                                                            </div>
-                                                            <div class="flex gap-2">
-                                                                <span class="text-[#004F11] font-semibold">5.</span>
-                                                                <p>Arrive at destination</p>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </details>
-                                            </div>
-                                        </div>
-
-                                        <!-- ROUTE 2 (same style, duplicate structure) -->
-                                        <div class="min-w-full px-1">
-                                            <div class="bg-gradient-to-br from-[#004F11] to-[#1f7a3a]
-                                                        rounded-2xl shadow-lg overflow-hidden
-                                                        border border-white/10">
-
-                                                <details class="route-details group">
-
-                                                    <summary class="flex items-center justify-between gap-3 p-4 cursor-pointer list-none hover:bg-white/5 transition">
-
-                                                        <div class="flex items-center gap-3">
-                                                            <div class="w-9 h-9 rounded-full bg-[#E9CD2D] text-[#004F11]
-                                                                        flex items-center justify-center shadow-md">
-                                                                <i class="fa-solid fa-route text-sm"></i>
-                                                            </div>
-
-                                                            <div class="flex flex-col leading-tight">
-                                                                <span class="text-[#E9CD2D] font-semibold text-sm">
-                                                                    Route 2
-                                                                </span>
-                                                                <span class="text-white/70 text-xs">
-                                                                    2 rides • ~25 mins
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <span class="material-symbols-outlined text-[#E9CD2D]
-                                                                    transition-transform duration-300 group-open:rotate-180">
-                                                            keyboard_arrow_down
-                                                        </span>
-                                                    </summary>
-
-                                                    <div class="bg-white/95 text-sm text-gray-800 px-5 py-4 border-t border-black/5">
-                                                        <div class="space-y-2">
-                                                            <p>Ride Jeepney A</p>
-                                                            <p>Drop at Stop 1</p>
-                                                            <p>Walk 200m</p>
-                                                            <p>Ride Jeepney B</p>
-                                                            <p>Arrive at destination</p>
-                                                        </div>
-                                                    </div>
-
-                                                </details>
-                                            </div>
-                                        </div>
-
+                                    <div id="routeSlider" class="flex transition-transform duration-300 w-full">
+                                        <!-- JS will inject routes here -->
                                     </div>
                                 </div>
 
@@ -385,7 +269,7 @@
                                     <span id="routeIndicator"
                                         class="text-sm font-semibold text-[#004F11]
                                             bg-white/60 px-4 py-1 rounded-full shadow-sm">
-                                        1 / 2
+                                        1 / 3
                                     </span>
 
                                     <button id="nextRoute"
