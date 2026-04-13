@@ -31,4 +31,62 @@ $(document).ready(function () {
         $("#termsModal").fadeOut(200);
     });
 
+    // Route Panel 
+    let currentRoute = 0;
+
+    const $slider = $("#routeSlider");
+    const $routes = $(".route-details");
+    const totalRoutes = $routes.length;
+
+    function updateSlider() {
+        $slider.css("transform", `translateX(-${currentRoute * 100}%)`);
+        $("#routeIndicator").text(`${currentRoute + 1} / ${totalRoutes}`);
+    }
+
+    // SYNC ALL DETAILS OPEN/CLOSE
+    function setAllRoutes(state) {
+        $routes.each(function () {
+            this.open = state;
+        });
+    }
+
+    // NEXT
+    $("#nextRoute").on("click", function () {
+        if (currentRoute < totalRoutes - 1) {
+            currentRoute++;
+            updateSlider();
+        }
+    });
+
+    // PREV
+    $("#prevRoute").on("click", function () {
+        if (currentRoute > 0) {
+            currentRoute--;
+            updateSlider();
+        }
+    });
+
+    // CLICK ANY ROUTE → OPEN/CLOSE ALL
+    $routes.on("toggle", function () {
+        setAllRoutes(this.open);
+    });
+
+    // DRAG TOGGLE
+    $("#dragToggle").on("click", function () {
+        const allOpen = $routes.get(0).open;
+
+        if (allOpen) {
+            setAllRoutes(false);
+        } else {
+            setAllRoutes(true);
+
+            const active = $routes.get(currentRoute);
+            setTimeout(() => {
+                active.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
+        }
+    });
+
+    // INIT
+    updateSlider();
 });
