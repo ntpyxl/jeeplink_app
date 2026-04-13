@@ -130,7 +130,7 @@ if (destination) {
     addRouteNode(destinationPoint, "destination");
 }
 
-if (start && destination) await routeGenerated.drawRoute();
+if (start && destination) await routeGenerated.getAndDisplayRoutes();
 
 const startingPointSearch = setupLocationSearch({
     field: $("#startingPointField"),
@@ -175,7 +175,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
-    await routeGenerated.drawRoute();
+    await routeGenerated.getAndDisplayRoutes();
 })
 
 $(document).on("click", e => {
