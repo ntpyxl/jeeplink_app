@@ -118,6 +118,9 @@ $(document).ready(function () {
             }
         ];
 
+        $("#routePanel").removeClass("hidden");
+        updateControlsPosition();
+
         $slider.empty();
         currentRoute = 0;
         totalRoutes = routes.length;
@@ -221,6 +224,21 @@ $(document).ready(function () {
 
         updateSlider();
     };
+
+    // ---------- MAP CONTROLS POSITION SYNC ----------
+
+    const $controls = $("#mapControls");
+    const $routePanel = $("#routePanel");
+
+    function updateControlsPosition() {
+        if (!$routePanel.hasClass("hidden")) {
+            // route panel is visible
+            $controls.css("bottom", "220px");
+        } else {
+            // route panel is hidden
+            $controls.css("bottom", "16px"); // same as bottom-4
+        }
+    }
 
     // ---------- ROAD CHANGE MODAL ----------
 

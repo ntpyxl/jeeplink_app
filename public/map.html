@@ -142,8 +142,17 @@
                     <div id="map" class="w-full h-[100dvh] fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
 
                     <!-- Bottom-Right Map Controls -->
-                    <div class="fixed right-4 z-[500] flex flex-col items-center gap-2
-                                bottom-[220px] md:bottom-10">
+                    <div id="mapControls" 
+                            class="fixed right-4 z-[500] flex flex-col items-center gap-2
+                                bottom-4 md:bottom-10">
+
+                        <!-- Route Changed Button -->
+                        <button id="openRoadChangeBtn"
+                            class="w-11 h-11 bg-white rounded-xl shadow-md border border-gray-200
+                                flex items-center justify-center
+                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-route text-sm"></i>
+                        </button>
 
                         <!-- Locate Button -->
                         <button id="locateBtn"
@@ -249,14 +258,7 @@
                                             hover:bg-[#004F11]/5 transition-all cursor-pointer">
                                         Toggle Jeepney Routes
                                     </button>
-
-                                    <button id="openRoadChangeBtn"
-                                        class="w-full py-2 rounded-xl font-semibold
-                                            bg-blue-600 hover:bg-blue-700 text-white
-                                            transition-all shadow-md cursor-pointer mt-2">
-                                        Route Changed?
-                                    </button>
-
+                                    
                                 </div>
 
                             </div>
