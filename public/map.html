@@ -208,14 +208,14 @@
                                     <button id="calculateRouteButton"
                                         class="w-full py-2 rounded-xl font-semibold text-white
                                             bg-[#004F11] hover:bg-[#2E7D32]
-                                            transition-all shadow-md">
+                                            transition-all shadow-md cursor-pointer">
                                         Calculate Route
                                     </button>
 
                                     <button id="toggleJeepRoutes"
                                         class="w-full py-2 rounded-xl font-semibold
                                             border border-[#004F11]/30 text-[#004F11]
-                                            hover:bg-[#004F11]/5 transition-all">
+                                            hover:bg-[#004F11]/5 transition-all cursor-pointer">
                                         Toggle Jeepney Routes
                                     </button>
 
@@ -244,10 +244,12 @@
 
                                 <!-- Header  -->
                                 <div class="flex items-center justify-between px-1">
-                                    <h3 class="text-md font-semibold text-[#004F11]">
+                                    <h3 class="text-md font-semibold text-[#004F11] me-12">
                                         Suggested Routes
                                     </h3>
-                                    <span id="routeTypesLabel" class="text-md text-gray-500"></span>
+
+                                    <!-- TODO: Implement this -->
+                                    <a href="#" id="goNow" class="text-md text-blue-700 cursor-pointer">Go now!</a>
                                 </div>
 
                                 <!-- Slider -->
@@ -262,7 +264,7 @@
 
                                     <button id="prevRoute"
                                         class="w-10 h-10 flex items-center justify-center rounded-xl
-                                            bg-gray-100 hover:bg-gray-200 shadow-sm transition">
+                                            bg-gray-100 hover:bg-gray-200 shadow-sm transition cursor-pointer">
                                         <i class="fa fa-chevron-left text-gray-700"></i>
                                     </button>
 
@@ -274,7 +276,7 @@
 
                                     <button id="nextRoute"
                                         class="w-10 h-10 flex items-center justify-center rounded-xl
-                                            bg-[#004F11] hover:bg-[#2E7D32] text-white shadow-md transition">
+                                            bg-[#004F11] hover:bg-[#2E7D32] text-white shadow-md transition cursor-pointer">
                                         <i class="fa fa-chevron-right"></i>
                                     </button>
 
