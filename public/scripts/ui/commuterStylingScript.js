@@ -221,6 +221,34 @@ $(document).ready(function () {
         updateSlider();
     };
 
+    // ---------- ROAD CHANGE MODAL ----------
+
+    // OPEN MODAL 
+    function openRoadChangeModal() {
+        $("#roadChangeModal").removeClass("hidden");
+    }
+
+    // CLOSE MODAL helper
+    function closeRoadChangeModal() {
+        $("#roadChangeModal").addClass("hidden");
+    }
+
+    // YES BUTTON
+    $("#roadYes").on("click", function () {
+
+        closeRoadChangeModal();
+    });
+
+    // NO BUTTON
+    $("#roadNo").on("click", function () {
+
+        closeRoadChangeModal();
+    });
+
+    $("#openRoadChangeBtn").on("click", function () {
+        $("#roadChangeModal").removeClass("hidden");
+    });
+
     // ---------- TERMS MODAL ----------
     const accepted = localStorage.getItem("jeepLink_termsAccepted");
 

@@ -219,6 +219,13 @@
                                         Toggle Jeepney Routes
                                     </button>
 
+                                    <button id="openRoadChangeBtn"
+                                        class="w-full py-2 rounded-xl font-semibold
+                                            bg-blue-600 hover:bg-blue-700 text-white
+                                            transition-all shadow-md cursor-pointer mt-2">
+                                        Route Changed?
+                                    </button>
+
                                 </div>
 
                             </div>
@@ -226,7 +233,7 @@
 
                         <!-- Route Details Container -->
                         <div id="routePanel"
-                            class="hidden fixed bottom-0 left-0 w-full z-[600] flex justify-center
+                            class="hidden fixed bottom-0 left-0 w-full z-[450] flex justify-center
                                 md:fixed md:left-8 md:bottom-8 md:w-auto md:justify-start">
 
                             <!-- Wrapper -->
@@ -276,7 +283,7 @@
 
                                     <button id="nextRoute"
                                         class="w-10 h-10 flex items-center justify-center rounded-xl
-                                            bg-[#004F11] hover:bg-[#2E7D32] text-white shadow-md transition cursor-pointer">
+                                            bg-gray-100 hover:bg-gray-200 shadow-sm transition cursor-pointer">
                                         <i class="fa fa-chevron-right"></i>
                                     </button>
 
@@ -291,6 +298,49 @@
 
     </section>
     <!-- End of Map Section -->
+
+    <!-- Road Change Alert (Hanging Popup) -->
+    <div id="roadChangeModal" class="fixed top-48 left-1/2 -translate-x-1/2 z-[9999] hidden">
+
+        <div class="animate-[drop_0.25s_ease-out]">
+
+            <div class="w-[90vw] max-w-md bg-white shadow-2xl border border-gray-200 rounded-2xl p-5
+                        flex flex-col gap-4 animate-[drop_0.25s_ease-out]">
+
+                <!-- Header -->
+                <div class="flex items-center gap-3">
+
+                    <div class="w-12 h-12 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-route text-[#2E7D32] text-xl"></i>
+                    </div>
+
+                    <h2 class="text-sm md:text-base font-semibold text-gray-800">
+                        Did your jeepney change roads?
+                    </h2>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2">
+
+                    <button id="roadYes"
+                        class="w-1/2 py-2 rounded-xl font-semibold text-white
+                            bg-[#2E7D32] hover:bg-green-700 transition shadow-md">
+                        Yes
+                    </button>
+
+                    <button id="roadNo"
+                        class="w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
+                            border border-[#004F11]/30 hover:bg-[#004F11]/5 transition">
+                        No
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 
     <!-- Terms & Privacy Popup -->
     <div id="termsModal" class="fixed inset-0 z-[9999] hidden">
