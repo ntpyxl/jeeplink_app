@@ -99,6 +99,7 @@ $(document).ready(function () {
 
     // ---------- ROUTE RENDERER ----------
     window.renderRoutes = function (routeData) {
+        $slider.empty(); 
 
         const routes = [
             {
@@ -167,7 +168,7 @@ $(document).ready(function () {
             `).join("");
 
             const html = `
-            <div class="min-w-full px-1 sm:px-2">
+            <div class="min-w-full px-1 sm:px-2 route-card opacity-0 translate-y-4">
 
                 <div class="bg-gradient-to-br from-[#004F11] to-[#1f7a3a]
                             rounded-xl sm:rounded-2xl shadow-lg overflow-hidden
@@ -223,7 +224,37 @@ $(document).ready(function () {
         });
 
         updateSlider();
+        
+        // Animate cards after render
+        setTimeout(() => {
+            $(".route-card").each(function (i) {
+                $(this).delay(i * 120).queue(function (next) {
+                    $(this).removeClass("opacity-0 translate-y-4")
+                        .addClass("opacity-100 translate-y-0 transition-all duration-500 ease-out");
+                    next();
+                });
+            });
+        }, 50);
     };
+
+// ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
+$("#calculateRouteButton").on("click", function () {
+
+    $("#routePanel").removeClass("hidden");
+
+    // show loading spinner
+    $("#routeSlider").html(`
+        <div id="routeLoading" class="w-full flex flex-col items-center justify-center py-10 gap-3">
+            <div class="w-10 h-10 border-4 border-[#004F11]/20 border-t-[#004F11] rounded-full animate-spin"></div>
+            <p class="text-sm text-gray-600 font-medium">
+                Finding the best routes...
+            </p>
+        </div>
+    `);
+
+    updateControlsPosition();
+
+});
 
     // ---------- MAP CONTROLS POSITION SYNC ----------
 
@@ -231,7 +262,7 @@ $(document).ready(function () {
     const $routePanel = $("#routePanel");
 
     function isMobile() {
-        return window.innerWidth < 768; // Tailwind md breakpoint
+        return window.innerWidth < 768; 
     }
 
     function updateControlsPosition() {
@@ -241,10 +272,9 @@ $(document).ready(function () {
             if (!$routePanel.hasClass("hidden")) {
                 $controls.css("bottom", "220px");
             } else {
-                $controls.css("bottom", "16px"); // bottom-4
+                $controls.css("bottom", "16px"); 
             }
         } else {
-            // 💻 Desktop → reset to default (Tailwind handles it)
             $controls.css("bottom", "");
         }
     }
