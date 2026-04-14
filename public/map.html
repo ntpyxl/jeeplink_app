@@ -141,6 +141,37 @@
                     <!-- Map -->
                     <div id="map" class="w-screen h-screen fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
 
+                    <!-- Bottom-Right Map Controls -->
+                    <div class="fixed right-4 z-[500] flex flex-col items-center gap-2
+                                bottom-[220px] md:bottom-10">
+
+                        <!-- Locate Button -->
+                        <button id="locateBtn"
+                            class="w-11 h-11 bg-white rounded-xl shadow-md border border-gray-200
+                                flex items-center justify-center
+                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-location-crosshairs text-gray-700 text-base"></i>
+                        </button>
+
+                        <!-- Zoom in and out -->
+                        <div class="flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+
+                            <button id="zoomInBtn"
+                                class="w-11 h-11 flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-gray-600 text-xl font-medium border-b border-gray-200">
+                                +
+                            </button>
+
+                            <button id="zoomOutBtn"
+                                class="w-11 h-11 flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-gray-600 text-xl font-medium">
+                                −
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Overlay Absolute -->
                     <div class="absolute top-8 left-8 flex flex-col gap-4 z-[500]">
 

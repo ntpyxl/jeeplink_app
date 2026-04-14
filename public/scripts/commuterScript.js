@@ -25,6 +25,26 @@ map.getPane("nodePane").style.zIndex = 500;
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
+// Map Controls
+document.getElementById("zoomInBtn").addEventListener("click", () => map.zoomIn());
+document.getElementById("zoomOutBtn").addEventListener("click", () => map.zoomOut());
+document.getElementById("locateBtn").addEventListener("click", () => {
+    map.locate({ setView: true, maxZoom: 16 });
+});
+
+map.on("locationfound", (e) => {
+    L.circleMarker(e.latlng, {
+        radius: 8,
+        color: "#004F11",
+        fillColor: "#2E7D32",
+        fillOpacity: 0.9,
+        weight: 2
+    }).addTo(map).bindPopup("You are here").openPopup();
+});
+
+map.on("locationerror", () => {
+    alert("Unable to find your location. Please allow location access.");
+});
 
 // Fetch and setup required JSON files
 const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
