@@ -230,13 +230,22 @@ $(document).ready(function () {
     const $controls = $("#mapControls");
     const $routePanel = $("#routePanel");
 
+    function isMobile() {
+        return window.innerWidth < 768; // Tailwind md breakpoint
+    }
+
     function updateControlsPosition() {
-        if (!$routePanel.hasClass("hidden")) {
-            // route panel is visible
-            $controls.css("bottom", "220px");
+
+        if (isMobile()) {
+            // 📱 ONLY apply on mobile
+            if (!$routePanel.hasClass("hidden")) {
+                $controls.css("bottom", "220px");
+            } else {
+                $controls.css("bottom", "16px"); // bottom-4
+            }
         } else {
-            // route panel is hidden
-            $controls.css("bottom", "16px"); // same as bottom-4
+            // 💻 Desktop → reset to default (Tailwind handles it)
+            $controls.css("bottom", "");
         }
     }
 

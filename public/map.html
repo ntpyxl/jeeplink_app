@@ -143,39 +143,43 @@
 
                     <!-- Bottom-Right Map Controls -->
                     <div id="mapControls" 
-                            class="fixed right-4 z-[500] flex flex-col items-center gap-2
-                                bottom-4 md:bottom-10">
+                        class="fixed right-4 z-[500] flex flex-col items-center gap-2 md:gap-3
+                            bottom-4 md:bottom-10">
 
                         <!-- Route Changed Button -->
                         <button id="openRoadChangeBtn"
-                            class="w-11 h-11 bg-white rounded-xl shadow-md border border-gray-200
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border border-gray-200
                                 flex items-center justify-center
                                 hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
-                            <i class="fa-solid fa-route text-sm"></i>
+                            <i class="fa-solid fa-route text-sm md:text-lg lg:text-xl"></i>
                         </button>
 
                         <!-- Locate Button -->
                         <button id="locateBtn"
-                            class="w-11 h-11 bg-white rounded-xl shadow-md border border-gray-200
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border border-gray-200
                                 flex items-center justify-center
                                 hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
-                            <i class="fa-solid fa-location-crosshairs text-gray-700 text-base"></i>
+                            <i class="fa-solid fa-location-crosshairs text-base md:text-lg lg:text-xl"></i>
                         </button>
 
                         <!-- Zoom in and out -->
                         <div class="flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
 
                             <button id="zoomInBtn"
-                                class="w-11 h-11 flex items-center justify-center
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
                                     hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
-                                    text-gray-600 text-xl font-medium border-b border-gray-200">
+                                    text-xl md:text-2xl lg:text-3xl font-medium border-b border-gray-200">
                                 +
                             </button>
 
                             <button id="zoomOutBtn"
-                                class="w-11 h-11 flex items-center justify-center
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
                                     hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
-                                    text-gray-600 text-xl font-medium">
+                                    text-xl md:text-2xl lg:text-3xl font-medium">
                                 −
                             </button>
                         </div>
