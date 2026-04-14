@@ -79,10 +79,10 @@ $("#saveNewGeoJson").on("click", async function () {
             saveGraphJson()
         ]);
 
-        alert("Successfully saved new GeoJson and Graph Road Data!");
+        showSuccess("Successfully saved new GeoJson and Graph Road Data!");
     } catch (err) {
         console.error(err);
-        alert("Failed to save GeoJSON Road Data.");
+        showError("Failed to save GeoJSON Road Data.");
     }
 });
 
