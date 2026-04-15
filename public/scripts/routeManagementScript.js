@@ -88,11 +88,51 @@ const routeParentInput = $("#drawnJeepRouteParentId");
 const routeStatusSelect = $("#drawnJeepRouteStatus");
 const routeTypeSelect = $("#drawnJeepRouteType");
 const editRouteFields = $("#editRouteFields");
+const parentRouteSuggestions = $("#parentRouteSuggestions");
 const deleteModal = $("#deleteModal");
 const deleteRouteIdInput = $("#deleteRouteId");
 const deleteRouteNameLabel = $("#deleteRouteName");
 const cancelDeleteBtn = $("#cancelDelete");
 const confirmDeleteBtn = $("#confirmDelete");
+
+function setupParentRouteAutocomplete() {
+    routeParentInput.off("input").on("input", function() {
+        const input = $(this).val().toLowerCase();
+        const suggestions = parentRouteSuggestions;
+        suggestions.empty();
+
+        if (!input) {
+            suggestions.addClass("hidden");
+            return;
+        }
+
+        const filtered = jeepRoutes.filter(r => {
+            return r.id !== editingRouteId && r.name.toLowerCase().includes(input);
+        });
+
+        if (filtered.length === 0) {
+            suggestions.addClass("hidden");
+            return;
+        }
+
+        filtered.forEach(route => {
+            const item = $(`<div class="px-4 py-2 cursor-pointer hover:bg-[#84C177]/20 transition"><span class="text-gray-700">${route.name}</span></div>`);
+            item.on("click", function() {
+                routeParentInput.val(route.name);
+                suggestions.addClass("hidden");
+            });
+            suggestions.append(item);
+        });
+
+        suggestions.removeClass("hidden");
+    });
+
+    $(document).off("click.parentRoute").on("click.parentRoute", function(e) {
+        if (!$(e.target).closest("#drawnJeepRouteParentId, #parentRouteSuggestions").length) {
+            parentRouteSuggestions.addClass("hidden");
+        }
+    });
+}
 
 async function enterEditMode(route) {
     editingRouteId = route.id;
@@ -103,9 +143,10 @@ async function enterEditMode(route) {
     });
 
     routeNameInput.val(route.name);
-    routeParentInput.val(route.parent_route_id ?? "");
     routeStatusSelect.val((route.status).toLowerCase());
-    routeTypeSelect.val((route.type).toLowerCase());
+    const parentRoute = jeepRoutes.find(r => r.id === route.parent_route_id);
+    routeParentInput.val(parentRoute ? parentRoute.name : "");
+    setupParentRouteAutocomplete();
     editRouteFields.removeClass("hidden");
     $("#cancelEditRoute").removeClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").addClass("hidden");
@@ -145,7 +186,7 @@ function exitEditMode() {
     routeNameInput.val("");
     routeParentInput.val("");
     routeStatusSelect.val("enabled");
-    routeTypeSelect.val("main");
+    parentRouteSuggestions.addClass("hidden");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").removeClass("hidden");
@@ -231,6 +272,13 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         return;
     }
 
+    // Validate parent route input
+    const parentRouteName = routeParentInput.val().trim();
+    const validParentRoute = parentRouteName ? jeepRoutes.find(r => r.name === parentRouteName) : null;
+    if (parentRouteName && !validParentRoute) {
+        routeParentInput.val("");
+    }
+
     try {       
         if (editingRouteId) {
             const nodes = routeEditor.nodes.map(node => ({
@@ -247,7 +295,8 @@ $("#saveDrawnJeepRoute").on("click", async () => {
                     route_id: editingRouteId,
                     route_name: routeName || "Unnamed Jeep Route",
                     route_status: routeStatusSelect.val(),
-                    route_type: routeTypeSelect.val(),
+                    route_type: validParentRoute ? "temporary" : "main",
+                    parent_route_id: validParentRoute?.id || null,
                     nodes: nodes
                 })
             });
@@ -271,6 +320,10 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 
         clearDrawnJeepRoute();
         reloadJeepRouteData()
+
+        if (editingRouteId) {
+            exitEditMode();
+        }
 
         showSuccess("Successfully saved Jeepney Route!");
     } catch (err) {
@@ -365,6 +418,7 @@ async function reloadJeepRouteData(pageNumber = 1) {
         totalRows = row_count;
 
         renderRoutesTable(jeepRoutes, $("#routesTableBody"));
+        console.log("Jeep Routes loaded:", jeepRoutes);
         renderPagination();
     } catch (err) {
         console.error(err);

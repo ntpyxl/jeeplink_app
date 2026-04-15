@@ -139,7 +139,51 @@
             <div class="flex flex-col w-full">
                 <div class="relative w-full">
                     <!-- Map -->
-                    <div id="map" class="w-screen h-screen fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
+                    <div id="map" class="w-full h-[100dvh] fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
+
+                    <!-- Bottom-Right Map Controls -->
+                    <div id="mapControls" 
+                        class="fixed right-4 z-[500] flex flex-col items-center gap-2 md:gap-3
+                            bottom-4 md:bottom-10">
+
+                        <!-- Route Changed Button -->
+                        <button id="openRoadChangeBtn"
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border border-gray-200
+                                flex items-center justify-center
+                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-route text-sm md:text-lg lg:text-xl"></i>
+                        </button>
+
+                        <!-- Locate Button -->
+                        <button id="locateBtn"
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border border-gray-200
+                                flex items-center justify-center
+                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-location-crosshairs text-base md:text-lg lg:text-xl"></i>
+                        </button>
+
+                        <!-- Zoom in and out -->
+                        <div class="flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+
+                            <button id="zoomInBtn"
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-xl md:text-2xl lg:text-3xl font-medium border-b border-gray-200">
+                                +
+                            </button>
+
+                            <button id="zoomOutBtn"
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-xl md:text-2xl lg:text-3xl font-medium">
+                                −
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Overlay Absolute -->
                     <div class="absolute top-8 left-8 flex flex-col gap-4 z-[500]">
@@ -208,17 +252,17 @@
                                     <button id="calculateRouteButton"
                                         class="w-full py-2 rounded-xl font-semibold text-white
                                             bg-[#004F11] hover:bg-[#2E7D32]
-                                            transition-all shadow-md">
+                                            transition-all shadow-md cursor-pointer">
                                         Calculate Route
                                     </button>
 
                                     <button id="toggleJeepRoutes"
                                         class="w-full py-2 rounded-xl font-semibold
                                             border border-[#004F11]/30 text-[#004F11]
-                                            hover:bg-[#004F11]/5 transition-all">
+                                            hover:bg-[#004F11]/5 transition-all cursor-pointer">
                                         Toggle Jeepney Routes
                                     </button>
-
+                                    
                                 </div>
 
                             </div>
@@ -226,108 +270,79 @@
 
                         <!-- Route Details Container -->
                         <div id="routePanel"
-                            class="fixed bottom-0 left-0 w-full md:static md:w-80
-                                    z-[600] flex flex-col gap-3
-                                    px-3 pb-4 md:p-0">
+                            class="hidden fixed bottom-0 left-0 w-full z-[450] flex justify-center
+                                md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md
+                                lg:left-6 lg:translate-x-0 lg:w-auto lg:max-w-lg lg:justify-start">
 
-                            <!-- ROUTE 1 -->
-                            <div class="bg-[#004F11] rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden">
-                                
-                                <details class="group rounded-2xl overflow-hidden border border-transparent
-                                                transition-all duration-300
-                                                group-open:border-[#E9CD2D]/40 
-                                                group-open:shadow-[0_0_15px_rgba(233,205,45,0.3)]">
+                            <!-- Wrapper -->
+                            <div class="w-full max-w-full
+                                        md:max-w-md lg:max-w-lg
+                                        mx-auto lg:mx-0
+                                        bg-white/80 md:bg-white/90 backdrop-blur-xl
+                                        rounded-t-3xl md:rounded-3xl
+                                        shadow-[0_-8px_30px_rgba(0,0,0,0.15)] md:shadow-2xl
+                                        border border-white/30 md:border-[#004F11]/10
+                                        p-3 sm:p-4 md:p-5 flex flex-col gap-3">
 
-                                    <!-- BUTTON / HEADER -->
-                                    <summary class="flex items-center justify-between gap-3 p-4 md:p-5 cursor-pointer list-none
-                                                bg-gradient-to-r from-[#004F11] to-[#2E7D32]
-                                                hover:from-[#0B5A2B] hover:to-[#1b5e20]
-                                                transition-all duration-300">
+                                <!-- Drag Handle (mobile only) -->
+                                <div id="dragToggle"
+                                    class="w-10 h-1.5 bg-[#004F11]/20 rounded-full mx-auto mb-1 md:hidden">
+                                </div>
 
-                                        <!-- LEFT -->
-                                        <div class="flex items-center gap-3">
-                                            <div class="bg-[#E9CD2D] text-[#004F11] rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                                                <i class="fa-solid fa-route text-sm"></i>
-                                            </div>
+                                <!-- Header -->
+                                <div class="flex items-center justify-between gap-2">
+                                    <h3 class="text-sm sm:text-base md:text-lg font-semibold text-[#004F11] truncate">
+                                        Suggested Routes
+                                    </h3>
 
-                                            <div class="flex flex-col">
-                                                <span class="text-[#E9CD2D] font-semibold text-sm md:text-base">
-                                                    Route 1
-                                                </span>
-                                                <span class="text-white/80 text-xs">
-                                                    2 rides • ~25 mins
-                                                </span>
-                                            </div>
-                                        </div>
+                                    <a href="#" id="goNow"
+                                        class="text-sm sm:text-base text-blue-700 whitespace-nowrap">
+                                        Go now!
+                                    </a>
+                                </div>
 
-                                        <!-- RIGHT ARROW -->
-                                        <span class="material-symbols-outlined text-[#E9CD2D]
-                                                    transition-transform duration-300 group-open:rotate-180">
-                                            keyboard_arrow_down
-                                        </span>
-                                    </summary>
+                                <!-- Slider -->
+                                <div class="w-full overflow-hidden rounded-xl sm:rounded-2xl">
+                                    <div id="routeSlider"
+                                        class="flex transition-transform duration-300 w-full">
+                                        <!-- JS inject -->
 
-                                    <!-- CONTENT -->
-                                    <div class="bg-white text-sm text-[#444] px-5 border-t border-gray-200">
-                                        <div class="py-4 space-y-2">
-                                            <p>Ride Jeepney A</p>
-                                            <p>Drop at Stop 1</p>
-                                            <p>Walk 200m</p>
-                                            <p>Ride Jeepney B</p>
-                                            <p>Arrive at destination</p>
+                                        <div id="routeLoading" 
+                                            class="w-full flex flex-col items-center justify-center py-10 gap-3 animate-pulse">
+
+                                            <div class="w-10 h-10 border-4 border-[#004F11]/20 border-t-[#004F11] rounded-full animate-spin"></div>
+
+                                            <p class="text-sm text-gray-600 font-medium">
+                                                Calculating optimal jeepney routes...
+                                            </p>
+
                                         </div>
                                     </div>
+                                </div>
 
-                                </details>
-                            </div>
+                                <!-- Pagination -->
+                                <div class="flex justify-between items-center mt-1">
 
-                            <!-- ROUTE 2-->
-                            <div class="bg-[#004F11] rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden">
-                                
-                                <details class="group rounded-2xl overflow-hidden border border-transparent
-                                                transition-all duration-300
-                                                group-open:border-[#E9CD2D]/40 
-                                                group-open:shadow-[0_0_15px_rgba(233,205,45,0.3)]">
+                                    <button id="prevRoute"
+                                        class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
+                                            rounded-xl bg-gray-100 hover:bg-gray-200 shadow-sm">
+                                        <i class="fa fa-chevron-left text-gray-700 text-sm"></i>
+                                    </button>
 
-                                    <!-- BUTTON / HEADER -->
-                                    <summary class="flex items-center justify-between gap-3 p-4 md:p-5 cursor-pointer list-none
-                                                bg-gradient-to-r from-[#004F11] to-[#2E7D32]
-                                                hover:from-[#0B5A2B] hover:to-[#1b5e20]
-                                                transition-all duration-300">
+                                    <span id="routeIndicator"
+                                        class="text-xs sm:text-sm font-semibold text-[#004F11]
+                                            bg-white/70 px-3 py-1 rounded-full shadow-sm">
+                                        1 / 3
+                                    </span>
 
-                                        <!-- LEFT -->
-                                        <div class="flex items-center gap-3">
-                                            <div class="bg-[#E9CD2D] text-[#004F11] rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                                            <i class="fa-solid fa-route text-sm"></i>
-                                        </div>
+                                    <button id="nextRoute"
+                                        class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
+                                            rounded-xl bg-gray-100 hover:bg-gray-200 shadow-sm">
+                                        <i class="fa fa-chevron-right text-sm"></i>
+                                    </button>
 
-                                            <div class="flex flex-col">
-                                                <span class="text-[#E9CD2D] font-semibold text-sm md:text-base">
-                                                    Route 2
-                                                </span>
-                                                <span class="text-white/80 text-xs">
-                                                    Direct • ~18 mins
-                                                </span>
-                                            </div>
-                                        </div>
+                                </div>
 
-                                        <!-- RIGHT ARROW -->
-                                        <span class="material-symbols-outlined text-[#E9CD2D]
-                                                    transition-transform duration-300 group-open:rotate-180">
-                                            keyboard_arrow_down
-                                        </span>
-                                    </summary>
-
-                                    <!-- CONTENT -->
-                                    <div class="bg-white text-sm text-[#444] px-5 border-t border-gray-200">
-                                        <div class="py-4 space-y-2">
-                                            <p>Ride Jeepney C</p>
-                                            <p>Direct route</p>
-                                            <p>No transfers</p>
-                                            <p>Slightly more expensive</p>
-                                        </div>
-                                    </div>
-                                </details>
                             </div>
                         </div>
                     </div>
@@ -337,6 +352,49 @@
 
     </section>
     <!-- End of Map Section -->
+
+    <!-- Road Change Alert (Hanging Popup) -->
+    <div id="roadChangeModal" class="fixed top-48 left-1/2 -translate-x-1/2 z-[9999] hidden">
+
+        <div class="animate-[drop_0.25s_ease-out]">
+
+            <div class="w-[90vw] max-w-md bg-white shadow-2xl border border-gray-200 rounded-2xl p-5
+                        flex flex-col gap-4 animate-[drop_0.25s_ease-out]">
+
+                <!-- Header -->
+                <div class="flex items-center gap-3">
+
+                    <div class="w-12 h-12 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-route text-[#2E7D32] text-xl"></i>
+                    </div>
+
+                    <h2 class="text-sm md:text-base font-semibold text-gray-800">
+                        Did your jeepney change roads?
+                    </h2>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2">
+
+                    <button id="roadYes"
+                        class="w-1/2 py-2 rounded-xl font-semibold text-white
+                            bg-[#2E7D32] hover:bg-green-700 transition shadow-md cursor-pointer">
+                        Yes
+                    </button>
+
+                    <button id="roadNo"
+                        class="w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
+                            border border-[#004F11]/30 hover:bg-[#004F11]/5 transition cursor-pointer">
+                        No
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 
     <!-- Terms & Privacy Popup -->
     <div id="termsModal" class="fixed inset-0 z-[9999] hidden">
@@ -414,6 +472,10 @@
 
     <!-- Dropdown Animation Script -->
     <script src="scripts/ui/dropdownAnimation.js"></script>
+
+    <script>
+
+    </script>
 </body>
 
 </html>

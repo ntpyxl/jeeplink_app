@@ -7,8 +7,12 @@
 }
 
 html, body {
-    height: 100%;
     margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .search-bar input::placeholder {
@@ -72,3 +76,13 @@ summary::-webkit-details-marker {
     display: none;
 }
 
+@keyframes drop {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
