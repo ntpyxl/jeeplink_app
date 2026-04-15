@@ -52,7 +52,6 @@ export class SavedRouteRenderer {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    algorithm: "a_star",
                     nodes: this.routes,
                     tempNodes: this.tempNodes
                 })

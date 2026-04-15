@@ -17,11 +17,6 @@ map.createPane("nodePane");
 map.getPane("routePane").style.zIndex = 400;
 map.getPane("nodePane").style.zIndex = 500;
 
-// TODO: Add locate current user location button above the + - icon
-// L.control.zoom({
-//     position: 'bottomright' 
-// }).addTo(map);
-
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
@@ -196,7 +191,6 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    // TODO: Also should return three routes (fastest, cheapest, minimal transfer)
     const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
     renderRoutes(completeRouteInformation);
 })

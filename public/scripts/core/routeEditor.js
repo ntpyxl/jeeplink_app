@@ -70,7 +70,6 @@ export class RouteEditor {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                algorithm: "a_star",
                 nodes: [this.nodes.map(n => n.graphKey)],
                 tempNodes: tempNodeDefinitions
             })

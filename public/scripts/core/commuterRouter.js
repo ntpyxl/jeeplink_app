@@ -77,15 +77,12 @@ export class CommuterRouter {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                // TODO: algorithm variable no longer being read in backend api. double check this for other calculateRoute calls
-                algorithm: "a_star",
                 nodes: [this.nodes.map(n => n.graphKey)],
                 tempNodes: tempNodeDefinitions
             })
         });
 
         const { paths } = await response;
-        console.log(response); // TODO: Remove debug line
 
         this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF", 8);
         if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e", 5);

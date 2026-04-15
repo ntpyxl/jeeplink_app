@@ -25,19 +25,6 @@ let totalPages = 1;
 let totalRows = 0;
 const rowsPerPage = 10;
 
-// BEFORE
-// const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//         page_number: 1
-//     })
-// });
-
-// jeepRoutes = route_data || [];
-// renderRoutesTable(jeepRoutes, $("#routesTableBody"));
-
-// AFTER
 reloadJeepRouteData(1);
 
 // Assigns a road ID to each road
@@ -202,10 +189,6 @@ roadsLayer.on("click", async e => {
     const snapped = snapToRoad(e.latlng, roadsGeoJSON);
     if (!snapped) return;
 
-    // TODO: Consider double checking graphKey and coordinates var, both are coordinates but are somewhat different (with coords being more accurate vs graphKey).
-    /* TODO: Delete this old function when no issues arise with new function below!
-    const graphNodeKey = graphHelper.snapToGraphNode(snapped.coordinates);
-    */
     const graphNodeKey = graphHelper.insertTemporaryNode(
         snapped.coordinates,
         snapped.segmentA,

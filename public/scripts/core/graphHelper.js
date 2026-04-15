@@ -49,29 +49,6 @@ export class GraphHelper {
         return graph;
     }
 
-    // TODO: No longer used. Delete if insertTemporaryNode below has no problems. May want to rename it too.
-    snapToGraphNode(coord) {
-        let closestKey = null;
-        let minDist = Infinity;
-
-        for (const key of this.graph.keys()) {
-            const [lng, lat] = key.split(",").map(Number);
-
-            const d = turf.distance(
-                turf.point(coord),
-                turf.point([lng, lat]),
-                { units: "meters" }
-            );
-
-            if (d < minDist) {
-                minDist = d;
-                closestKey = key;
-            }
-        }
-
-        return closestKey;
-    }
-
     insertTemporaryNode(coord, a, b) {
         const key = this.coordKey(coord);
         const aKey = this.coordKey(a);
