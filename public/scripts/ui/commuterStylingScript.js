@@ -199,7 +199,7 @@ $(document).ready(function () {
                             </div>
 
                             <span class="text-[#E9CD2D] text-sm transition-transform duration-300 arrow">
-                                ▼
+                                ▲
                             </span>
 
                         </div>
@@ -224,7 +224,7 @@ $(document).ready(function () {
         });
 
         updateSlider();
-        
+
         // Animate cards after render
         setTimeout(() => {
             $(".route-card").each(function (i) {
