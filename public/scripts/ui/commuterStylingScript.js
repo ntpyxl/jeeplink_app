@@ -138,10 +138,10 @@ $(document).ready(function () {
                 instructions = route.info?.minimalTransferRouteInstructions || [];
             }
 
-const routeInfo = route.info?.routeInformation || {};
+            const routeInfo = route.info?.routeInformation || {};
 
-const regular = routeInfo.routeCost?.regular || {};
-const discounted = routeInfo.routeCost?.discounted || {};
+            const regular = routeInfo.routeCost?.regular || {};
+            const discounted = routeInfo.routeCost?.discounted || {};
 
             const ridesCount = routeInfo.jeepRidesCount || "0 rides";
             const duration = routeInfo.tripDurationFormatted || "N/A";
