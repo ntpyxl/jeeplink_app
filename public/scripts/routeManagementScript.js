@@ -401,7 +401,6 @@ async function reloadJeepRouteData(pageNumber = 1) {
         totalRows = row_count;
 
         renderRoutesTable(jeepRoutes, $("#routesTableBody"));
-        console.log("Jeep Routes loaded:", jeepRoutes);
         renderPagination();
     } catch (err) {
         console.error(err);
