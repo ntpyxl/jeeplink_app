@@ -130,6 +130,7 @@ routeGenerated.clear();
 
 if (start) {
     startingPoint = JSON.parse(start);
+    isStartingPointSelectedLocation = true;
     sessionStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
     addRouteNode(startingPoint, "start");
@@ -137,6 +138,7 @@ if (start) {
 
 if (destination) {
     destinationPoint = JSON.parse(destination);
+    isDestinationPointSelectedLocation = true;
     sessionStorage.removeItem("destination");
     $("#destinationPointField").val(destinationPoint.name);
     addRouteNode(destinationPoint, "destination");
@@ -167,6 +169,9 @@ const startingPointSearch = setupLocationSearch({
         isStartingPointSelectedLocation = true;
     }
 });
+$("#startingPointField").on("input", () => {
+    isStartingPointSelectedLocation = false;
+})
 
 const destinationPointSearch = setupLocationSearch({
     field: $("#destinationPointField"),
@@ -178,9 +183,12 @@ const destinationPointSearch = setupLocationSearch({
         isDestinationPointSelectedLocation = true;
     }
 });
+$("#destinationPointField").on("input", () => {
+    isDestinationPointSelectedLocation = false;
+})
 
 $("#calculateRouteButton").on("click", async () => {
-    if(!isStartingPointSelectedLocation && startingPoint) {
+    if(!isStartingPointSelectedLocation) {
         startingPoint = await startingPointSearch.flush();
         $("#startingPointField").val(startingPoint.name);
     }
