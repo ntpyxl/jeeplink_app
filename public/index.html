@@ -29,6 +29,12 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/custom.css">
+    <style>
+        html, body {     
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+    </style>
 
     <!-- JQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -37,13 +43,13 @@
 <body>
     <!-- Start of Navigation Bar -->
     <nav class="bg-white shadow relative z-50">
-        <div class="container mx-auto flex justify-between items-center px-4 py-3">
+        <div class="container mx-auto flex justify-between items-center px-4 ">
 
             <!-- Logo -->
             <a href="index.html" class="flex items-center">
                 <img src="images/JeepLink-Logo.png" 
                     alt="JeepLink Logo" 
-                    class="h-24 sm:h-20 md:h-28 lg:h-32 transition-all">
+                    class="h-20 sm:h-16 md:h-24 lg:h-28 transition-all">
             </a>
 
             <!-- Desktop links -->
@@ -135,7 +141,7 @@
     <!-- End of Navigation Bar -->
 
     <!-- ── Hero Section ── -->
-    <main class="hero-bg min-h-[88vh] flex items-center justify-center">
+    <main class="hero-bg min-h-[100vh] flex items-center justify-center">
         <div class="flex flex-col items-center text-center gap-5 px-4 w-full pb-28 max-w-6xl md:my-12">
 
             <!-- Headline -->
