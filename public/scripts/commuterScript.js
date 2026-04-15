@@ -142,7 +142,20 @@ if (destination) {
     addRouteNode(destinationPoint, "destination");
 }
 
-if (start && destination) await routeGenerated.getAndDisplayRoutes();
+if (start && destination) {
+    $("#routePanel")
+        .hide()
+        .removeClass("hidden")
+        .fadeIn(200);
+
+    routeGenerated.clear();
+
+    addRouteNode(startingPoint, "start");
+    addRouteNode(destinationPoint, "destination");
+
+    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    renderRoutes(completeRouteInformation);
+}
 
 const startingPointSearch = setupLocationSearch({
     field: $("#startingPointField"),
@@ -182,9 +195,9 @@ $("#calculateRouteButton").on("click", async () => {
     if(!destinationPoint) return;
 
     $("#routePanel")
-                    .hide()
-                    .removeClass("hidden")
-                    .fadeIn(200);
+        .hide()
+        .removeClass("hidden")
+        .fadeIn(200);
 
     routeGenerated.clear();
 
