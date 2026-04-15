@@ -29,9 +29,8 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // Fetch and setup required JSON files
 const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
 const fareMatrix = await apiFetch("/getFareMatrix", {
-    method: "POST",
+    method: "GET",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ matrixId: 0 })
 });
 fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json())
     .then(setupNamedLocations);
@@ -115,7 +114,6 @@ const destination = sessionStorage.getItem("destination");
 routeGenerated.clear();
 
 if (start) {
-    console.log(start)
     startingPoint = JSON.parse(start);
     sessionStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
@@ -123,7 +121,6 @@ if (start) {
 }
 
 if (destination) {
-    console.log(destination)
     destinationPoint = JSON.parse(destination);
     sessionStorage.removeItem("destination");
     $("#destinationPointField").val(destinationPoint.name);

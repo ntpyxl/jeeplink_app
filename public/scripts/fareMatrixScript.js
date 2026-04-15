@@ -154,9 +154,8 @@ function syncFareMatrixStore(matrices, matricesById) {
 async function loadFareMatrices() {
     try {
         const response = await apiFetch("/getFareMatrix", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ matrixId: 0 })
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
         });
 
         const source = Array.isArray(response)

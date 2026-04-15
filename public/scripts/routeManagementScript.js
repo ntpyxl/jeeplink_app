@@ -97,12 +97,9 @@ const confirmDeleteBtn = $("#confirmDelete");
 async function enterEditMode(route) {
     editingRouteId = route.id;
 
-    const jeepRouteData = await apiFetch("/getJeepRoutesWithNodesById", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            route_id: editingRouteId
-        })
+    const jeepRouteData = await apiFetch(`/getJeepRoutesWithNodes/${editingRouteId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
     });
 
     routeNameInput.val(route.name);
@@ -357,12 +354,9 @@ async function reloadJeepRouteData(pageNumber = 1) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        const { route_data, row_count, total_pages } = await apiFetch("/getJeepRoutes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                page_number: pageNumber
-            })
+        const { route_data, row_count, total_pages } = await apiFetch(`/getJeepRoutes/${pageNumber}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
         });
 
         jeepRoutes = route_data || [];

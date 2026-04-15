@@ -87,9 +87,9 @@ export class CommuterRouter {
         const { paths } = await response;
         console.log(response); // TODO: Remove debug line
 
-        this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF");
-        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e");
-        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e");
+        this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF", 8);
+        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e", 5);
+        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e", 2);
 
         if (this.fareMatrix) {
             const routeTypes = {
@@ -121,7 +121,7 @@ export class CommuterRouter {
         }
     }
 
-    drawSingleRoute(edges, type, jeep_color) {
+    drawSingleRoute(edges, type, jeep_color, weight) {
         // Remove existing layer for this route type
         if (this.routeLayers[type]) {
             this.map.removeLayer(this.routeLayers[type]);
@@ -135,7 +135,7 @@ export class CommuterRouter {
             const to = keyToLatLng(edge.to);
 
             const style = edge.mode === "jeep"
-                ? { color: jeep_color, weight: 6 }
+                ? { color: jeep_color, weight: weight }
                 : { color: "#666", weight: 4, dashArray: "6 6" };
 
             const segment = L.polyline([from, to], {

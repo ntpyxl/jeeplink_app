@@ -14,9 +14,9 @@ export class SavedRouteRenderer {
 
     async loadRoutes() {
         const queryData = await apiFetch("/getJeepRoutesWithNodes", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
 
         this.routes = [];
         this.tempNodes = [];
