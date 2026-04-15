@@ -28,6 +28,12 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/custom.css">
+    <style>
+        html, body {     
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+    </style>
 
     <!-- JQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -455,6 +461,28 @@
 
         </div>
     </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to portrait mode.
+        </p>
+    </div>
+
 
     <!-- Commuter Front End Script -->
     <script src="scripts/ui/commuterStylingScript.js"></script>

@@ -261,10 +261,6 @@ $("#calculateRouteButton").on("click", function () {
     const $controls = $("#mapControls");
     const $routePanel = $("#routePanel");
 
-    function isMobile() {
-        return window.innerWidth < 768; 
-    }
-
     function updateControlsPosition() {
 
         if (isMobile()) {
@@ -318,5 +314,21 @@ $("#calculateRouteButton").on("click", function () {
         localStorage.setItem("jeepLink_termsAccepted", "true");
         $("#termsModal").fadeOut(200);
     });
+
+    // ---------- ORIENTATION CHECK (LANDSCAPE MODE OVERLAY) ----------
+    function checkOrientation() {
+        if (window.innerWidth > window.innerHeight && window.innerWidth < 1024) {
+            document.getElementById('rotateOverlay').classList.remove('hidden');
+        } else {
+            document.getElementById('rotateOverlay').classList.add('hidden');
+        }
+    }
+
+    // Listen for orientation changes and resize events
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+    // Initial check
+    checkOrientation();
 
 });
