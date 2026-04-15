@@ -128,29 +128,37 @@ $(document).ready(function () {
 
         routes.forEach(route => {
 
-            const instructions =
-                route.info?.cheapestRouteInstructions ||
-                route.info?.fastestRouteInstructions ||
-                route.info?.minimalTransferRouteInstructions ||
-                [];
+            let instructions = [];
 
-            const ridesCount = route.path?.jeepRidesCount || 0;
-            const duration = route.path?.routeDurationSeconds
-                ? Math.round(route.path.routeDurationSeconds / 60)
-                : 0;
+            if (route.title === "Fastest Route") {
+                instructions = route.info?.fastestRouteInstructions || [];
+            } else if (route.title === "Cheapest Route") {
+                instructions = route.info?.cheapestRouteInstructions || [];
+            } else {
+                instructions = route.info?.minimalTransferRouteInstructions || [];
+            }
+
+const routeInfo = route.info?.routeInformation || {};
+
+const regular = routeInfo.routeCost?.regular || {};
+const discounted = routeInfo.routeCost?.discounted || {};
+
+            const ridesCount = routeInfo.jeepRidesCount || "0 rides";
+            const duration = routeInfo.tripDurationFormatted || "N/A";
+            const distance = routeInfo.routeDistance || "";
 
             // Limited to 5 instructions
             const limited = instructions.slice(0, 5);
 
             const stepsHtml = limited.map((step, i) => `
-                <div class="flex gap-3 md:gap-4 items-start">
+                <div class="flex gap-3 md:gap-4 items-start py-1.5 md:py-2">
 
                     <!-- STEP NUMBER -->
                     <div class="flex-shrink-0 w-6 h-6 md:w-7 md:h-7
                                 rounded-full bg-[#004F11]
                                 text-[#E9CD2D] font-bold
                                 flex items-center justify-center
-                                text-xs md:text-sm shadow-sm">
+                                text-xs md:text-sm shadow-md ring-2 ring-white/10">
 
                         ${i + 1}
 
@@ -158,7 +166,7 @@ $(document).ready(function () {
 
                     <!-- STEP TEXT -->
                     <p class="text-sm md:text-base leading-relaxed text-gray-800
-                            pt-[2px] md:pt-0">
+                            pt-[2px] md:pt-0 tracking-[0.1px]">
 
                         ${step}
 
@@ -167,38 +175,72 @@ $(document).ready(function () {
                 </div>
             `).join("");
 
+            const pricingHtml = `
+            <div class="mt-3 pt-3 border-t border-gray-200 space-y-3 text-sm">
+
+                <!-- Traditional -->
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-700 font-medium">Traditional</span>
+                    <div class="text-right">
+                        <div class="text-[#004F11] font-semibold text-base">₱${regular.traditional}</div>
+                        <div class="text-xs text-gray-500">₱${discounted.traditional} discounted</div>
+                    </div>
+                </div>
+
+                <!-- Non-AC Modern -->
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-700 font-medium">Non-AC Modern</span>
+                    <div class="text-right">
+                        <div class="text-[#004F11] font-semibold text-base">₱${regular.nonAcModern}</div>
+                        <div class="text-xs text-gray-500">₱${discounted.nonAcModern} discounted</div>
+                    </div>
+                </div>
+
+                <!-- AC Modern -->
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-700 font-medium">AC Modern</span>
+                    <div class="text-right">
+                        <div class="text-[#004F11] font-semibold text-base">₱${regular.acModern}</div>
+                        <div class="text-xs text-gray-500">₱${discounted.acModern} discounted</div>
+                    </div>
+                </div>
+
+            </div>
+            `;
+
             const html = `
             <div class="min-w-full px-1 sm:px-2 route-card opacity-0 translate-y-4">
 
                 <div class="bg-gradient-to-br from-[#004F11] to-[#1f7a3a]
-                            rounded-xl sm:rounded-2xl shadow-lg overflow-hidden
-                            border border-white/10">
+                            rounded-xl sm:rounded-2xl shadow-xl overflow-hidden
+                            border border-white/10 backdrop-blur-md">
 
                     <div class="route-details">
 
                         <!-- HEADER -->
                         <div class="summary flex items-center justify-between gap-2 sm:gap-3
-                                    px-3 sm:px-4 py-3 sm:py-4 cursor-pointer">
+                                    px-3 sm:px-4 py-3 sm:py-4 cursor-pointer
+                                    hover:bg-white/5 transition-colors duration-200">
 
                             <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
 
                                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#E9CD2D]
-                                            flex items-center justify-center shrink-0">
+                                            flex items-center justify-center shrink-0 shadow-sm">
                                     <i class="fa-solid fa-route text-[#004F11] text-sm"></i>
                                 </div>
 
                                 <div class="flex flex-col min-w-0">
-                                    <span class="text-[#E9CD2D] font-semibold text-sm sm:text-base truncate">
+                                    <span class="text-[#E9CD2D] font-semibold text-sm sm:text-base truncate tracking-wide">
                                         ${route.title}
                                     </span>
-                                    <span class="text-white/70 text-[11px] sm:text-xs truncate">
-                                        ${ridesCount} rides • ~${duration} mins
+                                    <span class="text-white/70 text-[11px] sm:text-sm truncate">
+                                        ${ridesCount} • ${duration}
                                     </span>
                                 </div>
 
                             </div>
 
-                            <span class="text-[#E9CD2D] text-sm transition-transform duration-300 arrow">
+                            <span class="text-[#E9CD2D] text-sm transition-transform duration-300 arrow opacity-80">
                                 ▲
                             </span>
 
@@ -206,10 +248,15 @@ $(document).ready(function () {
 
                         <!-- CONTENT -->
                         <div class="route-content hidden bg-white/95 text-gray-800
-                                    px-3 sm:px-4 py-2 sm:py-3">
+                                    px-3 sm:px-4 py-3 sm:py-4">
 
-                            <div class="max-h-40 sm:max-h-48 overflow-y-auto space-y-2 pr-1">
+                            <div class="max-h-44 sm:max-h-52 overflow-y-auto space-y-2 pr-1
+                                        scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                                 ${stepsHtml}
+                            </div>
+
+                            <div class="mt-3">
+                                ${pricingHtml}
                             </div>
 
                         </div>
@@ -220,6 +267,7 @@ $(document).ready(function () {
 
             </div>
             `;
+            
             $slider.append(html);
         });
 
