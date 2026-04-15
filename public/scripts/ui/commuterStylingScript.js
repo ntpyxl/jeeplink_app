@@ -183,7 +183,7 @@ $(document).ready(function () {
                     <span class="text-gray-700 font-medium">Traditional</span>
                     <div class="text-right">
                         <div class="text-[#004F11] font-semibold text-base">₱${regular.traditional}</div>
-                        <div class="text-xs text-gray-500">₱${discounted.traditional} discounted</div>
+                        <div class="text-xs text-gray-500">₱${discounted.traditional} discounted price</div>
                     </div>
                 </div>
 
@@ -192,7 +192,7 @@ $(document).ready(function () {
                     <span class="text-gray-700 font-medium">Non-AC Modern</span>
                     <div class="text-right">
                         <div class="text-[#004F11] font-semibold text-base">₱${regular.nonAcModern}</div>
-                        <div class="text-xs text-gray-500">₱${discounted.nonAcModern} discounted</div>
+                        <div class="text-xs text-gray-500">₱${discounted.nonAcModern} discounted price</div>
                     </div>
                 </div>
 
@@ -201,7 +201,7 @@ $(document).ready(function () {
                     <span class="text-gray-700 font-medium">AC Modern</span>
                     <div class="text-right">
                         <div class="text-[#004F11] font-semibold text-base">₱${regular.acModern}</div>
-                        <div class="text-xs text-gray-500">₱${discounted.acModern} discounted</div>
+                        <div class="text-xs text-gray-500">₱${discounted.acModern} discounted price</div>
                     </div>
                 </div>
 
