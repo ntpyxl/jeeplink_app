@@ -246,10 +246,7 @@ function renderRoutes(routeInformation) {
             
         const routeSteps = instructions
             .map((step, i) => createInstructionCard(step, i)[0].outerHTML)
-            .join("");
-
-        console.log(route)
-        
+            .join("");        
         $("#routeSlider").append(createRouteStepRow(route.routeInformation.title, route.routeInformation, routeSteps));
     });
 
