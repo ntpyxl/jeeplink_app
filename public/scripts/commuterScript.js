@@ -44,15 +44,23 @@ map.on("locationerror", () => {
 });
 
 // Fetch and setup required JSON files
-const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
-const fareMatrix = await apiFetch("/getFareMatrix", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-});
-fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json())
-    .then(setupNamedLocations);
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson")
+    .then(r => r.json());
 
-const roadsGeoJSON = await roadsPromise;
+const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+    .then(r => r.json());
+
+const fareMatrixPromise = apiFetch("/getFareMatrix", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+});
+
+const [roadsGeoJSON, pointsGeoJSON, fareMatrix] = await Promise.all([
+    roadsPromise,
+    pointsPromise,
+    fareMatrixPromise
+]);
+setupNamedLocations(pointsGeoJSON);
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -306,7 +314,7 @@ function setActiveRoute(currentRouteIndex) {
                 layer.bringToFront();
             } else {
                 if (mode === "jeep") {
-                    layer.setStyle({ color: "#303030", opacity: 1 });
+                    layer.setStyle({ color: "#666666", opacity: 1 });
                 } else {
                     layer.setStyle({ color: "#888", opacity: 1 });
                 }
