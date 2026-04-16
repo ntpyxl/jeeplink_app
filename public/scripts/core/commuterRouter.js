@@ -15,6 +15,7 @@ export class CommuterRouter {
             cheapest: null,
             minimalTransfers: null
         };
+        this.allNodes = [];
         
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
     }
@@ -84,9 +85,25 @@ export class CommuterRouter {
 
         const { paths } = await response;
 
-        this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF", 8);
-        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e", 5);
-        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e", 2);
+        this.allNodes = [];
+
+        const fastestNodes = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
+        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
+        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
+
+        this.routeLayers.fastest.eachLayer(layer => {
+            layer.bringToFront();
+        });
+
+        if (this.allNodes.length > 0) {
+            this.map.fitBounds(L.latLngBounds(this.allNodes), {
+                paddingTopLeft: [250, 150],
+                paddingBottomRight: [50, 150],
+                animate: true,
+                duration: 0.6,
+                maxZoom: 14
+            });
+        }
 
         if (this.fareMatrix) {
             const routeTypes = {
@@ -112,8 +129,7 @@ export class CommuterRouter {
                     [`${key}RouteInstructions`]: formatInstructions(instructions)
                 };
             }
-
-            console.log(completeRouteInformation); // TODO: Remove debug line
+            
             return completeRouteInformation;
         }
     }
@@ -131,6 +147,8 @@ export class CommuterRouter {
             const from = keyToLatLng(edge.from);
             const to = keyToLatLng(edge.to);
 
+            this.allNodes.push(from, to);
+
             const style = edge.mode === "jeep"
                 ? { color: jeep_color, weight: weight }
                 : { color: "#666", weight: 4, dashArray: "6 6" };
@@ -141,6 +159,7 @@ export class CommuterRouter {
                 weight: style.weight,
                 pane: "routePane"
             });
+            segment.options.mode = edge.mode;
 
             layerGroup.addLayer(segment);
         }
@@ -396,6 +415,7 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
     });
     
     return {
+        title: routeInformation?.title || "Route" ,
         routeDistance: routeDistance,
         jeepRidesCount: jeepRidesCount,
         tripDurationSeconds: tripDurationSeconds,

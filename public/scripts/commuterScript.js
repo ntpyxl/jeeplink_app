@@ -4,6 +4,8 @@ import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
+import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
+import { updateControlsPosition } from "./ui/commuterStylingScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -42,15 +44,23 @@ map.on("locationerror", () => {
 });
 
 // Fetch and setup required JSON files
-const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson").then(r => r.json());
-const fareMatrix = await apiFetch("/getFareMatrix", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-});
-fetch("../api/getBlobFile?filename=Dasma_Points.geojson").then(r => r.json())
-    .then(setupNamedLocations);
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson")
+    .then(r => r.json());
 
-const roadsGeoJSON = await roadsPromise;
+const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+    .then(r => r.json());
+
+const fareMatrixPromise = apiFetch("/getFareMatrix", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+});
+
+const [roadsGeoJSON, pointsGeoJSON, fareMatrix] = await Promise.all([
+    roadsPromise,
+    pointsPromise,
+    fareMatrixPromise
+]);
+setupNamedLocations(pointsGeoJSON);
 
 // Assigns a road ID to each road
 roadsGeoJSON.features.forEach((feature, index) => {
@@ -216,10 +226,107 @@ $("#calculateRouteButton").on("click", async () => {
     renderRoutes(completeRouteInformation);
 })
 
-$(document).on("click", e => {
-    ["starting", "destination"].forEach(type => {
-        if (!$(e.target).closest(`#${type}PointField, #${type}Suggestions`).length) {
-            $(`#${type}Suggestions`).addClass("hidden");
-        }
+
+
+let currentRoute = 0;
+let totalRoutes = 0;
+
+function renderRoutes(routeInformation) {
+    $("#routeSlider").empty(); 
+
+    $("#routePanel").removeClass("hidden");
+    updateControlsPosition();
+
+    const routes = [
+        routeInformation.fastestRouteInformation,
+        routeInformation.cheapestRouteInformation,
+        routeInformation.minimalTransferRouteInformation
+    ]; // removes undefined if any
+
+    totalRoutes = routes.length;
+
+    routes.forEach(route => {
+        const instructions =
+            route.fastestRouteInstructions ||
+            route.cheapestRouteInstructions ||
+            route.minimalTransferRouteInstructions ||
+            [];
+            
+        const routeSteps = instructions
+            .map((step, i) => createInstructionCard(step, i)[0].outerHTML)
+            .join("");        
+        $("#routeSlider").append(createRouteStepRow(route.routeInformation.title, route.routeInformation, routeSteps));
     });
+
+    updateSlider();
+    
+    // Animate cards after render
+    setTimeout(() => {
+        $(".route-card").each(function (i) {
+            $(this).delay(i * 120).queue(function (next) {
+                $(this).removeClass("opacity-0 translate-y-4")
+                    .addClass("opacity-100 translate-y-0 transition-all duration-500 ease-out");
+                next();
+            });
+        });
+    }, 50);
+}
+
+// ---------- ROUTE SLIDER ----------
+function updateSlider() {
+    $("#routeSlider").css("transform", `translateX(-${currentRoute * 100}%)`);
+    $("#routeIndicator").text(`${currentRoute + 1} / ${totalRoutes}`);
+}
+
+$("#nextRoute").on("click", function () {
+    if (currentRoute < totalRoutes - 1) {
+        currentRoute++;
+        updateSlider();
+        setActiveRoute(currentRoute);
+    }
 });
+
+$("#prevRoute").on("click", function () {
+    if (currentRoute > 0) {
+        currentRoute--;
+        updateSlider();
+        setActiveRoute(currentRoute);
+    }
+});
+
+function setActiveRoute(currentRouteIndex) {
+    const routeKeys = ["fastest", "cheapest", "minimalTransfers"];
+    const activeKey = routeKeys[currentRouteIndex];
+
+    Object.entries(routeGenerated.routeLayers).forEach(([key, layerGroup]) => {
+        if (!layerGroup) return;
+
+        layerGroup.eachLayer(layer => {
+            const mode = layer.options.mode;
+
+            if (key === activeKey) {
+                if (mode === "jeep") {
+                    layer.setStyle({ color: "#1E90FF", opacity: 1 });
+                } else {
+                    layer.setStyle({ color: "#666", opacity: 1 });
+                }
+
+                layer.bringToFront();
+            } else {
+                if (mode === "jeep") {
+                    layer.setStyle({ color: "#666666", opacity: 1 });
+                } else {
+                    layer.setStyle({ color: "#888", opacity: 1 });
+                }
+            }
+        });
+    });
+
+    updateSlider();
+}
+
+$("#goNow").on("click", () => {
+    console.log("clicked go: route #" + currentRoute);
+    $("#commuteContent").stop(true, true).slideUp(250);
+    $("#arrow").addClass("rotate-180");
+})

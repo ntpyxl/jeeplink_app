@@ -155,10 +155,11 @@
                         <!-- Route Changed Button -->
                         <button id="openRoadChangeBtn"
                             class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
-                                bg-white rounded-xl shadow-md border border-gray-200
+                                bg-white rounded-xl shadow-md border-3 border-red-500
                                 flex items-center justify-center
-                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
-                            <i class="fa-solid fa-route text-sm md:text-lg lg:text-xl"></i>
+                                hover:bg-red-50 active:scale-95 transition-all cursor-pointer">
+                            
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg md:text-xl lg:text-2xl"></i>
                         </button>
 
                         <!-- Locate Button -->
@@ -276,7 +277,7 @@
 
                         <!-- Route Details Container -->
                         <div id="routePanel"
-                            class="hidden fixed bottom-0 left-0 w-full z-[450] flex justify-center
+                            class="hidden fixed bottom-0 left-0 ms-0 md:ms-2 w-full z-[450] flex justify-center
                                 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md
                                 lg:left-6 lg:translate-x-0 lg:w-auto lg:max-w-lg lg:justify-start">
 
@@ -288,7 +289,7 @@
                                         rounded-t-3xl md:rounded-3xl
                                         shadow-[0_-8px_30px_rgba(0,0,0,0.15)] md:shadow-2xl
                                         border border-white/30 md:border-[#004F11]/10
-                                        p-3 sm:p-4 md:p-5 flex flex-col gap-3">
+                                        p-2 sm:p-3 md:p-4 flex flex-col gap-2">
 
                                 <!-- Drag Handle (mobile only) -->
                                 <div id="dragToggle"
@@ -485,7 +486,7 @@
 
 
     <!-- Commuter Front End Script -->
-    <script src="scripts/ui/commuterStylingScript.js"></script>
+    <script src="scripts/ui/commuterStylingScript.js" type="module"></script>
 
     <!-- Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
