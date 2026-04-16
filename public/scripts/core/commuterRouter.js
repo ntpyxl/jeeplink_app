@@ -396,6 +396,7 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
     });
     
     return {
+        title: routeInformation?.title || "Route" ,
         routeDistance: routeDistance,
         jeepRidesCount: jeepRidesCount,
         tripDurationSeconds: tripDurationSeconds,

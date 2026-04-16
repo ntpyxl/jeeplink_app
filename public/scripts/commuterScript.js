@@ -4,6 +4,8 @@ import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
+import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
+import { updateControlsPosition } from "./ui/commuterStylingScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -216,10 +218,75 @@ $("#calculateRouteButton").on("click", async () => {
     renderRoutes(completeRouteInformation);
 })
 
-$(document).on("click", e => {
-    ["starting", "destination"].forEach(type => {
-        if (!$(e.target).closest(`#${type}PointField, #${type}Suggestions`).length) {
-            $(`#${type}Suggestions`).addClass("hidden");
-        }
+
+
+let currentRoute = 0;
+let totalRoutes = 0;
+
+function renderRoutes(routeInformation) {
+    $("#routeSlider").empty(); 
+
+    $("#routePanel").removeClass("hidden");
+    updateControlsPosition();
+
+    const routes = [
+        routeInformation.fastestRouteInformation,
+        routeInformation.cheapestRouteInformation,
+        routeInformation.minimalTransferRouteInformation
+    ]; // removes undefined if any
+
+    totalRoutes = routes.length;
+
+    routes.forEach(route => {
+        const instructions =
+            route.fastestRouteInstructions ||
+            route.cheapestRouteInstructions ||
+            route.minimalTransferRouteInstructions ||
+            [];
+            
+        const routeSteps = instructions
+            .map((step, i) => createInstructionCard(step, i)[0].outerHTML)
+            .join("");
+
+        console.log(route)
+        
+        $("#routeSlider").append(createRouteStepRow(route.routeInformation.title, route.routeInformation, routeSteps));
     });
+
+    updateSlider();
+    
+    // Animate cards after render
+    setTimeout(() => {
+        $(".route-card").each(function (i) {
+            $(this).delay(i * 120).queue(function (next) {
+                $(this).removeClass("opacity-0 translate-y-4")
+                    .addClass("opacity-100 translate-y-0 transition-all duration-500 ease-out");
+                next();
+            });
+        });
+    }, 50);
+}
+
+// ---------- ROUTE SLIDER ----------
+function updateSlider() {
+    $("#routeSlider").css("transform", `translateX(-${currentRoute * 100}%)`);
+    $("#routeIndicator").text(`${currentRoute + 1} / ${totalRoutes}`);
+}
+
+$("#nextRoute").on("click", function () {
+    if (currentRoute < totalRoutes - 1) {
+        currentRoute++;
+        updateSlider();
+    }
 });
+
+$("#prevRoute").on("click", function () {
+    if (currentRoute > 0) {
+        currentRoute--;
+        updateSlider();
+    }
+});
+
+$("#goNow").on("click", () => {
+    console.log("clicked go: route #" + currentRoute);
+})
