@@ -87,9 +87,13 @@ export class CommuterRouter {
 
         this.allNodes = [];
 
-        const fastestNodes = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90FF", 8);
-        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#ff1e1e", 5);
-        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#e9ff1e", 2);
+        const fastestNodes = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
+        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
+        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
+
+        this.routeLayers.fastest.eachLayer(layer => {
+            layer.bringToFront();
+        });
 
         if (this.allNodes.length > 0) {
             this.map.fitBounds(L.latLngBounds(this.allNodes), {
@@ -155,6 +159,7 @@ export class CommuterRouter {
                 weight: style.weight,
                 pane: "routePane"
             });
+            segment.options.mode = edge.mode;
 
             layerGroup.addLayer(segment);
         }

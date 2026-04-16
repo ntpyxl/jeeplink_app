@@ -274,6 +274,7 @@ $("#nextRoute").on("click", function () {
     if (currentRoute < totalRoutes - 1) {
         currentRoute++;
         updateSlider();
+        setActiveRoute(currentRoute);
     }
 });
 
@@ -281,9 +282,43 @@ $("#prevRoute").on("click", function () {
     if (currentRoute > 0) {
         currentRoute--;
         updateSlider();
+        setActiveRoute(currentRoute);
     }
 });
 
+function setActiveRoute(currentRouteIndex) {
+    const routeKeys = ["fastest", "cheapest", "minimalTransfers"];
+    const activeKey = routeKeys[currentRouteIndex];
+
+    Object.entries(routeGenerated.routeLayers).forEach(([key, layerGroup]) => {
+        if (!layerGroup) return;
+
+        layerGroup.eachLayer(layer => {
+            const mode = layer.options.mode;
+
+            if (key === activeKey) {
+                if (mode === "jeep") {
+                    layer.setStyle({ color: "#1E90FF", opacity: 1 });
+                } else {
+                    layer.setStyle({ color: "#666", opacity: 1 });
+                }
+
+                layer.bringToFront();
+            } else {
+                if (mode === "jeep") {
+                    layer.setStyle({ color: "#303030", opacity: 1 });
+                } else {
+                    layer.setStyle({ color: "#888", opacity: 1 });
+                }
+            }
+        });
+    });
+
+    updateSlider();
+}
+
 $("#goNow").on("click", () => {
     console.log("clicked go: route #" + currentRoute);
+    $("#commuteContent").stop(true, true).slideUp(250);
+    $("#arrow").addClass("rotate-180");
 })
