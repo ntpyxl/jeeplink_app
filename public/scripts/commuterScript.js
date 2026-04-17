@@ -129,11 +129,11 @@ function addRouteNode(data, type = null) {
     routeGenerated.addNode({node: node, type: type});
 }
 
-let start = sessionStorage.getItem("start");
-let destination = sessionStorage.getItem("destination");
+let activeStart = localStorage.getItem("start");
+let activeDstination = localStorage.getItem("destination");
 
 async function checkActiveRoute() {
-    if(start && destination && sessionStorage.getItem("activeRoute")) {
+    if(activeStart && activeDstination && localStorage.getItem("activeRoute")) {
         const jeeplinkSwal = Swal.mixin({
             background: "#ffffff",
             color: "black",
@@ -155,15 +155,18 @@ async function checkActiveRoute() {
         });
             
         if(result.isDenied) {
-            sessionStorage.removeItem("start");
-            sessionStorage.removeItem("destination");
-            sessionStorage.removeItem("activeRoute");
-            start = null;
-            destination = null;
+            localStorage.removeItem("start");
+            localStorage.removeItem("destination");
+            localStorage.removeItem("activeRoute");
+            activeStart = null;
+            activeDstination = null;
         }
     }
 }
 await checkActiveRoute();
+
+const start = sessionStorage.getItem("start") || localStorage.getItem("start");
+const destination = sessionStorage.getItem("destination") || localStorage.getItem("destination");
 
 let startingPoint = null;
 let destinationPoint = null;
@@ -178,6 +181,7 @@ routeGenerated.clear();
 if (start) {
     startingPoint = JSON.parse(start);
     isStartingPointSelectedLocation = true;
+    sessionStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
     addRouteNode(startingPoint, "start");
 }
@@ -185,6 +189,7 @@ if (start) {
 if (destination) {
     destinationPoint = JSON.parse(destination);
     isDestinationPointSelectedLocation = true;
+    sessionStorage.removeItem("destination");
     $("#destinationPointField").val(destinationPoint.name);
     addRouteNode(destinationPoint, "destination");
 }
@@ -258,14 +263,17 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
-    sessionStorage.setItem("start", JSON.stringify(startingPoint));
-    sessionStorage.setItem("destination", JSON.stringify(destinationPoint));
+    localStorage.setItem("start", JSON.stringify(startingPoint));
+    localStorage.setItem("destination", JSON.stringify(destinationPoint));
     renderRoutes(completeRouteInformation);
 })
 
 
 
 function renderRoutes(routeInformation) {
+    if($("#startingPointField").val() !== "Your Location") {
+        $("#goNow").addClass("hidden");
+    }
     $("#routeSlider").empty(); 
     $("#routePanel").removeClass("hidden");
     updateControlsPosition();
@@ -360,7 +368,7 @@ function setActiveRoute(currentRouteIndex) {
 
 $("#goNow").on("click", () => {
     console.log("clicked go: route #" + currentRoute);
-    sessionStorage.setItem("activeRoute", currentRoute)
+    localStorage.setItem("activeRoute", currentRoute)
     
     let watchId = null;
     watchId = watchUserPosition((location) => {
