@@ -1,6 +1,6 @@
 export function watchUserPosition(onUpdate, onError) {
     if (!navigator.geolocation) {
-        alert("Geolocation not supported.");
+        showError("Geolocation not supported.");
         return;
     }
 

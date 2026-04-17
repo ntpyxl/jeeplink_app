@@ -41,7 +41,7 @@ map.on("locationfound", (e) => {
 });
 
 map.on("locationerror", () => {
-    alert("Unable to find your location. Please allow location access.");
+    showError("Unable to find your location. Please allow location access.");
 });
 
 // Fetch and setup required JSON files
