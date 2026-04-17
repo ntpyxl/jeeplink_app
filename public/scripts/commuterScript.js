@@ -6,6 +6,7 @@ import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition } from "./ui/commuterStylingScript.js"
+import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -128,13 +129,54 @@ function addRouteNode(data, type = null) {
     routeGenerated.addNode({node: node, type: type});
 }
 
+let activeStart = localStorage.getItem("start");
+let activeDstination = localStorage.getItem("destination");
+
+async function checkActiveRoute() {
+    if(activeStart && activeDstination && localStorage.getItem("activeRoute")) {
+        const jeeplinkSwal = Swal.mixin({
+            background: "#ffffff",
+            color: "black",
+            confirmButtonColor: "#2f7a33",
+            customClass: {
+                popup: " shadow-lg rounded-3",
+                title: "fw-bold",
+            },
+        });
+
+        const result = await jeeplinkSwal.fire({
+            icon: "question",
+            title: "Active route detected",
+            text: "Do you want to continue following this route?",
+            showConfirmButton: true,
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No"
+        });
+            
+        if(result.isDenied) {
+            localStorage.removeItem("start");
+            localStorage.removeItem("destination");
+            localStorage.removeItem("activeRoute");
+            activeStart = null;
+            activeDstination = null;
+        }
+    }
+}
+await checkActiveRoute();
+
+const start = sessionStorage.getItem("start") || localStorage.getItem("start");
+const destination = sessionStorage.getItem("destination") || localStorage.getItem("destination");
+
 let startingPoint = null;
 let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
-const start = sessionStorage.getItem("start");
-const destination = sessionStorage.getItem("destination");
+let completeRouteInformation = null;
+let routesStepCoords = null;
+let currentRoute = 0;
+let totalRoutes = 0;
 
 routeGenerated.clear();
 
@@ -165,7 +207,7 @@ if (start && destination) {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     renderRoutes(completeRouteInformation);
 }
 
@@ -222,18 +264,17 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    localStorage.setItem("start", JSON.stringify(startingPoint));
+    localStorage.setItem("destination", JSON.stringify(destinationPoint));
     renderRoutes(completeRouteInformation);
 })
 
-
-
-let currentRoute = 0;
-let totalRoutes = 0;
-
 function renderRoutes(routeInformation) {
+    if($("#startingPointField").val() !== "Your Location") {
+        $("#goNow").addClass("hidden");
+    }
     $("#routeSlider").empty(); 
-
     $("#routePanel").removeClass("hidden");
     updateControlsPosition();
 
@@ -241,7 +282,7 @@ function renderRoutes(routeInformation) {
         routeInformation.fastestRouteInformation,
         routeInformation.cheapestRouteInformation,
         routeInformation.minimalTransferRouteInformation
-    ]; // removes undefined if any
+    ];
 
     totalRoutes = routes.length;
 
@@ -326,7 +367,56 @@ function setActiveRoute(currentRouteIndex) {
 }
 
 $("#goNow").on("click", () => {
-    console.log("clicked go: route #" + currentRoute);
+    localStorage.setItem("activeRoute", currentRoute);
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
+
+    const finalStepCoordIndex = routesStepCoords.fastestStepCoords.length;
+    let stepCoordIndex = 0;
+    
+    function handleNavigationUpdate(location) {
+        const target = routesStepCoords.fastestStepCoords[stepCoordIndex];
+
+        const distance = turf.distance(
+            turf.point([location.coords[1], location.coords[0]]),
+            turf.point(target),
+            { units: "meters" }
+        );
+
+        if (distance < 120) {
+            console.log("User is within 120m of next stop.");
+        }
+
+        if (distance < 20) {
+            console.log("Reached step:", stepCoordIndex);
+            stepCoordIndex++;
+        }
+
+        if (stepCoordIndex >= finalStepCoordIndex) {
+            stopAllTracking();
+            console.log("User has reached destination");
+        }
+    }
+
+    let watchId = null;
+    let stopSimulationFunction = null;
+
+    function stopAllTracking() {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+
+        if (stopSimulationFunction) {
+            stopSimulationFunction();
+            stopSimulationFunction = null;
+        }
+    }
+
+    // Uncomment either one, but not both
+    // Uncomment watchId for actual user position tracking
+    // Uncomment stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+    
+    watchId = watchUserPosition(handleNavigationUpdate);
+    //stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 })
