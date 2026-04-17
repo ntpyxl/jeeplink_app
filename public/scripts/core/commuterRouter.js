@@ -87,9 +87,14 @@ export class CommuterRouter {
 
         this.allNodes = [];
 
-        const fastestNodes = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
-        if (paths.cheapestRoute) this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
-        if (paths.minimalTransferRoute) this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
+        let fastestStepCoords, cheapestStepCoords, minimalTransferStepCoords = null;
+        fastestStepCoords = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
+        if (paths.cheapestRoute) {
+            cheapestStepCoords = this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
+        }
+        if (paths.minimalTransferRoute) {
+            minimalTransferStepCoords = this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
+        }
 
         this.routeLayers.fastest.eachLayer(layer => {
             layer.bringToFront();
@@ -105,33 +110,38 @@ export class CommuterRouter {
             });
         }
 
-        if (this.fareMatrix) {
-            const routeTypes = {
-                fastest: paths.fastestRoute,
-                cheapest: paths.cheapestRoute,
-                minimalTransfer: paths.minimalTransferRoute
+        const routeTypes = {
+            fastest: paths.fastestRoute,
+            cheapest: paths.cheapestRoute,
+            minimalTransfer: paths.minimalTransferRoute
+        };
+
+        const completeRouteInformation = {};
+
+        for (const [key, route] of Object.entries(routeTypes)) {
+            if (!route) continue;
+
+            const instructions = buildRouteInstructions(route.routePath);
+            const info = buildRouteInformation(
+                route,
+                instructions,
+                this.fareMatrix.fareMatrixData
+            );
+
+            completeRouteInformation[`${key}RouteInformation`] = {
+                routeInformation: info,
+                [`${key}RouteInstructions`]: formatInstructions(instructions)
             };
-
-            const completeRouteInformation = {};
-
-            for (const [key, route] of Object.entries(routeTypes)) {
-                if (!route) continue;
-
-                const instructions = buildRouteInstructions(route.routePath);
-                const info = buildRouteInformation(
-                    route,
-                    instructions,
-                    this.fareMatrix.fareMatrixData
-                );
-
-                completeRouteInformation[`${key}RouteInformation`] = {
-                    routeInformation: info,
-                    [`${key}RouteInstructions`]: formatInstructions(instructions)
-                };
-            }
-            
-            return completeRouteInformation;
         }
+        
+        return {
+            "completeRouteInformation": completeRouteInformation,
+            "routesStepCoords": {
+                "fastestStepCoords": fastestStepCoords || null,
+                "cheapestStepCoords": cheapestStepCoords || null,
+                "minimalTransferStepCoords": minimalTransferStepCoords || null
+            }
+        };
     }
 
     drawSingleRoute(edges, type, jeep_color, weight) {
@@ -143,11 +153,27 @@ export class CommuterRouter {
         const layerGroup = L.layerGroup().addTo(this.map);
         const keyToLatLng = k => k.split(",").map(Number).reverse();
 
-        for (const edge of edges) {
+        let prevMode = null;
+        let prevRoute = null;
+        let nextStepCoordArray = []
+        for (let i = 0; i < edges.length; i++) {
+            const edge = edges[i];
+
             const from = keyToLatLng(edge.from);
             const to = keyToLatLng(edge.to);
 
             this.allNodes.push(from, to);
+
+            const modeChanged =
+                edge.mode !== prevMode ||
+                edge.route_name !== prevRoute;
+
+            if (modeChanged && i > 0) {
+                nextStepCoordArray.push(from);
+            }
+
+            prevMode = edge.mode;
+            prevRoute = edge.route_name;
 
             const style = edge.mode === "jeep"
                 ? { color: jeep_color, weight: weight }
@@ -164,11 +190,17 @@ export class CommuterRouter {
             layerGroup.addLayer(segment);
         }
 
+        const last = edges[edges.length - 1];
+        const lastTo = keyToLatLng(last.to);
+        nextStepCoordArray.push(lastTo);
+
         this.routeLayers[type] = layerGroup;
 
         if (this.addInteractability) {
             this.addRouteInteractability(layerGroup);
         }
+
+        return nextStepCoordArray;
     }
 
     removeNode(nodeId) {

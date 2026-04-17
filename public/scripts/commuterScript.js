@@ -6,7 +6,7 @@ import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition } from "./ui/commuterStylingScript.js"
-import { watchUserPosition } from "./commuterFollowRouteScript.js"
+import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -173,6 +173,8 @@ let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
+let completeRouteInformation = null;
+let routesStepCoords = null;
 let currentRoute = 0;
 let totalRoutes = 0;
 
@@ -205,7 +207,7 @@ if (start && destination) {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     renderRoutes(completeRouteInformation);
 }
 
@@ -262,13 +264,11 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
     renderRoutes(completeRouteInformation);
 })
-
-
 
 function renderRoutes(routeInformation) {
     if($("#startingPointField").val() !== "Your Location") {
@@ -367,14 +367,56 @@ function setActiveRoute(currentRouteIndex) {
 }
 
 $("#goNow").on("click", () => {
-    console.log("clicked go: route #" + currentRoute);
-    localStorage.setItem("activeRoute", currentRoute)
-    
-    let watchId = null;
-    watchId = watchUserPosition((location) => {
-        console.log(location)
-    });
-
+    localStorage.setItem("activeRoute", currentRoute);
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
+
+    const finalStepCoordIndex = routesStepCoords.fastestStepCoords.length;
+    let stepCoordIndex = 0;
+    
+    function handleNavigationUpdate(location) {
+        const target = routesStepCoords.fastestStepCoords[stepCoordIndex];
+
+        const distance = turf.distance(
+            turf.point([location.coords[1], location.coords[0]]),
+            turf.point(target),
+            { units: "meters" }
+        );
+
+        if (distance < 120) {
+            console.log("User is within 120m of next stop.");
+        }
+
+        if (distance < 20) {
+            console.log("Reached step:", stepCoordIndex);
+            stepCoordIndex++;
+        }
+
+        if (stepCoordIndex >= finalStepCoordIndex) {
+            stopAllTracking();
+            console.log("User has reached destination");
+        }
+    }
+
+    let watchId = null;
+    let stopSimulationFunction = null;
+
+    function stopAllTracking() {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+
+        if (stopSimulationFunction) {
+            stopSimulationFunction();
+            stopSimulationFunction = null;
+        }
+    }
+
+    // Uncomment either one, but not both
+    // Uncomment watchId for actual user position tracking
+    // Uncomment stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+    
+    watchId = watchUserPosition(handleNavigationUpdate);
+    //stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 })
