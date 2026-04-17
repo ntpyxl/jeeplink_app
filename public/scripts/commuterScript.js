@@ -6,6 +6,7 @@ import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition } from "./ui/commuterStylingScript.js"
+import { watchUserPosition } from "./commuterFollowRouteScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -128,20 +129,55 @@ function addRouteNode(data, type = null) {
     routeGenerated.addNode({node: node, type: type});
 }
 
+let start = sessionStorage.getItem("start");
+let destination = sessionStorage.getItem("destination");
+
+async function checkActiveRoute() {
+    if(start && destination && sessionStorage.getItem("activeRoute")) {
+        const jeeplinkSwal = Swal.mixin({
+            background: "#ffffff",
+            color: "black",
+            confirmButtonColor: "#2f7a33",
+            customClass: {
+                popup: " shadow-lg rounded-3",
+                title: "fw-bold",
+            },
+        });
+
+        const result = await jeeplinkSwal.fire({
+            icon: "question",
+            title: "Active route detected",
+            text: "Do you want to continue following this route?",
+            showConfirmButton: true,
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No"
+        });
+            
+        if(result.isDenied) {
+            sessionStorage.removeItem("start");
+            sessionStorage.removeItem("destination");
+            sessionStorage.removeItem("activeRoute");
+            start = null;
+            destination = null;
+        }
+    }
+}
+await checkActiveRoute();
+
 let startingPoint = null;
 let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
-const start = sessionStorage.getItem("start");
-const destination = sessionStorage.getItem("destination");
+let currentRoute = 0;
+let totalRoutes = 0;
 
 routeGenerated.clear();
 
 if (start) {
     startingPoint = JSON.parse(start);
     isStartingPointSelectedLocation = true;
-    sessionStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
     addRouteNode(startingPoint, "start");
 }
@@ -149,7 +185,6 @@ if (start) {
 if (destination) {
     destinationPoint = JSON.parse(destination);
     isDestinationPointSelectedLocation = true;
-    sessionStorage.removeItem("destination");
     $("#destinationPointField").val(destinationPoint.name);
     addRouteNode(destinationPoint, "destination");
 }
@@ -223,17 +258,15 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     const completeRouteInformation = await routeGenerated.getAndDisplayRoutes();
+    sessionStorage.setItem("start", JSON.stringify(startingPoint));
+    sessionStorage.setItem("destination", JSON.stringify(destinationPoint));
     renderRoutes(completeRouteInformation);
 })
 
 
 
-let currentRoute = 0;
-let totalRoutes = 0;
-
 function renderRoutes(routeInformation) {
     $("#routeSlider").empty(); 
-
     $("#routePanel").removeClass("hidden");
     updateControlsPosition();
 
@@ -241,7 +274,7 @@ function renderRoutes(routeInformation) {
         routeInformation.fastestRouteInformation,
         routeInformation.cheapestRouteInformation,
         routeInformation.minimalTransferRouteInformation
-    ]; // removes undefined if any
+    ];
 
     totalRoutes = routes.length;
 
@@ -327,6 +360,13 @@ function setActiveRoute(currentRouteIndex) {
 
 $("#goNow").on("click", () => {
     console.log("clicked go: route #" + currentRoute);
+    sessionStorage.setItem("activeRoute", currentRoute)
+    
+    let watchId = null;
+    watchId = watchUserPosition((location) => {
+        console.log(location)
+    });
+
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 })
