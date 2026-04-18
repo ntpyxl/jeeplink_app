@@ -21,32 +21,47 @@ export function createRouteStepRow(step, i) {
 
 export function createRouteTotalPrices(routeCost) {
     return $(`
-        <div class="mt-3 pt-3 border-t border-gray-200 space-y-3 text-sm">
+        <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between text-sm">
 
             <!-- Traditional -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">Traditional</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.traditional}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.traditional} discounted</div>
+            <div class="flex-1 text-center">
+                <div class="text-gray-700 font-medium">Traditional</div>
+
+                <div class="flex items-center justify-center gap-2">
+                    <div class="text-[#004F11] font-semibold text-base">
+                        ₱${routeCost.regular.traditional}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        ₱${routeCost.discounted.traditional} (-20%)
+                    </div>
                 </div>
             </div>
 
             <!-- Non-AC Modern -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">Non-AC Modern</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.nonAcModern}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.nonAcModern} discounted</div>
+            <div class="flex-1 text-center border-x border-gray-200">
+                <div class="text-gray-700 font-medium">Non-AC</div>
+
+                <div class="flex items-center justify-center gap-2">
+                    <div class="text-[#004F11] font-semibold text-base">
+                        ₱${routeCost.regular.nonAcModern}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        ₱${routeCost.discounted.nonAcModern} (-20%)
+                    </div>
                 </div>
             </div>
 
             <!-- AC Modern -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">AC Modern</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.acModern}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.acModern} discounted</div>
+            <div class="flex-1 text-center">
+                <div class="text-gray-700 font-medium">AC</div>
+
+                <div class="flex items-center justify-center gap-2">
+                    <div class="text-[#004F11] font-semibold text-base">
+                        ₱${routeCost.regular.acModern}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        ₱${routeCost.discounted.acModern} (-20%)
+                    </div>
                 </div>
             </div>
 
