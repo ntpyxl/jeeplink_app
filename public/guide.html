@@ -144,71 +144,93 @@
             </div>
         </section>
 
-        <!-- Steps grid -->
+        <!-- Steps Section -->
         <section class="report-grid-bg flex-1 py-10 sm:py-14 md:py-16">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto px-4 max-w-4xl">
 
-                <!-- RESPONSIVE GRID -->
-                <div class="grid gap-6 sm:gap-8 
-                            grid-cols-2 
-                            lg:grid-cols-4">
+                <!-- Steps list -->
+                <div class="flex flex-col gap-6 sm:gap-8">
 
                     <!-- Step 1 -->
-                    <div class="flex flex-col items-center justify-center 
-                                rounded-2xl md:rounded-3xl 
-                                border-[2px] md:border-[3px] border-[#004F11] 
-                                bg-white shadow-sm 
-                                py-8 sm:py-10 md:py-12 px-4 sm:px-6">
-
-                        <div class="text-6xl md:text-7xl font-bold text-[#004F11] mb-4">1</div>
-
-                        <p class="text-base sm:text-lg md:text-xl text-[#2E7D32] text-center leading-snug">
-                            Enter your start location
-                        </p>
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">1</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Set Your Starting Point
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Open the <span class="font-semibold text-[#2E7D32]">Map</span> tab and pin your current location. This tells the app where exactly you will start your commute so we can find the nearest jeepney stops.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Step 2 -->
-                    <div class="flex flex-col items-center justify-center 
-                                rounded-2xl md:rounded-3xl 
-                                border-[2px] md:border-[3px] border-[#004F11] 
-                                bg-white shadow-sm 
-                                py-8 sm:py-10 md:py-12 px-4 sm:px-6">
-
-                        <div class="text-6xl md:text-7xl font-bold text-[#004F11] mb-4">2</div>
-
-                        <p class="text-base sm:text-lg md:text-xl text-[#2E7D32] text-center leading-snug">
-                            Enter your destination
-                        </p>
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">2</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Enter Your Desired Destination
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Search or pin the location where you want to go. Once all the pins are set, JeepLink will begin calculating the best possible ways to get there.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Step 3 -->
-                    <div class="flex flex-col items-center justify-center 
-                                rounded-2xl md:rounded-3xl 
-                                border-[2px] md:border-[3px] border-[#004F11] 
-                                bg-white shadow-sm 
-                                py-8 sm:py-10 md:py-12 px-4 sm:px-6">
-
-                        <div class="text-6xl md:text-7xl font-bold text-[#004F11] mb-4">3</div>
-
-                        <p class="text-base sm:text-lg md:text-xl text-[#2E7D32] text-center leading-snug">
-                            View routes
-                        </p>
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">3</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Compare Your Options
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Review the list of available routes. For every journey, the route, fare, and jeepneys will be displayed — so you'll know which jeepney lines to take and can estimate how much it will cost.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Step 4 -->
-                    <div class="flex flex-col items-center justify-center 
-                                rounded-2xl md:rounded-3xl 
-                                border-[2px] md:border-[3px] border-[#004F11] 
-                                bg-white shadow-sm 
-                                py-8 sm:py-10 md:py-12 px-4 sm:px-6">
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">4</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Choose and Travel
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Select the path that fits your needs and follow the step-by-step directions displayed based on what matters most to you:
+                            </p>
+                            <ul class="mt-1 flex flex-col gap-1 text-sm sm:text-base md:text-lg text-gray-700">
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Shortest</span> — the fastest way to arrive</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Cheapest</span> — the most budget-friendly fare</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Easiest</span> — the route with the fewest transfers or walking</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="text-6xl md:text-7xl font-bold text-[#004F11] mb-4">4</div>
-
-                        <p class="text-base sm:text-lg md:text-xl text-[#2E7D32] text-center leading-snug">
-                            Follow routes
+                <!-- Commuter Tip -->
+                <div class="mt-8 sm:mt-10 rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#E9CD2D] bg-[#FFFDE7] shadow-sm py-6 sm:py-8 px-6 sm:px-8 flex gap-4 sm:gap-5 items-start">
+                    <div class="text-3xl sm:text-4xl text-[#E9CD2D] shrink-0 mt-1">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#7B6000]">
+                            Commuter Tip
+                        </h2>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                            <span class="font-bold text-[#004F11]">STAY ALERT:</span> Always make sure to check the <span class="font-semibold">"Sign Board"</span> on the side and front of the jeepney to make sure that it matches the route name displayed in the app!
                         </p>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -279,4 +301,4 @@
     <script src="scripts/ui/commuterStylingScript.js"></script>
 
 </body>
-</html> 
+</html>
