@@ -30,9 +30,20 @@ $(document).ready(function () {
         return window.innerWidth < 768;
     }
 
-    $("#toggleCommute").on("click", function () {
+   $("#toggleCommute").on("click", function () {
+        const isHidden = $("#commuteContent").is(":hidden");
         $("#commuteContent").stop().slideToggle(250);
         $("#arrow").toggleClass("rotate-180");
+
+        if (isHidden) {
+            $("#routePanel").fadeOut(200);
+        } else {
+            if (!$("#routePanel").hasClass("hidden")) {
+                $("#routePanel").fadeIn(200);
+            }
+        }
+
+        updateControlsPosition();
     });
 
     function autoCloseCommute() {
@@ -93,6 +104,8 @@ $(document).ready(function () {
     // ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
     $("#calculateRouteButton").on("click", function () {
         $("#routePanel").removeClass("hidden");
+        $("#commuteContent").stop(true, true).slideUp(250);
+        $("#arrow").removeClass("rotate-180");
 
         // show loading spinner
         $("#routeSlider").html(`
