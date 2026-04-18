@@ -130,7 +130,7 @@ export class CommuterRouter {
 
             completeRouteInformation[`${key}RouteInformation`] = {
                 routeInformation: info,
-                [`${key}RouteInstructions`]: formatInstructions(instructions)
+                [`${key}RouteInstructions`]: formatInstructions(instructions, info.routeCost.individualRides)
             };
         }
         
@@ -393,7 +393,7 @@ function buildRouteInstructions(edges) {
 }
 
 function buildRouteInformation(routeInformation, steps, fareMatrix) {
-    const routeDistance = `${(routeInformation.totalDistanceMeters / 1000).toFixed(2)} km`; // Convert to kilometer if >= 1000 meters
+    const routeDistance = `${(routeInformation.totalDistanceMeters / 1000).toFixed(2)} km`;
     const jeepRidesCount = `${routeInformation.jeepRidesCount} jeep rides`;
     const tripDurationSeconds = routeInformation.routeDurationSeconds;
 
@@ -403,26 +403,21 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
 
     const parts = [];
 
-    if (hours > 0) {
-        parts.push(`${hours} hr`);
-    }
+    if (hours > 0) parts.push(`${hours} hr`);
+    if (minutes > 0 || hours > 0) parts.push(`${minutes} min`);
+    parts.push(`${seconds.toString().padStart(2, "0")} sec`);
 
-    if (minutes > 0 || hours > 0) {
-        parts.push(`${minutes} min`);
-    }
-
-    parts.push(`${seconds.toString().padStart(2, '0')} sec`);
-
-    const tripDurationFormatted = parts.join(' ');
+    const tripDurationFormatted = parts.join(" ");
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
-            const rideDistanceKm = Math.round(step.distance.toFixed(0) / 1000);
+            const rideDistanceKm = Math.round(step.distance / 1000);
 
             const traditionalFares = fareCalculator(rideDistanceKm, fareMatrix[0]);
             const nonAcModernFares = fareCalculator(rideDistanceKm, fareMatrix[1]);
             const acModernFares = fareCalculator(rideDistanceKm, fareMatrix[2]);
 
+            // Add to totals
             totals.regular.traditional += traditionalFares.regularPrice;
             totals.regular.nonAcModern += nonAcModernFares.regularPrice;
             totals.regular.acModern += acModernFares.regularPrice;
@@ -430,6 +425,24 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
             totals.discounted.traditional += traditionalFares.discountedPrice;
             totals.discounted.nonAcModern += nonAcModernFares.discountedPrice;
             totals.discounted.acModern += acModernFares.discountedPrice;
+
+            // Store individual ride costs
+            totals.individualRides.push({
+                route: step.route || null,
+                distanceKm: rideDistanceKm,
+
+                regular: {
+                    traditional: traditionalFares.regularPrice,
+                    nonAcModern: nonAcModernFares.regularPrice,
+                    acModern: acModernFares.regularPrice
+                },
+
+                discounted: {
+                    traditional: traditionalFares.discountedPrice,
+                    nonAcModern: nonAcModernFares.discountedPrice,
+                    acModern: acModernFares.discountedPrice
+                }
+            });
         }
 
         return totals;
@@ -443,27 +456,41 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
             traditional: 0,
             nonAcModern: 0,
             acModern: 0
-        }
+        },
+        individualRides: []
     });
-    
+
     return {
-        title: routeInformation?.title || "Route" ,
-        routeDistance: routeDistance,
-        jeepRidesCount: jeepRidesCount,
-        tripDurationSeconds: tripDurationSeconds,
-        tripDurationFormatted: tripDurationFormatted,
-        routeCost: routeCost
-    }
+        title: routeInformation?.title || "Route",
+        routeDistance,
+        jeepRidesCount,
+        tripDurationSeconds,
+        tripDurationFormatted,
+        routeCost
+    };
 }
 
-function formatInstructions(steps) {
+function formatInstructions(steps, individualRidesCost) {
     const routeinstructions = steps.map(step => {
+        let rideIndex = 0;
         const stepDistance = step.distance.toFixed(0);
         if (step.mode === "walk") {
             return `Walk ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;
         }
         if (step.mode === "jeep") {
-            return `Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;  
+            rideIndex++;
+            const regularTraditionalFee = individualRidesCost[rideIndex].regular.traditional;
+            const discountedTraditionalFee = individualRidesCost[rideIndex].discounted.traditional;
+            const regularNonAcModernFee = individualRidesCost[rideIndex].regular.nonAcModern;
+            const discountedNonAcModernFee = individualRidesCost[rideIndex].discounted.nonAcModern;
+            const regularAcModernFee = individualRidesCost[rideIndex].regular.acModern;
+            const discountedAcModernFee = individualRidesCost[rideIndex].discounted.acModern;
+            return `
+                Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}. <br>
+                Pay (Traditional) ₱${regularTraditionalFee}/₱${discountedTraditionalFee}, <br>
+                (Non-AC Modern) ₱${regularNonAcModernFee}/₱${discountedNonAcModernFee}, <br>
+                (AC Modern) ₱${regularAcModernFee}/₱${discountedAcModernFee}
+            `;  
         }
     });
 
