@@ -1,4 +1,4 @@
-export function createInstructionCard(step, i) {
+export function createRouteStepRow(step, i) {
     return $(`
         <div class="flex gap-3 md:gap-4 items-start">
             <div class="flex-shrink-0 w-6 h-6 md:w-7 md:h-7
@@ -19,21 +19,57 @@ export function createInstructionCard(step, i) {
     `);
 }
 
-export function createRouteStepRow(routeTitle, routeInformation, routeSteps) {
+export function createRouteTotalPrices(routeCost) {
+    return $(`
+        <div class="mt-3 pt-3 border-t border-gray-200 space-y-3 text-sm">
+
+            <!-- Traditional -->
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">Traditional</span>
+                <div class="text-right">
+                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.traditional}</div>
+                    <div class="text-xs text-gray-500">₱${routeCost.discounted.traditional} discounted</div>
+                </div>
+            </div>
+
+            <!-- Non-AC Modern -->
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">Non-AC Modern</span>
+                <div class="text-right">
+                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.nonAcModern}</div>
+                    <div class="text-xs text-gray-500">₱${routeCost.discounted.nonAcModern} discounted</div>
+                </div>
+            </div>
+
+            <!-- AC Modern -->
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">AC Modern</span>
+                <div class="text-right">
+                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.acModern}</div>
+                    <div class="text-xs text-gray-500">₱${routeCost.discounted.acModern} discounted</div>
+                </div>
+            </div>
+
+        </div>
+    `);
+}
+
+export function createRouteInformationCard(routeTitle, routeInformation, routeSteps, totalRidePrices) {
     return `
         <div class="min-w-full px-1 sm:px-2 route-card opacity-0 translate-y-4">
             <div class="bg-gradient-to-br from-[#004F11] to-[#1f7a3a]
-                        rounded-xl sm:rounded-2xl shadow-lg overflow-hidden
-                        border border-white/10">
+                        rounded-xl sm:rounded-2xl shadow-xl overflow-hidden
+                        border border-white/10 backdrop-blur-md">
                 
                 <div class="route-details">
                     <div class="summary flex items-center justify-between gap-2 sm:gap-3
-                                px-3 sm:px-4 py-3 sm:py-4 cursor-pointer">
+                                px-3 sm:px-4 py-3 sm:py-4 cursor-pointer
+                                hover:bg-white/5 transition-colors duration-200">
 
                         <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
 
                             <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#E9CD2D]
-                                        flex items-center justify-center shrink-0">
+                                        flex items-center justify-center shrink-0 shadow-sm">
                                 <i class="fa-solid fa-route text-[#004F11] text-sm"></i>
                             </div>
 
@@ -41,7 +77,7 @@ export function createRouteStepRow(routeTitle, routeInformation, routeSteps) {
                                 <span class="text-[#E9CD2D] font-semibold text-sm sm:text-base truncate">
                                     ${routeTitle}
                                 </span>
-                                <span class="text-white/70 text-[11px] sm:text-xs truncate">
+                                <span class="text-white/70 text-[11px] sm:text-sm truncate">
                                     ${routeInformation.routeDistance} • ${routeInformation.jeepRidesCount} • ~${routeInformation.tripDurationFormatted}
                                 </span>
                             </div>
@@ -54,18 +90,18 @@ export function createRouteStepRow(routeTitle, routeInformation, routeSteps) {
                     </div>
 
                     <div class="route-content hidden bg-white/95 text-gray-800
-                                px-3 sm:px-4 py-2 sm:py-3">
+                                px-3 sm:px-4 py-3 sm:py-4">
 
-                        <div class="max-h-40 sm:max-h-48 overflow-y-auto space-y-2 pr-1">
+                        <div class="max-h-44 sm:max-h-52 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                             ${routeSteps}
                         </div>
 
+                        <div class="mt-3">
+                            ${totalRidePrices}
+                        </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
         `;
 }

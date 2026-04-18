@@ -227,7 +227,7 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
 export function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
-            alert("Geolocation not supported.");
+            showError("Geolocation not supported.");
             reject();
             return;
         }
@@ -240,7 +240,7 @@ export function getCurrentLocation() {
             }),
             err => {
                 console.error(err);
-                alert("Failed to get location.");
+                showError("Failed to get location.");
                 reject(err);
             },
             { enableHighAccuracy: true, timeout: 5000 }

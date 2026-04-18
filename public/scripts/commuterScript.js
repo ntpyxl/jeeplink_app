@@ -4,7 +4,7 @@ import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
-import { createInstructionCard, createRouteStepRow } from "./ui/routeInformationElements.js"
+import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition } from "./ui/commuterStylingScript.js"
 import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 
@@ -41,7 +41,7 @@ map.on("locationfound", (e) => {
 });
 
 map.on("locationerror", () => {
-    alert("Unable to find your location. Please allow location access.");
+    showError("Unable to find your location. Please allow location access.");
 });
 
 // Fetch and setup required JSON files
@@ -294,9 +294,10 @@ function renderRoutes(routeInformation) {
             [];
             
         const routeSteps = instructions
-            .map((step, i) => createInstructionCard(step, i)[0].outerHTML)
-            .join("");        
-        $("#routeSlider").append(createRouteStepRow(route.routeInformation.title, route.routeInformation, routeSteps));
+            .map((step, i) => createRouteStepRow(step, i)[0].outerHTML)
+            .join("");
+        const routePrices = createRouteTotalPrices(route.routeInformation.routeCost)[0].outerHTML;
+        $("#routeSlider").append(createRouteInformationCard(route.routeInformation.title, route.routeInformation, routeSteps, routePrices));
     });
 
     updateSlider();
