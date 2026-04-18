@@ -184,6 +184,7 @@ if (start) {
     startingPoint = JSON.parse(start);
     isStartingPointSelectedLocation = true;
     sessionStorage.removeItem("start");
+    if(!localStorage.getItem("activeRoute") && sessionStorage.getItem("start")) localStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
     addRouteNode(startingPoint, "start");
 }
@@ -192,6 +193,7 @@ if (destination) {
     destinationPoint = JSON.parse(destination);
     isDestinationPointSelectedLocation = true;
     sessionStorage.removeItem("destination");
+    if(!localStorage.getItem("activeRoute") && sessionStorage.getItem("destination")) localStorage.removeItem("start");
     $("#destinationPointField").val(destinationPoint.name);
     addRouteNode(destinationPoint, "destination");
 }
@@ -265,8 +267,6 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
-    localStorage.setItem("start", JSON.stringify(startingPoint));
-    localStorage.setItem("destination", JSON.stringify(destinationPoint));
     renderRoutes(completeRouteInformation);
 })
 
@@ -368,6 +368,8 @@ function setActiveRoute(currentRouteIndex) {
 
 $("#goNow").on("click", () => {
     localStorage.setItem("activeRoute", currentRoute);
+    localStorage.setItem("start", JSON.stringify(startingPoint));
+    localStorage.setItem("destination", JSON.stringify(destinationPoint));
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
