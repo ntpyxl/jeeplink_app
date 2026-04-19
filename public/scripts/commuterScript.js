@@ -273,6 +273,8 @@ $("#calculateRouteButton").on("click", async () => {
 function renderRoutes(routeInformation) {
     if($("#startingPointField").val() !== "Your Location") {
         $("#goNow").addClass("hidden");
+    } else {
+        $("#goNow").removeClass("hidden");
     }
     $("#routeSlider").empty(); 
     $("#routePanel").removeClass("hidden");
