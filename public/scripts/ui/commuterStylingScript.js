@@ -8,7 +8,7 @@ const routePanel = $("#routePanel");
 
 export function updateControlsPosition() {
     if (isMobile()) {
-        // 📱 ONLY apply on mobile
+        // ONLY apply on mobile
         if (!routePanel.hasClass("hidden")) {
             controls.css("bottom", "220px");
         } else {
