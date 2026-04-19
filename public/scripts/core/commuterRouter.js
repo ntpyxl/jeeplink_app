@@ -487,9 +487,16 @@ function formatInstructions(steps, individualRidesCost) {
             const discountedAcModernFee = individualRidesCost[rideIndex].discounted.acModern;
             return `
                 Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}. <br>
-                Pay (Traditional) ₱${regularTraditionalFee}/₱${discountedTraditionalFee}, <br>
-                (Non-AC Modern) ₱${regularNonAcModernFee}/₱${discountedNonAcModernFee}, <br>
-                (AC Modern) ₱${regularAcModernFee}/₱${discountedAcModernFee}
+                <span class="step-fare-text block text-xs text-gray-500 leading-relaxed">
+                    <span class="fare-mode-regular">
+                        <span class="font-semibold">Regular:</span>
+                        Traditional: ₱${regularTraditionalFee} | Non-AC: ₱${regularNonAcModernFee} | AC: ₱${regularAcModernFee}
+                    </span>
+                    <span class="fare-mode-discounted hidden">
+                        <span class="font-semibold">Discounted:</span>
+                        Traditional: ₱${discountedTraditionalFee} | Non-AC: ₱${discountedNonAcModernFee} | AC: ₱${discountedAcModernFee}
+                    </span>
+                </span>
             `;  
         }
     });
