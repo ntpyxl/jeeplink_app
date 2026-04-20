@@ -120,33 +120,65 @@ $(document).ready(function () {
         updateControlsPosition();
     });
 
-    // ---------- ROAD CHANGE MODAL ----------
+    // ---------- REPORT MODAL ----------
 
-    // OPEN MODAL 
-    function openRoadChangeModal() {
-        $("#roadChangeModal").removeClass("hidden");
+    // OPEN
+    function openReportModal() {
+        $("#reportModal").removeClass("hidden");
     }
 
-    // CLOSE MODAL helper
-    function closeRoadChangeModal() {
-        $("#roadChangeModal").addClass("hidden");
+    // CLOSE
+    function closeReportModal() {
+        $("#reportModal").addClass("hidden");
     }
 
-    // YES BUTTON
-    $("#roadYes").on("click", function () {
+    // Open button
+    $("#openReportModalBtn").on("click", openReportModal);
 
-        closeRoadChangeModal();
+    // Cancel button
+    $("#cancelBtn").on("click", closeReportModal);
+
+    // Click outside to close
+    $("#reportModal").on("click", function () {
+        closeReportModal();
     });
 
-    // NO BUTTON
-    $("#roadNo").on("click", function () {
-
-        closeRoadChangeModal();
+    // ESC key
+    $(document).on("keydown", function (e) {
+        if (e.key === "Escape") {
+            closeReportModal();
+        }
     });
 
-    $("#openRoadChangeBtn").on("click", function () {
-        $("#roadChangeModal").removeClass("hidden");
+    // ---------- ISSUE TYPE TOGGLE ----------
+
+    let selectedIssue = "jeep";
+
+    $("#issueJeep").on("click", function () {
+        selectedIssue = "jeep";
+
+        $(this)
+            .removeClass("border text-[#004F11]")
+            .addClass("bg-[#2E7D32] text-white");
+
+        $("#issueOther")
+            .removeClass("bg-[#2E7D32] text-white")
+            .addClass("border text-[#004F11]");
     });
+
+    $("#issueOther").on("click", function () {
+        selectedIssue = "other";
+
+        $(this)
+            .removeClass("border text-[#004F11]")
+            .addClass("bg-[#2E7D32] text-white");
+
+        $("#issueJeep")
+            .removeClass("bg-[#2E7D32] text-white")
+            .addClass("border text-[#004F11]");
+    });
+    
+    // TODO: use selectedIssue variable when submitting report form to backend
 
     // ---------- TERMS MODAL ----------
     const accepted = localStorage.getItem("jeepLink_termsAccepted");
