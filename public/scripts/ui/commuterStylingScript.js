@@ -46,7 +46,7 @@ $(document).ready(function () {
     }
 
     autoCloseCommute();
-    $(window).on("resize", autoCloseCommute);
+    //$(window).on("resize", autoCloseCommute);
 
     // ---------- GLOBAL ROUTE SYNC SYSTEM ----------
     let isOpen = false;
