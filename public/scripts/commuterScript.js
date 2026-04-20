@@ -391,11 +391,11 @@ function setActiveRoute(currentRouteIndex) {
     updateSlider();
 }
 
-const nearStop_120m_NotificationAudio = new Audio("/audio/commuter_120_meter_near_jeep_stop.mp3");
+const nearStopNotificationAudio = new Audio("/audio/commuter_near_stop_notification.mp3");
 
 function playNearStopNotification() {
-    nearStop_120m_NotificationAudio.currentTime = 0;
-    nearStop_120m_NotificationAudio.play();
+    nearStopNotificationAudio.currentTime = 0;
+    nearStopNotificationAudio.play();
 }
 
 $("#goNow").on("click", () => {
@@ -473,6 +473,6 @@ async function followRoute() {
     // Uncomment watchId for actual user position tracking
     // Uncomment stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    watchId = watchUserPosition(handleNavigationUpdate);
-    //stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    //watchId = watchUserPosition(handleNavigationUpdate);
+    stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
