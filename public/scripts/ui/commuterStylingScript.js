@@ -158,24 +158,24 @@ $(document).ready(function () {
         selectedIssue = "jeep";
 
         $(this)
-            .removeClass("border text-[#004F11]")
-            .addClass("bg-[#2E7D32] text-white");
+            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
+            .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
 
         $("#issueOther")
-            .removeClass("bg-[#2E7D32] text-white")
-            .addClass("border text-[#004F11]");
+            .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
+            .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
     });
 
     $("#issueOther").on("click", function () {
         selectedIssue = "other";
 
         $(this)
-            .removeClass("border text-[#004F11]")
-            .addClass("bg-[#2E7D32] text-white");
+            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
+            .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
 
         $("#issueJeep")
-            .removeClass("bg-[#2E7D32] text-white")
-            .addClass("border text-[#004F11]");
+            .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
+            .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
     });
     
     // TODO: use selectedIssue variable when submitting report form to backend

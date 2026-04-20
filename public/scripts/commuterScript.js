@@ -151,7 +151,10 @@ async function checkActiveRoute() {
             showConfirmButton: true,
             showDenyButton: true,
             confirmButtonText: "Yes",
-            denyButtonText: "No"
+            denyButtonText: "No",
+
+            allowOutsideClick: false, 
+            allowEscapeKey: false
         });
             
         if(result.isDenied) {
