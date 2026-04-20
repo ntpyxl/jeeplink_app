@@ -8,7 +8,7 @@ const routePanel = $("#routePanel");
 
 export function updateControlsPosition() {
     if (isMobile()) {
-        // 📱 ONLY apply on mobile
+        // ONLY apply on mobile
         if (!routePanel.hasClass("hidden")) {
             controls.css("bottom", "220px");
         } else {
@@ -30,9 +30,20 @@ $(document).ready(function () {
         return window.innerWidth < 768;
     }
 
-    $("#toggleCommute").on("click", function () {
+   $("#toggleCommute").on("click", function () {
+        const isHidden = $("#commuteContent").is(":hidden");
         $("#commuteContent").stop().slideToggle(250);
         $("#arrow").toggleClass("rotate-180");
+
+        if (isHidden) {
+            $("#routePanel").fadeOut(200);
+        } else {
+            if (!$("#routePanel").hasClass("hidden")) {
+                $("#routePanel").fadeIn(200);
+            }
+        }
+
+        updateControlsPosition();
     });
 
     function autoCloseCommute() {
@@ -93,6 +104,8 @@ $(document).ready(function () {
     // ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
     $("#calculateRouteButton").on("click", function () {
         $("#routePanel").removeClass("hidden");
+        $("#commuteContent").stop(true, true).slideUp(250);
+        $("#arrow").removeClass("rotate-180");
 
         // show loading spinner
         $("#routeSlider").html(`
@@ -107,33 +120,76 @@ $(document).ready(function () {
         updateControlsPosition();
     });
 
-    // ---------- ROAD CHANGE MODAL ----------
+    // ---------- REPORT MODAL ----------
 
-    // OPEN MODAL 
-    function openRoadChangeModal() {
-        $("#roadChangeModal").removeClass("hidden");
+    // OPEN
+    function openReportModal() {
+        $("#reportModal").removeClass("hidden");
     }
 
-    // CLOSE MODAL helper
-    function closeRoadChangeModal() {
-        $("#roadChangeModal").addClass("hidden");
+    // CLOSE
+    function closeReportModal() {
+        $("#reportModal").addClass("hidden");
     }
 
-    // YES BUTTON
-    $("#roadYes").on("click", function () {
+    // Open button
+    $("#openReportModalBtn").on("click", openReportModal);
 
-        closeRoadChangeModal();
+    // Cancel button
+    $("#cancelBtn").on("click", closeReportModal);
+
+    // Click outside to close
+    $("#reportModal").on("click", function () {
+        closeReportModal();
     });
 
-    // NO BUTTON
-    $("#roadNo").on("click", function () {
-
-        closeRoadChangeModal();
+    // ESC key
+    $(document).on("keydown", function (e) {
+        if (e.key === "Escape") {
+            closeReportModal();
+        }
     });
 
-    $("#openRoadChangeBtn").on("click", function () {
-        $("#roadChangeModal").removeClass("hidden");
+    // ---------- ISSUE TYPE TOGGLE ----------
+
+    let selectedIssue = "jeep";
+
+    $("#titleField").hide();
+
+    $("#issueJeep").on("click", function () {
+        selectedIssue = "jeep";
+
+        // UI toggle
+        $(this)
+            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
+            .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
+
+        $("#issueOther")
+            .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
+            .addClass("border text-[#004F11] hover:bg-[#2E7D32]/5");
+
+        $("#titleField").slideUp(150);
+
+        $("#descLabel").text("Description (Optional)");
     });
+
+    $("#issueOther").on("click", function () {
+        selectedIssue = "other";
+
+        $(this)
+            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
+            .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
+
+        $("#issueJeep")
+            .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
+            .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
+
+        $("#titleField").slideDown(150);
+
+        $("#descLabel").text("Description");
+    });
+
+    // TODO: use selectedIssue variable when submitting report form to backend
 
     // ---------- TERMS MODAL ----------
     const accepted = localStorage.getItem("jeepLink_termsAccepted");
@@ -157,13 +213,16 @@ $(document).ready(function () {
     });
     // ---------- ORIENTATION CHECK (LANDSCAPE MODE OVERLAY) ----------
     function checkOrientation() {
+        const overlay = document.getElementById('rotateOverlay');
+
+        if (!overlay) return; 
+
         if (window.innerWidth > window.innerHeight && window.innerWidth < 1024) {
-            document.getElementById('rotateOverlay').classList.remove('hidden');
+            overlay.classList.remove('hidden');
         } else {
-            document.getElementById('rotateOverlay').classList.add('hidden');
+            overlay.classList.add('hidden');
         }
     }
-
     // Listen for orientation changes and resize events
     window.addEventListener('resize', checkOrientation);
     window.addEventListener('orientationchange', checkOrientation);

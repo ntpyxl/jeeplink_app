@@ -151,7 +151,10 @@ async function checkActiveRoute() {
             showConfirmButton: true,
             showDenyButton: true,
             confirmButtonText: "Yes",
-            denyButtonText: "No"
+            denyButtonText: "No",
+
+            allowOutsideClick: false, 
+            allowEscapeKey: false
         });
             
         if(result.isDenied) {
@@ -316,6 +319,24 @@ function renderRoutes(routeInformation) {
         });
     }, 50);
 }
+
+// Toggle fare display between regular and discounted prices
+$(document).on("click", ".price-toggle-btn", function () {
+    const button = $(this);
+    const mode = button.data("mode");
+    const card = button.closest(".route-card");
+
+    card.find(".price-toggle-btn").removeClass("active text-[#004F11] bg-[#E9CD2D]/20").addClass("text-gray-500 bg-transparent");
+    button.addClass("active text-[#004F11] bg-[#E9CD2D]/20").removeClass("text-gray-500 bg-transparent");
+
+    card.find(".fare-value").addClass("hidden");
+    card.find(`.fare-value-${mode}`).removeClass("hidden");
+    card.find(".fare-mode-regular, .fare-mode-discounted").addClass("hidden");
+    card.find(`.fare-mode-${mode}`).removeClass("hidden");
+
+    const label = mode === "regular" ? "Regular:" : "Discounted:";
+    card.find(".fare-label").text(label);
+});
 
 // ---------- ROUTE SLIDER ----------
 function updateSlider() {

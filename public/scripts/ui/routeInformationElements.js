@@ -21,35 +21,34 @@ export function createRouteStepRow(step, i) {
 
 export function createRouteTotalPrices(routeCost) {
     return $(`
-        <div class="mt-3 pt-3 border-t border-gray-200 space-y-3 text-sm">
-
-            <!-- Traditional -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">Traditional</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.traditional}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.traditional} discounted</div>
+        <div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-700">
+            <div class="flex items-center justify-between gap-3 mb-2">
+                <div class="font-medium text-gray-800">Total Fare</div>
+                <div class="inline-flex rounded-full border border-gray-300 bg-white shadow-sm overflow-hidden">
+                    <button type="button" class="price-toggle-btn active px-3 py-1 text-[11px] font-semibold text-[#004F11] bg-[#E9CD2D]/20 cursor-pointer" data-mode="regular">Regular</button>
+                    <button type="button" class="price-toggle-btn px-3 py-1 text-[11px] font-semibold text-gray-500 cursor-pointer" data-mode="discounted">Discounted</button>
                 </div>
             </div>
 
-            <!-- Non-AC Modern -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">Non-AC Modern</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.nonAcModern}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.nonAcModern} discounted</div>
+            <div class="route-price-grid grid grid-cols-3 gap-2 text-xs text-gray-600">
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-2 text-center">
+                    <div class="font-medium text-gray-800">Traditional</div>
+                    <div class="fare-value fare-value-regular text-[#004F11] font-bold">₱${routeCost.regular.traditional}</div>
+                    <div class="fare-value fare-value-discounted text-[#004F11] font-bold hidden">₱${routeCost.discounted.traditional}</div>
+                </div>
+
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-2 text-center">
+                    <div class="font-medium text-gray-800">Non-AC Modern</div>
+                    <div class="fare-value fare-value-regular text-[#004F11] font-bold">₱${routeCost.regular.nonAcModern}</div>
+                    <div class="fare-value fare-value-discounted text-[#004F11] font-bold hidden">₱${routeCost.discounted.nonAcModern}</div>
+                </div>
+
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-2 text-center">
+                    <div class="font-medium text-gray-800">AC Modern</div>
+                    <div class="fare-value fare-value-regular text-[#004F11] font-bold">₱${routeCost.regular.acModern}</div>
+                    <div class="fare-value fare-value-discounted text-[#004F11] font-bold hidden">₱${routeCost.discounted.acModern}</div>
                 </div>
             </div>
-
-            <!-- AC Modern -->
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">AC Modern</span>
-                <div class="text-right">
-                    <div class="text-[#004F11] font-semibold text-base">₱${routeCost.regular.acModern}</div>
-                    <div class="text-xs text-gray-500">₱${routeCost.discounted.acModern} discounted</div>
-                </div>
-            </div>
-
         </div>
     `);
 }

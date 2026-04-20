@@ -23,5 +23,7 @@ function showError(message) {
         icon: "error",
         title: "Error",
         text: message,
+
+        allowOutsideClick: false
     });
 }
