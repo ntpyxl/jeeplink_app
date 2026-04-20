@@ -403,11 +403,13 @@ $("#goNow").on("click", () => {
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
 
-    followRoute()
+    followRoute(currentRoute)
 })
 
 if(localStorage.getItem("activeRoute")) {
-    followRoute()
+    currentRoute = parseInt(localStorage.getItem("activeRoute"));
+    followRoute();
+    updateSlider();
 }
 
 async function followRoute() {
@@ -418,12 +420,19 @@ async function followRoute() {
         await Notification.requestPermission();
     }
 
-    const finalStepCoordIndex = routesStepCoords.fastestStepCoords.length;
+    const routeNames = [
+        "fastestStepCoords",
+        "cheapestStepCoords",
+        "minimalTransferStepCoords"
+    ];
+    const activeRouteName = routeNames[currentRoute];
+
+    const finalStepCoordIndex = routesStepCoords[activeRouteName].length;
     let stepCoordIndex = localStorage.getItem("activeRoute_currentStep") || 0;
     let isUserNotifiedBeingNearStop = false;
 
     function handleNavigationUpdate(location) {
-        const nextStopCoordinates = routesStepCoords.fastestStepCoords[stepCoordIndex].coord;
+        const nextStopCoordinates = routesStepCoords[activeRouteName][stepCoordIndex].coord;
 
         const distance = turf.distance(
             turf.point([location.coords[1], location.coords[0]]),
@@ -433,7 +442,7 @@ async function followRoute() {
 
         if (distance < 120 && !isUserNotifiedBeingNearStop) {
             console.log("User is within 120m of next stop.");
-            if(routesStepCoords.fastestStepCoords[stepCoordIndex].mode === "jeep") {
+            if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
                 playNearStopNotification();
                 if (Notification.permission === "granted") new Notification("Approaching your stop");
                 navigator.vibrate?.([200,100,200]);
