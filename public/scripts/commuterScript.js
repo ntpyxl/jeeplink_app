@@ -23,10 +23,16 @@ map.getPane("nodePane").style.zIndex = 500;
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
+
 // Map Controls
-document.getElementById("zoomInBtn").addEventListener("click", () => map.zoomIn());
-document.getElementById("zoomOutBtn").addEventListener("click", () => map.zoomOut());
-document.getElementById("locateBtn").addEventListener("click", () => {
+$("#zoomInBtn").on("click", () => {
+    map.zoomIn();
+}) 
+$("#zoomOutBtn").on("click", () => {
+    map.zoomOut();
+})
+
+$("#locateBtn").on("click", () => {
     map.locate({ setView: true, maxZoom: 16 });
 });
 
@@ -413,6 +419,7 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    $("#goNow").addClass("hidden");
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
@@ -428,7 +435,7 @@ async function followRoute() {
     const activeRouteName = routeNames[currentRoute];
 
     const finalStepCoordIndex = routesStepCoords[activeRouteName].length;
-    let stepCoordIndex = localStorage.getItem("activeRoute_currentStep") || 0;
+    let stepCoordIndex = parseInt(localStorage.getItem("activeRoute_currentStep")) || 0;
     let isUserNotifiedBeingNearStop = false;
 
     function handleNavigationUpdate(location) {
@@ -458,8 +465,13 @@ async function followRoute() {
         }
 
         if (stepCoordIndex >= finalStepCoordIndex) {
-            stopAllTracking();
             console.log("User has reached destination");
+            stopAllTracking();
+            
+            localStorage.removeItem("start");
+            localStorage.removeItem("destination");
+            localStorage.removeItem("activeRoute");
+            localStorage.removeItem("activeRoute_currentStep");
         }
     }
 
