@@ -169,7 +169,10 @@ export class CommuterRouter {
                 edge.route_name !== prevRoute;
 
             if (modeChanged && i > 0) {
-                nextStepCoordArray.push(from);
+                nextStepCoordArray.push({
+                    "coord": from,
+                    "mode": prevMode
+                });
             }
 
             prevMode = edge.mode;
@@ -192,7 +195,10 @@ export class CommuterRouter {
 
         const last = edges[edges.length - 1];
         const lastTo = keyToLatLng(last.to);
-        nextStepCoordArray.push(lastTo);
+        nextStepCoordArray.push({
+            "coord": lastTo,
+            "mode": prevMode
+        });
 
         this.routeLayers[type] = layerGroup;
 
