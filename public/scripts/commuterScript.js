@@ -17,31 +17,57 @@ const map = L.map("map", {
 }).setView([14.3272, 120.9404], 15);
 map.createPane("routePane");
 map.createPane("nodePane");
+map.createPane("userPositionPane")
 map.getPane("routePane").style.zIndex = 400;
 map.getPane("nodePane").style.zIndex = 500;
+map.getPane("userPositionPane").style.zIndex = 600;
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
+
 // Map Controls
-document.getElementById("zoomInBtn").addEventListener("click", () => map.zoomIn());
-document.getElementById("zoomOutBtn").addEventListener("click", () => map.zoomOut());
-document.getElementById("locateBtn").addEventListener("click", () => {
-    map.locate({ setView: true, maxZoom: 16 });
-});
+$("#zoomInBtn").on("click", () => {
+    map.zoomIn();
+}) 
+$("#zoomOutBtn").on("click", () => {
+    map.zoomOut();
+})
 
-map.on("locationfound", (e) => {
-    L.circleMarker(e.latlng, {
-        radius: 8,
-        color: "#004F11",
-        fillColor: "#2E7D32",
-        fillOpacity: 0.9,
-        weight: 2
-    }).addTo(map).bindPopup("You are here").openPopup();
-});
+// TODO: Tentative way of handling positions for user marker and for tracking user in route below. May be optimized in the future.
+// For now, this should work.
+let userMarker;
+let userMarker_watchLocation;
+let userMarker_stopSimulationFunction;
+let currentUserMarkerPosition = null;
+function handleUserMarkerUpdate(location) {
+    currentUserMarkerPosition = [location.coords[1], location.coords[0]]
 
-map.on("locationerror", () => {
-    showError("Unable to find your location. Please allow location access.");
+    if (!userMarker) {
+        userMarker = L.circleMarker(currentUserMarkerPosition, {
+            radius: 8,
+            color: "#120eff",
+            fillColor: "#64e8ff",
+            fillOpacity: 1,
+            weight: 3,
+            pane: "userPositionPane"
+        }).addTo(map);
+    } 
+    // Update marker position when moved
+    else {
+        userMarker.setLatLng(currentUserMarkerPosition);
+    }
+}
+
+// Uncomment either one, but not both
+// Uncomment userMarker_watchLocation for actual user position tracking
+// Uncomment userMarker_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+
+userMarker_watchLocation = watchUserPosition(handleUserMarkerUpdate);
+//userMarker_stopSimulationFunction = simulateUserPosition(map, handleUserMarkerUpdate);
+
+$("#locateBtn").on("click", () => {
+    map.flyTo(currentUserMarkerPosition, 16);
 });
 
 // Fetch and setup required JSON files
@@ -395,11 +421,11 @@ function setActiveRoute(currentRouteIndex) {
     updateSlider();
 }
 
-const nearStop_120m_NotificationAudio = new Audio("/audio/commuter_120_meter_near_jeep_stop.mp3");
+const nearStopNotificationAudio = new Audio("/audio/commuter_near_stop_notification.mp3");
 
 function playNearStopNotification() {
-    nearStop_120m_NotificationAudio.currentTime = 0;
-    nearStop_120m_NotificationAudio.play();
+    nearStopNotificationAudio.currentTime = 0;
+    nearStopNotificationAudio.play();
 }
 
 $("#goNow").on("click", () => {
@@ -407,14 +433,17 @@ $("#goNow").on("click", () => {
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
 
-    followRoute()
+    followRoute(currentRoute)
 })
 
 if(localStorage.getItem("activeRoute")) {
-    followRoute()
+    currentRoute = parseInt(localStorage.getItem("activeRoute"));
+    followRoute();
+    updateSlider();
 }
 
 async function followRoute() {
+    $("#goNow").addClass("hidden");
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
@@ -422,12 +451,19 @@ async function followRoute() {
         await Notification.requestPermission();
     }
 
-    const finalStepCoordIndex = routesStepCoords.fastestStepCoords.length;
-    let stepCoordIndex = localStorage.getItem("activeRoute_currentStep") || 0;
+    const routeNames = [
+        "fastestStepCoords",
+        "cheapestStepCoords",
+        "minimalTransferStepCoords"
+    ];
+    const activeRouteName = routeNames[currentRoute];
+
+    const finalStepCoordIndex = routesStepCoords[activeRouteName].length;
+    let stepCoordIndex = parseInt(localStorage.getItem("activeRoute_currentStep")) || 0;
     let isUserNotifiedBeingNearStop = false;
 
     function handleNavigationUpdate(location) {
-        const nextStopCoordinates = routesStepCoords.fastestStepCoords[stepCoordIndex].coord;
+        const nextStopCoordinates = routesStepCoords[activeRouteName][stepCoordIndex].coord;
 
         const distance = turf.distance(
             turf.point([location.coords[1], location.coords[0]]),
@@ -437,7 +473,7 @@ async function followRoute() {
 
         if (distance < 120 && !isUserNotifiedBeingNearStop) {
             console.log("User is within 120m of next stop.");
-            if(routesStepCoords.fastestStepCoords[stepCoordIndex].mode === "jeep") {
+            if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
                 playNearStopNotification();
                 if (Notification.permission === "granted") new Notification("Approaching your stop");
                 navigator.vibrate?.([200,100,200]);
@@ -453,30 +489,35 @@ async function followRoute() {
         }
 
         if (stepCoordIndex >= finalStepCoordIndex) {
-            stopAllTracking();
             console.log("User has reached destination");
+            stopAllTracking();
+            
+            localStorage.removeItem("start");
+            localStorage.removeItem("destination");
+            localStorage.removeItem("activeRoute");
+            localStorage.removeItem("activeRoute_currentStep");
         }
     }
 
-    let watchId = null;
-    let stopSimulationFunction = null;
+    let followRoute_watchLocation = null;
+    let followRoute_stopSimulationFunction = null;
 
     function stopAllTracking() {
-        if (watchId !== null) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
+        if (followRoute_watchLocation !== null) {
+            navigator.geolocation.clearWatch(followRoute_watchLocation);
+            followRoute_watchLocation = null;
         }
 
-        if (stopSimulationFunction) {
-            stopSimulationFunction();
-            stopSimulationFunction = null;
+        if (followRoute_stopSimulationFunction) {
+            followRoute_stopSimulationFunction();
+            followRoute_stopSimulationFunction = null;
         }
     }
 
     // Uncomment either one, but not both
-    // Uncomment watchId for actual user position tracking
-    // Uncomment stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+    // Uncomment followRoute_watchLocation for actual user position tracking
+    // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    watchId = watchUserPosition(handleNavigationUpdate);
-    //stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }

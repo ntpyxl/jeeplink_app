@@ -243,7 +243,7 @@ export function getCurrentLocation() {
                 showError("Failed to get location.");
                 reject(err);
             },
-            { enableHighAccuracy: true, timeout: 5000 }
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 15000 }
         );
     });
 }
