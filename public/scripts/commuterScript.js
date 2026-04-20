@@ -161,6 +161,7 @@ async function checkActiveRoute() {
             localStorage.removeItem("start");
             localStorage.removeItem("destination");
             localStorage.removeItem("activeRoute");
+            localStorage.removeItem("activeRoute_currentStep");
             activeStart = null;
             activeDstination = null;
         }
@@ -276,6 +277,8 @@ $("#calculateRouteButton").on("click", async () => {
 function renderRoutes(routeInformation) {
     if($("#startingPointField").val() !== "Your Location") {
         $("#goNow").addClass("hidden");
+    } else {
+        $("#goNow").removeClass("hidden");
     }
     $("#routeSlider").empty(); 
     $("#routePanel").removeClass("hidden");
@@ -388,32 +391,61 @@ function setActiveRoute(currentRouteIndex) {
     updateSlider();
 }
 
+const nearStop_120m_NotificationAudio = new Audio("/audio/commuter_120_meter_near_jeep_stop.mp3");
+
+function playNearStopNotification() {
+    nearStop_120m_NotificationAudio.currentTime = 0;
+    nearStop_120m_NotificationAudio.play();
+}
+
 $("#goNow").on("click", () => {
     localStorage.setItem("activeRoute", currentRoute);
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
+
+    followRoute()
+})
+
+if(localStorage.getItem("activeRoute")) {
+    followRoute()
+}
+
+async function followRoute() {
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
+    if (Notification.permission !== "granted") {
+        await Notification.requestPermission();
+    }
+
     const finalStepCoordIndex = routesStepCoords.fastestStepCoords.length;
-    let stepCoordIndex = 0;
-    
+    let stepCoordIndex = localStorage.getItem("activeRoute_currentStep") || 0;
+    let isUserNotifiedBeingNearStop = false;
+
     function handleNavigationUpdate(location) {
-        const target = routesStepCoords.fastestStepCoords[stepCoordIndex];
+        const nextStopCoordinates = routesStepCoords.fastestStepCoords[stepCoordIndex].coord;
 
         const distance = turf.distance(
             turf.point([location.coords[1], location.coords[0]]),
-            turf.point(target),
+            turf.point(nextStopCoordinates),
             { units: "meters" }
         );
 
-        if (distance < 120) {
+        if (distance < 120 && !isUserNotifiedBeingNearStop) {
             console.log("User is within 120m of next stop.");
+            if(routesStepCoords.fastestStepCoords[stepCoordIndex].mode === "jeep") {
+                playNearStopNotification();
+                if (Notification.permission === "granted") new Notification("Approaching your stop");
+                navigator.vibrate?.([200,100,200]);
+            }
+            isUserNotifiedBeingNearStop = true;
         }
 
-        if (distance < 20) {
+        if (distance < 5) {
             console.log("Reached step:", stepCoordIndex);
             stepCoordIndex++;
+            isUserNotifiedBeingNearStop = false;
+            localStorage.setItem("activeRoute_currentStep", stepCoordIndex);
         }
 
         if (stepCoordIndex >= finalStepCoordIndex) {
@@ -443,4 +475,4 @@ $("#goNow").on("click", () => {
     
     watchId = watchUserPosition(handleNavigationUpdate);
     //stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
-})
+}
