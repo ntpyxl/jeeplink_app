@@ -279,6 +279,10 @@ function renderRoutes(routeInformation) {
     }
     $("#routeSlider").empty(); 
     $("#routePanel").removeClass("hidden");
+    
+    // Show the plan your route toggle header again after calculation is done
+    $("#toggleCommute").stop(true, true).slideDown(250);
+    
     updateControlsPosition();
 
     const routes = [

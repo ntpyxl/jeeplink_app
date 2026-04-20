@@ -104,7 +104,15 @@ $(document).ready(function () {
     // ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
     $("#calculateRouteButton").on("click", function () {
         $("#routePanel").removeClass("hidden");
-        $("#commuteContent").stop(true, true).slideUp(250);
+        
+        // On mobile/mini screens, close the plan your route panel
+        if (isMobile()) {
+            $("#toggleCommute").stop(true, true).slideUp(250);
+            $("#commuteContent").stop(true, true).slideUp(250);
+        } else {
+            $("#commuteContent").stop(true, true).slideUp(250);
+        }
+        
         $("#arrow").removeClass("rotate-180");
 
         // show loading spinner
