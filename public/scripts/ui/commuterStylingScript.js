@@ -154,16 +154,23 @@ $(document).ready(function () {
 
     let selectedIssue = "jeep";
 
+    $("#titleField").hide();
+
     $("#issueJeep").on("click", function () {
         selectedIssue = "jeep";
 
+        // UI toggle
         $(this)
             .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
             .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
 
         $("#issueOther")
             .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
-            .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
+            .addClass("border text-[#004F11] hover:bg-[#2E7D32]/5");
+
+        $("#titleField").slideUp(150);
+
+        $("#descLabel").text("Description (Optional)");
     });
 
     $("#issueOther").on("click", function () {
@@ -176,8 +183,12 @@ $(document).ready(function () {
         $("#issueJeep")
             .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
             .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
+
+        $("#titleField").slideDown(150);
+
+        $("#descLabel").text("Description");
     });
-    
+
     // TODO: use selectedIssue variable when submitting report form to backend
 
     // ---------- TERMS MODAL ----------

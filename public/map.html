@@ -387,7 +387,7 @@
                     <button id="issueJeep"
                         class="w-1/2 py-2 rounded-xl font-semibold text-white
                             bg-[#2E7D32] shadow-md cursor-pointer hover:bg-[#004F11] transition-all">
-                        Jeep Route Issues
+                        Jeep Diverted
                     </button>
 
                     <button id="issueOther"
@@ -398,7 +398,7 @@
                 </div>
 
                 <!-- Title -->
-                <div class="flex flex-col gap-1">
+                <div id="titleField" class="flex flex-col gap-1">
                     <label class="text-xs text-gray-600">Title</label>
                     <input id="reportTitle" type="text" placeholder="Enter issue title"
                         class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]">
@@ -406,7 +406,7 @@
 
                 <!-- Description -->
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs text-gray-600">Description</label>
+                    <label id="descLabel" class="text-xs text-gray-600">Description (Optional)</label>
                     <textarea id="reportDesc" rows="3" placeholder="Describe the issue..."
                         class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"></textarea>
                 </div>
