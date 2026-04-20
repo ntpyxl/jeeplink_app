@@ -17,8 +17,10 @@ const map = L.map("map", {
 }).setView([14.3272, 120.9404], 15);
 map.createPane("routePane");
 map.createPane("nodePane");
+map.createPane("userPositionPane")
 map.getPane("routePane").style.zIndex = 400;
 map.getPane("nodePane").style.zIndex = 500;
+map.getPane("userPositionPane").style.zIndex = 600;
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'Map data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -32,22 +34,40 @@ $("#zoomOutBtn").on("click", () => {
     map.zoomOut();
 })
 
+// TODO: Tentative way of handling positions for user marker and for tracking user in route below. May be optimized in the future.
+// For now, this should work.
+let userMarker;
+let userMarker_watchLocation;
+let userMarker_stopSimulationFunction;
+let currentUserMarkerPosition = null;
+function handleUserMarkerUpdate(location) {
+    currentUserMarkerPosition = [location.coords[1], location.coords[0]]
+
+    if (!userMarker) {
+        userMarker = L.circleMarker(currentUserMarkerPosition, {
+            radius: 8,
+            color: "#120eff",
+            fillColor: "#64e8ff",
+            fillOpacity: 1,
+            weight: 3,
+            pane: "userPositionPane"
+        }).addTo(map);
+    } 
+    // Update marker position when moved
+    else {
+        userMarker.setLatLng(currentUserMarkerPosition);
+    }
+}
+
+// Uncomment either one, but not both
+// Uncomment userMarker_watchLocation for actual user position tracking
+// Uncomment userMarker_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+
+userMarker_watchLocation = watchUserPosition(handleUserMarkerUpdate);
+//userMarker_stopSimulationFunction = simulateUserPosition(map, handleUserMarkerUpdate);
+
 $("#locateBtn").on("click", () => {
-    map.locate({ setView: true, maxZoom: 16 });
-});
-
-map.on("locationfound", (e) => {
-    L.circleMarker(e.latlng, {
-        radius: 8,
-        color: "#004F11",
-        fillColor: "#2E7D32",
-        fillOpacity: 0.9,
-        weight: 2
-    }).addTo(map).bindPopup("You are here").openPopup();
-});
-
-map.on("locationerror", () => {
-    showError("Unable to find your location. Please allow location access.");
+    map.flyTo(currentUserMarkerPosition, 16);
 });
 
 // Fetch and setup required JSON files
@@ -475,25 +495,25 @@ async function followRoute() {
         }
     }
 
-    let watchId = null;
-    let stopSimulationFunction = null;
+    let followRoute_watchLocation = null;
+    let followRoute_stopSimulationFunction = null;
 
     function stopAllTracking() {
-        if (watchId !== null) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
+        if (followRoute_watchLocation !== null) {
+            navigator.geolocation.clearWatch(followRoute_watchLocation);
+            followRoute_watchLocation = null;
         }
 
-        if (stopSimulationFunction) {
-            stopSimulationFunction();
-            stopSimulationFunction = null;
+        if (followRoute_stopSimulationFunction) {
+            followRoute_stopSimulationFunction();
+            followRoute_stopSimulationFunction = null;
         }
     }
 
     // Uncomment either one, but not both
-    // Uncomment watchId for actual user position tracking
-    // Uncomment stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
+    // Uncomment followRoute_watchLocation for actual user position tracking
+    // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    //watchId = watchUserPosition(handleNavigationUpdate);
-    stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
