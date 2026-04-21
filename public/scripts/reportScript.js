@@ -9,16 +9,6 @@ $(".issue-category-btn").on("click", function () {
     selectIssue($(this));
 });
 
-const reportSwal = Swal.mixin({
-    background: "#ffffff",
-    color: "black",
-    confirmButtonColor: "#2f7a33",
-    customClass: {
-        popup: " shadow-lg rounded-3",
-        title: "fw-bold",
-    },
-});
-
 $("#submitReport").on("click", async () => {
     try {
         const response = await apiFetch("/submitReport", {
@@ -48,7 +38,7 @@ $("#submitReport").on("click", async () => {
 
         resetReportForm()
 
-        reportSwal.fire({
+        jeeplinkSwal.fire({
             icon: "success",
             title: "Success",
             text: `Your report has been submitted with Report ID# ${reportId}. Submitted on ${reportSubmitFormattedDateTime}`,
@@ -57,7 +47,7 @@ $("#submitReport").on("click", async () => {
             allowOutsideClick: false
         });
     } catch (err) {
-        reportSwal.fire({
+        jeeplinkSwal.fire({
             icon: "error",
             title: "Error",
             text: err,

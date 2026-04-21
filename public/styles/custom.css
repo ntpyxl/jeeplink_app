@@ -84,3 +84,7 @@ summary::-webkit-details-marker {
         opacity: 1;
     }
 }
+
+.swal-popup {
+    border-radius: 20px !important;
+}

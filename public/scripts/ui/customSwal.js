@@ -1,10 +1,12 @@
+
 const jeeplinkSwal = Swal.mixin({
     background: "#ffffff",
     color: "black",
     confirmButtonColor: "#2f7a33",
+    cancelButtonColor: "#dc3545",
     customClass: {
-        popup: " shadow-lg rounded-3",
-        title: "fw-bold",
+        popup: " shadow-lg swal-popup",
+        title: "fw-bold"
     },
 });
 
@@ -26,4 +28,18 @@ function showError(message) {
 
         allowOutsideClick: false
     });
+}
+
+function confirmAction(message) {
+    return jeeplinkSwal.fire({
+        icon: "warning",
+        title: "Are you sure?",
+        text: message,
+
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+
+        allowOutsideClick: false
+    }).then(result => result.isConfirmed);
 }
