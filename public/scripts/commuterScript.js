@@ -272,6 +272,13 @@ $("#destinationPointField").on("input", () => {
 })
 
 $("#calculateRouteButton").on("click", async () => {
+    if(!startingPoint) {
+        startingPoint = await getCurrentLocation();
+        $("#startingPointField").val(startingPoint.name);
+        isStartingPointSelectedLocation = true;
+    }
+    if(!destinationPoint) return;
+
     if(!isStartingPointSelectedLocation) {
         startingPoint = await startingPointSearch.flush();
         $("#startingPointField").val(startingPoint.name);
@@ -280,11 +287,6 @@ $("#calculateRouteButton").on("click", async () => {
         destinationPoint = await destinationPointSearch.flush();
         $("#destinationPointField").val(destinationPoint.name);
     }
-    if(!startingPoint) {
-        startingPoint = await getCurrentLocation();
-        $("#startingPointField").val(startingPoint.name);
-    }
-    if(!destinationPoint) return;
 
     $("#routePanel")
         .hide()
