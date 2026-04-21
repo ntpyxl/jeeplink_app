@@ -160,16 +160,6 @@ let activeDstination = localStorage.getItem("destination");
 
 async function checkActiveRoute() {
     if(activeStart && activeDstination && localStorage.getItem("activeRoute")) {
-        const jeeplinkSwal = Swal.mixin({
-            background: "#ffffff",
-            color: "black",
-            confirmButtonColor: "#2f7a33",
-            customClass: {
-                popup: " shadow-lg rounded-3",
-                title: "fw-bold",
-            },
-        });
-
         const result = await jeeplinkSwal.fire({
             icon: "question",
             title: "Active route detected",
@@ -340,6 +330,14 @@ function renderRoutes(routeInformation) {
     });
 
     updateSlider();
+
+    if (!localStorage.getItem("activeRoute")) {
+        $("#routeNav").removeClass("hidden");
+        $("#routeIndicator").removeClass("mx-auto");
+    } else {
+        $("#routeNav").addClass("hidden");
+        $("#routeIndicator").addClass("mx-auto");
+    }
     
     // Animate cards after render
     setTimeout(() => {
@@ -431,7 +429,36 @@ function playNearStopNotification() {
     nearStopNotificationAudio.play();
 }
 
-$("#goNow").on("click", () => {
+$("#goNow").on("click", async () => {
+    // Check if currently following a route (ending navigation)
+    if (localStorage.getItem("activeRoute")) {
+        const isConfirmed = await confirmAction("Do you want to end navigation?");
+        
+        if (isConfirmed) {
+            // Stop tracking and clear route data
+            localStorage.removeItem("start");
+            localStorage.removeItem("destination");
+            localStorage.removeItem("activeRoute");
+            localStorage.removeItem("activeRoute_currentStep");
+            
+            // Reset button state
+            $("#goNow")
+                .html('<i class="fa fa-play pe-2"></i><span>Go Now</span>')
+                .removeClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]")
+                .addClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]");
+            
+            $("#routeTitle").text("Plan Your Commute");
+            $("#commuteContent").stop(true, true).slideDown(250);
+            $("#arrow").removeClass("rotate-180");
+        }
+        return;
+    }
+    
+    // Starting navigation (normal flow)
+    // Hide Pagination
+    $("#routeNav").addClass("hidden");
+    $("#routeIndicator").addClass("mx-auto");
+
     localStorage.setItem("activeRoute", currentRoute);
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
@@ -448,7 +475,11 @@ if(localStorage.getItem("activeRoute")) {
 async function followRoute() {
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
-    $("#goNow").addClass("hidden");
+    $("#routeTitle").text("Following Route");
+    $("#goNow")
+        .html('<i class="fa fa-stop-circle pe-2"></i><span> End Navigation</span>')
+        .removeClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]")
+        .addClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]");      
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 

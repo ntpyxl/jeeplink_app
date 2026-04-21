@@ -298,13 +298,19 @@
 
                                 <!-- Header -->
                                 <div class="flex items-center justify-between gap-2">
-                                    <h3 class="text-sm sm:text-base md:text-lg font-semibold text-[#004F11] truncate">
+                                    <h3 id="routeTitle" class="text-sm sm:text-base md:text-lg font-semibold text-[#004F11] truncate">
                                         Suggested Routes
                                     </h3>
-
                                     <a href="#" id="goNow"
-                                        class="text-sm sm:text-base text-blue-700 whitespace-nowrap">
-                                        Go now!
+                                    class="inline-flex items-center justify-center me-2 px-4 py-2 text-sm sm:text-base
+                                            bg-gradient-to-br from-[#004F11] to-[#1f7a3a] 
+                                            text-white font-semibold
+                                            rounded-lg shadow-md
+                                            hover:bg-[#006b1c]
+                                            active:bg-[#00380c]
+                                            transition">
+                                        <i class="fa fa-location-arrow pe-2"></i>
+                                        <span> Go now!</span>
                                     </a>
                                 </div>
 
@@ -328,7 +334,7 @@
                                 </div>
 
                                 <!-- Pagination -->
-                                <div class="flex justify-between items-center mt-1">
+                                <div id="routeNav" class="flex justify-between items-center mt-1">
 
                                     <button id="prevRoute"
                                         class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
