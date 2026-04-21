@@ -435,6 +435,7 @@ $("#goNow").on("click", async () => {
         const isConfirmed = await confirmAction("Do you want to end navigation?");
         
         if (isConfirmed) {
+            // Stop tracking and clear route data
             localStorage.removeItem("start");
             localStorage.removeItem("destination");
             localStorage.removeItem("activeRoute");
@@ -449,9 +450,6 @@ $("#goNow").on("click", async () => {
             $("#routeTitle").text("Plan Your Commute");
             $("#commuteContent").stop(true, true).slideDown(250);
             $("#arrow").removeClass("rotate-180");
-            
-            $("#routeNav").removeClass("hidden");
-            $("#routeIndicator").removeClass("mx-auto");
         }
         return;
     }
