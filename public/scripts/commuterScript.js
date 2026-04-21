@@ -437,7 +437,7 @@ function playNearStopNotification() {
 }
 
 $("#goNow").on("click", () => {
-    // Hide left/right buttons
+    // Hide Pagination
     $("#routeNav").addClass("hidden");
     $("#routeIndicator").addClass("mx-auto");
 
@@ -456,8 +456,10 @@ if(localStorage.getItem("activeRoute")) {
 
 async function followRoute() {
     $("#routeTitle").text("Following Route");
-    $("#goNow").text("End Navigation");
-
+    $("#goNow")
+        .html('<i class="fa fa-stop-circle pe-2"></i><span> End Navigation</span>')
+        .removeClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]")
+        .addClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]");      
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
