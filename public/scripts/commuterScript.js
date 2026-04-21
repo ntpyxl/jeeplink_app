@@ -299,6 +299,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
 
@@ -392,7 +393,7 @@ $("#prevRoute").on("click", function () {
     }
 });
 
-function setActiveRoute(currentRouteIndex) {
+function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
     const routeKeys = ["fastest", "cheapest", "minimalTransfers"];
     const activeKey = routeKeys[currentRouteIndex];
 
@@ -412,9 +413,9 @@ function setActiveRoute(currentRouteIndex) {
                 layer.bringToFront();
             } else {
                 if (mode === "jeep") {
-                    layer.setStyle({ color: "#666666", opacity: 1 });
+                    layer.setStyle({ color: "#666666", opacity: hideInactiveRoute ? 0 : 1 });
                 } else {
-                    layer.setStyle({ color: "#888", opacity: 1 });
+                    layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
                 }
             }
         });
@@ -446,6 +447,7 @@ if(localStorage.getItem("activeRoute")) {
 
 async function followRoute() {
     map.flyTo(currentUserMarkerPosition, 16);
+    setActiveRoute(currentRoute, true)
     $("#goNow").addClass("hidden");
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
