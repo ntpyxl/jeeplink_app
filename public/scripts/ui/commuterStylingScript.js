@@ -36,10 +36,10 @@ $(document).ready(function () {
         $("#arrow").toggleClass("rotate-180");
 
         if (isHidden) {
-            $("#routePanel").fadeOut(200);
-        } else {
-            if (!$("#routePanel").hasClass("hidden")) {
-                $("#routePanel").fadeIn(200);
+            closeAllRoutes();
+            isOpen = false;
+            if ($("#routeSlider .route-card").length || $("#routeLoading").length) {
+                $("#routeSliderWrapper").stop(true, true).slideDown(250);
             }
         }
 
@@ -48,8 +48,9 @@ $(document).ready(function () {
 
     function autoCloseCommute() {
         if (isMobile()) {
+            if ($("#commuteContent").is(":visible")) return; 
             $("#commuteContent").hide();
-            $("#arrow").addClass("rotate-180");
+            $("#arrow").removeClass("rotate-180"); 
         } else {
             $("#commuteContent").show();
             $("#arrow").removeClass("rotate-180");
@@ -78,6 +79,8 @@ $(document).ready(function () {
             closeAllRoutes();
             isOpen = false;
         } else {
+            $("#commuteContent").stop(true, true).slideUp(250);
+            $("#arrow").removeClass("rotate-180");
             openAllRoutes();
             isOpen = true;
         }
@@ -90,6 +93,8 @@ $(document).ready(function () {
             closeAllRoutes();
             isOpen = false;
         } else {
+            $("#commuteContent").stop(true, true).slideUp(250);
+            $("#arrow").removeClass("rotate-180");
             openAllRoutes();
             isOpen = true;
 
@@ -105,6 +110,8 @@ $(document).ready(function () {
     $("#calculateRouteButton").on("click", function () {
         $("#routePanel").removeClass("hidden");
         $("#commuteContent").stop(true, true).slideUp(250);
+        $("#arrow").removeClass("rotate-180");
+        
         $("#arrow").removeClass("rotate-180");
 
         // show loading spinner

@@ -148,7 +148,7 @@
 
                     <!-- Issue type pills -->
                     <div class="grid grid-cols-2 md:justify-between sm:grid-cols-2 md:flex md:flex-wrap gap-3 md:gap-6">
-                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
+                        <!-- <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
                             Wrong Route
                         </button>
                         <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer">
@@ -159,51 +159,50 @@
                         </button>
                         <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer ">
                             Other Issues
+                        </button> -->
+                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
+                            Other Issues
                         </button>
                     </div>
 
                     <!-- Form -->
                     <div class="mt-8 md:mt-10">
-                        <label class="block text-lg md:text-xl mb-2 md:mb-3">
-                            Explain the Issue
-                        </label>
 
-                        <textarea
-                            rows="6"
-                            class="w-full rounded-md border-2 border-[#2E7D32] bg-white p-3 md:p-4 text-base md:text-lg outline-none"
-                        ></textarea>
+                        <!-- Title -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-lg md:text-xl">
+                                Title
+                            </label>
+                            <input id="reportTitle" type="text" placeholder="Enter issue title"
+                                class="w-full rounded-md border-2 border-[#2E7D32] bg-white px-4 py-2 text-base md:text-lg outline-none">
+                        </div>
 
-                        <!-- Inputs -->
-                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
-                            <div>
-                                <label class="block text-lg md:text-xl mb-2 md:mb-3">
-                                    Your email (Optional):
-                                </label>
-                                <input
-                                    type="email"
-                                    class="w-full bg-white rounded-md border-2 border-[#2E7D32] px-4 py-2 text-base md:text-lg"
-                                />
-                            </div>
+                        <!-- Description -->
+                        <div class="flex flex-col gap-2 mt-6">
+                            <label class="text-lg md:text-xl">
+                                Description (Optional)
+                            </label>
+                            <textarea id="reportDesc" rows="5" placeholder="Describe the issue..."
+                                class="w-full rounded-md border-2 border-[#2E7D32] bg-white p-3 md:p-4 text-base md:text-lg outline-none"></textarea>
+                        </div>
 
-                            <div>
-                                <label class="block text-lg md:text-xl mb-2 md:mb-3">
-                                    Date:
-                                </label>
-                                <input
-                                    type="text"
-                                    class="w-full bg-white rounded-md border-2 border-[#2E7D32] px-4 py-2 text-base md:text-lg"
-                                />
-                            </div>
+                        <!-- Email -->
+                        <div class="flex flex-col gap-2 mt-6">
+                            <label class="text-lg md:text-xl">
+                                Email (Optional)
+                            </label>
+                            <input id="reportEmail" type="email" placeholder="juan.delacruz@gmail.com"
+                                class="w-full rounded-md border-2 border-[#2E7D32] bg-white px-4 py-2 text-base md:text-lg">
                         </div>
 
                         <!-- Submit -->
                         <div class="mt-10 flex justify-center">
-                            <button
-                                class="w-full sm:w-auto px-10 md:px-20 py-3 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-lg md:text-xl cursor-pointer"
-                            >
+                            <button id="submitReport"
+                                class="w-full sm:w-auto px-10 md:px-20 py-3 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-lg md:text-xl cursor-pointer">
                                 Submit Report
                             </button>
                         </div>
+
                     </div>
 
                 </div>
