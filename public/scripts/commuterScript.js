@@ -337,6 +337,14 @@ function renderRoutes(routeInformation) {
     });
 
     updateSlider();
+
+    if (!localStorage.getItem("activeRoute")) {
+        $("#routeNav").removeClass("hidden");
+        $("#routeIndicator").removeClass("mx-auto");
+    } else {
+        $("#routeNav").addClass("hidden");
+        $("#routeIndicator").addClass("mx-auto");
+    }
     
     // Animate cards after render
     setTimeout(() => {
@@ -429,6 +437,10 @@ function playNearStopNotification() {
 }
 
 $("#goNow").on("click", () => {
+    // Hide left/right buttons
+    $("#routeNav").addClass("hidden");
+    $("#routeIndicator").addClass("mx-auto");
+
     localStorage.setItem("activeRoute", currentRoute);
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
@@ -443,7 +455,9 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
-    $("#goNow").addClass("hidden");
+    $("#routeTitle").text("Following Route");
+    $("#goNow").text("End Navigation");
+
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");
 
