@@ -151,15 +151,9 @@ $(document).ready(function () {
     });
 
     // ---------- ISSUE TYPE TOGGLE ----------
-
-    let selectedIssue = "jeep";
-
     $("#titleField").hide();
 
     $("#issueJeep").on("click", function () {
-        selectedIssue = "jeep";
-
-        // UI toggle
         $(this)
             .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
             .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
@@ -174,8 +168,6 @@ $(document).ready(function () {
     });
 
     $("#issueOther").on("click", function () {
-        selectedIssue = "other";
-
         $(this)
             .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
             .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
@@ -188,8 +180,6 @@ $(document).ready(function () {
 
         $("#descLabel").text("Description");
     });
-
-    // TODO: use selectedIssue variable when submitting report form to backend
 
     // ---------- TERMS MODAL ----------
     const accepted = localStorage.getItem("jeepLink_termsAccepted");
