@@ -443,6 +443,7 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    map.flyTo(currentUserMarkerPosition, 16);
     $("#goNow").addClass("hidden");
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#arrow").addClass("rotate-180");

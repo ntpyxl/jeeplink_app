@@ -128,8 +128,6 @@ export class CommuterRouter {
                 this.fareMatrix.fareMatrixData
             );
 
-            console.log(info)
-
             completeRouteInformation[`${key}RouteInformation`] = {
                 routeInformation: info,
                 [`${key}RouteInstructions`]: formatInstructions(instructions, info.routeCost.individualRides)
