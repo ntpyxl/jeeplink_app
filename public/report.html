@@ -19,6 +19,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="scripts/ui/customSwal.js"></script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/custom.css">
 
@@ -160,7 +163,11 @@
                         <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer ">
                             Other Issues
                         </button> -->
-                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
+                        <button 
+                            id="issueOther"
+                            aria-pressed="true"
+                            data-category="other_issues"
+                            class="issue-category-btn w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
                             Other Issues
                         </button>
                     </div>
@@ -180,7 +187,7 @@
                         <!-- Description -->
                         <div class="flex flex-col gap-2 mt-6">
                             <label class="text-lg md:text-xl">
-                                Description (Optional)
+                                Description
                             </label>
                             <textarea id="reportDesc" rows="5" placeholder="Describe the issue..."
                                 class="w-full rounded-md border-2 border-[#2E7D32] bg-white p-3 md:p-4 text-base md:text-lg outline-none"></textarea>
@@ -273,6 +280,8 @@
 
     <!-- Commuter Front End Script -->
     <script src="scripts/ui/commuterStylingScript.js" type="module"></script>
+
+    <script src="scripts/reportScript.js" type="module"></script>
 
 </body>
 </html> 

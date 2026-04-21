@@ -1,10 +1,13 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 
-const issueTypes = ["jeep_diverted", "other_issues"]
-let currentIssueTypeIndex = 0
+function selectIssue(button) {
+    $(".issue-category-btn").attr("aria-pressed", "false");
+    button.attr("aria-pressed", "true");
+}
 
-$("#issueJeep").on("click", () => { currentIssueTypeIndex = 0 })
-$("#issueOther").on("click", () => { currentIssueTypeIndex = 1 })
+$(".issue-category-btn").on("click", function () {
+    selectIssue($(this));
+});
 
 const reportSwal = Swal.mixin({
     background: "#ffffff",
@@ -25,7 +28,7 @@ $("#submitReport").on("click", async () => {
                 report_title: $("#reportTitle").val(),
                 report_desc: $("#reportDesc").val(),
                 email: $("reportEmail").val(),
-                report_type: issueTypes[currentIssueTypeIndex],
+                report_type: $(".issue-category-btn[aria-pressed='true']").data("category"),
                 jeep_route_reported: null
             })
         });
@@ -51,6 +54,7 @@ $("#submitReport").on("click", async () => {
             text: `Your report has been submitted with Report ID# ${reportId}. Submitted on ${reportSubmitFormattedDateTime}`,
             timer: 30000,
             showConfirmButton: true,
+            allowOutsideClick: false
         });
     } catch (err) {
         reportSwal.fire({
@@ -81,7 +85,7 @@ function resetReportForm() {
     
     $("#descLabel").text("Description (Optional)");
 
-    currentIssueTypeIndex = 0
+    selectIssue($("#issueJeep").length ? $("#issueJeep") : $("#issueOther"));
     $("#reportTitle").val("");
     $("#reportDesc").val("");
     $("reportEmail").val("");

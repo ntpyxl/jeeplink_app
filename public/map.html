@@ -385,13 +385,17 @@
                 <!-- Issue Type -->
                 <div class="flex gap-2">
                     <button id="issueJeep"
-                        class="w-1/2 py-2 rounded-xl font-semibold text-white
+                        aria-pressed="true"
+                        data-category="jeep_diverted"
+                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-white
                             bg-[#2E7D32] shadow-md cursor-pointer hover:bg-[#004F11] transition-all">
                         Jeep Diverted
                     </button>
 
                     <button id="issueOther"
-                        class="w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
+                        aria-pressed="false"
+                        data-category="other_issues"
+                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
                             border border-[#004F11] cursor-pointer hover:bg-[#004F11]/5 transition-all">
                         Other Issues
                     </button>
@@ -524,6 +528,7 @@
     <!-- Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="scripts/ui/customSwal.js"></script>
 
