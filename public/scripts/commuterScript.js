@@ -160,6 +160,8 @@ let activeDstination = localStorage.getItem("destination");
 
 async function checkActiveRoute() {
     if(activeStart && activeDstination && localStorage.getItem("activeRoute")) {
+        $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
+        
         const result = await jeeplinkSwal.fire({
             icon: "question",
             title: "Active route detected",
@@ -180,6 +182,8 @@ async function checkActiveRoute() {
             localStorage.removeItem("activeRoute_currentStep");
             activeStart = null;
             activeDstination = null;
+
+            $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
         }
     }
 }
@@ -219,6 +223,8 @@ if (destination) {
 }
 
 if (start && destination) {
+    $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
+
     $("#routePanel")
         .hide()
         .removeClass("hidden")
@@ -231,6 +237,8 @@ if (start && destination) {
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     renderRoutes(completeRouteInformation);
+    
+    $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
 }
 
 const startingPointSearch = setupLocationSearch({
@@ -276,6 +284,8 @@ $("#calculateRouteButton").on("click", async () => {
     }
     if(!destinationPoint) return;
 
+    $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
+
     $("#routePanel")
         .hide()
         .removeClass("hidden")
@@ -288,6 +298,8 @@ $("#calculateRouteButton").on("click", async () => {
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     renderRoutes(completeRouteInformation);
+    
+    $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
 })
 
 function renderRoutes(routeInformation) {
@@ -426,7 +438,13 @@ function playNearStopNotification() {
     nearStopNotificationAudio.play();
 }
 
-$("#goNow").on("click", async () => {
+$("#goNow").on("click", async (e) => {
+    // Prevent click if button is disabled
+    if ($("#goNow").hasClass("pointer-events-none")) {
+        e.preventDefault();
+        return;
+    }
+    
     // Check if currently following a route (ending navigation)
     if (localStorage.getItem("activeRoute")) {
         const isConfirmed = await confirmAction("Do you want to end navigation?");
