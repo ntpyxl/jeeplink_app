@@ -1,6 +1,6 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 
-async function getReportsData(page_number = null, report_type = null, report_status = null) {
+async function getReportsData({page_number = null, report_type = null, report_status = null}) {
     try {
         const params = new URLSearchParams();
 
