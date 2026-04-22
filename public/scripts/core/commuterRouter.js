@@ -18,9 +18,10 @@ export class CommuterRouter {
         this.allNodes = [];
         
         this.nodeLayer = new L.LayerGroup().addTo(this.map);
+        this.keyToName = new Map();
     }
 
-    addNode({ node, index = null, type = null }) {
+    addNode({ node, index = null, type = null, name = null }) {
         if (type === "start") {
             if (this.nodes[0]) {
                 this.nodeLayer.removeLayer(this.nodes[0].layer);
@@ -42,6 +43,10 @@ export class CommuterRouter {
             } else {
                 this.nodes.splice(index, 0, node);
             }
+        }
+
+        if (name) {
+            this.keyToName.set(node.graphKey, name);
         }
 
         this.drawNode(node);
@@ -130,7 +135,7 @@ export class CommuterRouter {
 
             completeRouteInformation[`${key}RouteInformation`] = {
                 routeInformation: info,
-                [`${key}RouteInstructions`]: formatInstructions(instructions, info.routeCost.individualRides)
+                [`${key}RouteInstructions`]: formatInstructions(instructions, info.routeCost.individualRides, this.keyToName)
             };
         }
         
@@ -476,7 +481,7 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
     };
 }
 
-function formatInstructions(steps, individualRidesCost) {
+function formatInstructions(steps, individualRidesCost, keyToName) {
     const routeinstructions = steps.map(step => {
         let rideIndex = 0;
         const stepDistance = step.distance.toFixed(0);
@@ -507,7 +512,9 @@ function formatInstructions(steps, individualRidesCost) {
         }
     });
 
-    return routeinstructions
+    const startName = keyToName.get(steps[0].start) || steps[0].start;
+    const endName = keyToName.get(steps[steps.length - 1].end) || steps[steps.length - 1].end;
+    return [`Started at ${startName}`, ...routeinstructions, `Arrived at ${endName}`];
 }
 
 function fareCalculator(distanceKm, fareMatrix) {

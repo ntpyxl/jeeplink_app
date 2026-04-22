@@ -153,7 +153,7 @@ function addRouteNode(data, type = null) {
         graphKey: graphNodeKey
     };
 
-    routeGenerated.addNode({node: node, type: type});
+    routeGenerated.addNode({node: node, type: type, name: data.name});
 }
 
 let activeStart = localStorage.getItem("start");
@@ -470,6 +470,7 @@ $("#goNow").on("click", async (e) => {
             
             $("#routeTitle").text("Plan Your Commute");
             $("#commuteContent").stop(true, true).slideDown(250);
+            $("#toggleCommute").show();
             $("#arrow").removeClass("rotate-180");
             
             // Show route navigation controls again
@@ -506,6 +507,7 @@ async function followRoute() {
         .removeClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]")
         .addClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]");      
     $("#commuteContent").stop(true, true).slideUp(250);
+    $("#toggleCommute").hide();
     $("#arrow").addClass("rotate-180");
 
     if (Notification.permission !== "granted") {
