@@ -5,7 +5,7 @@ import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow } from "./ui/routeInformationElements.js"
-import { updateControlsPosition } from "./ui/commuterStylingScript.js"
+import { updateControlsPosition, closeRoutesPanel } from "./ui/commuterStylingScript.js"
 import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 import { invokeLoadingState } from "./ui/commuterStylingScript.js"
 
@@ -467,8 +467,10 @@ $("#goNow").on("click", async (e) => {
                 .html('<i class="fa fa-location-arrow pe-2"></i><span>Go Now!</span>')
                 .removeClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]")
                 .addClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]");
+                
+            $("#routeTitle").text("Suggested Routes");
+            closeRoutesPanel();
             
-            $("#routeTitle").text("Plan Your Commute");
             $("#commuteContent").stop(true, true).slideDown(250);
             $("#toggleCommute").show();
             $("#arrow").removeClass("rotate-180");

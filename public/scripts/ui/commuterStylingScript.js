@@ -19,6 +19,13 @@ export function invokeLoadingState() {
     updateControlsPosition();
 }
 
+// ---------- CLOSE ROUTES WITH STATE SYNC ----------
+export function closeRoutesPanel() {
+    $(".route-content").stop(true, true).slideUp(250);
+    $(".arrow").removeClass("rotate-180");
+    isOpen = false;
+}
+
 // ---------- MAP CONTROLS POSITION SYNC ----------
 function isMobile() {
     return window.innerWidth < 768; 
@@ -26,6 +33,9 @@ function isMobile() {
 
 const controls = $("#mapControls");
 const routePanel = $("#routePanel");
+
+// ---------- GLOBAL ROUTE STATE ----------
+let isOpen = false;
 
 export function updateControlsPosition() {
     if (isMobile()) {
@@ -51,7 +61,7 @@ $(document).ready(function () {
         return window.innerWidth < 768;
     }
 
-   $("#toggleCommute").on("click", function () {
+$("#toggleCommute").on("click", function () {
         const isHidden = $("#commuteContent").is(":hidden");
         $("#commuteContent").stop().slideToggle(250);
         $("#arrow").toggleClass("rotate-180");
@@ -82,8 +92,6 @@ $(document).ready(function () {
     //$(window).on("resize", autoCloseCommute);
 
     // ---------- GLOBAL ROUTE SYNC SYSTEM ----------
-    let isOpen = false;
-
     function closeAllRoutes() {
         $(".route-content").stop(true, true).slideUp(250);
         $(".arrow").removeClass("rotate-180");
