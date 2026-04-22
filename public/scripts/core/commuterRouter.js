@@ -484,13 +484,13 @@ function formatInstructions(steps, individualRidesCost) {
             return `Walk ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;
         }
         if (step.mode === "jeep") {
-            rideIndex++;
             const regularTraditionalFee = individualRidesCost[rideIndex].regular.traditional;
             const discountedTraditionalFee = individualRidesCost[rideIndex].discounted.traditional;
             const regularNonAcModernFee = individualRidesCost[rideIndex].regular.nonAcModern;
             const discountedNonAcModernFee = individualRidesCost[rideIndex].discounted.nonAcModern;
             const regularAcModernFee = individualRidesCost[rideIndex].regular.acModern;
             const discountedAcModernFee = individualRidesCost[rideIndex].discounted.acModern;
+            rideIndex++;
             return `
                 Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}. <br>
                 <span class="step-fare-text block text-xs text-gray-500 leading-relaxed">
