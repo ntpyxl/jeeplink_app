@@ -288,6 +288,8 @@ $("#calculateRouteButton").on("click", async () => {
         $("#destinationPointField").val(destinationPoint.name);
     }
 
+    $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
+
     invokeLoadingState();
     $("#routePanel")
         .hide()
@@ -469,6 +471,10 @@ $("#goNow").on("click", async (e) => {
             $("#routeTitle").text("Plan Your Commute");
             $("#commuteContent").stop(true, true).slideDown(250);
             $("#arrow").removeClass("rotate-180");
+            
+            // Show route navigation controls again
+            $("#routeNav").removeClass("hidden");
+            $("#routeIndicator").removeClass("mx-auto");
         }
         return;
     }
