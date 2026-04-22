@@ -320,6 +320,10 @@
                         </button>
 
                         <button class="cursor-pointer px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition">
+                            Jeep Diverted
+                        </button>
+
+                        <button class="cursor-pointer px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition">
                             Wrong Route
                         </button>
 
@@ -350,46 +354,23 @@
                         <thead>
                             <tr class="text-gray-500 text-sm border-b">
                                 <th class="py-3">Report ID</th>
-                                <th class="py-3">Type</th>
+                                <th class="py-3">Report Type</th>
+                                <th class="py-3">Title</th>
                                 <th class="py-3">Description</th>
-                                <th class="py-3">Location</th>
-                                <th class="py-3">Date</th>
+                                <th class="py-3">Reporter Email</th>
+                                <th class="py-3">Date Reported</th>
                                 <th class="py-3 text-center">Status</th>
                             </tr>
                         </thead>
 
-                        <tbody class="text-gray-700 text-sm">
-
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="py-3">REP001</td>
-                                <td class="py-3">Wrong Route</td>
-                                <td class="py-3">Driver changed route unexpectedly</td>
-                                <td class="py-3">Dasmariñas</td>
-                                <td class="py-3">Mar 21, 2026</td>
-                                <td class="py-3 text-center">
-                                    <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-xs">Pending</span>
-                                </td>
-                            </tr>
-
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="py-3">REP002</td>
-                                <td class="py-3">Missing Jeepney</td>
-                                <td class="py-3">No jeep available in terminal</td>
-                                <td class="py-3">Imus</td>
-                                <td class="py-3">Mar 20, 2026</td>
-                                <td class="py-3 text-center">
-                                    <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">Unresolved</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-3">REP003</td>
-                                <td class="py-3">Incorrect Fares</td>
-                                <td class="py-3">Driver overcharged fare</td>
-                                <td class="py-3">Bacoor</td>
-                                <td class="py-3">Mar 19, 2026</td>
-                                <td class="py-3 text-center">
-                                    <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs">Resolved</span>
+                        <tbody id="reportsTableBody" class="text-gray-700 text-sm">
+                            
+                            <!-- Loading Spinner Row -->
+                            <tr id="tableLoading" class="hidden">
+                                <td colspan="7" class="py-6">
+                                    <div class="flex justify-center items-center">
+                                        <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -443,8 +424,8 @@
         
             </div>
 
-        </main>
-    </div>
+    </main>
+    
 
     <!-- Rotate Device Overlay -->
     <div id="rotateOverlay" 
