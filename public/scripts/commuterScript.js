@@ -7,6 +7,7 @@ import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition } from "./ui/commuterStylingScript.js"
 import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
+import { invokeLoadingState } from "./ui/commuterStylingScript.js"
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -225,6 +226,7 @@ if (destination) {
 if (start && destination) {
     $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
 
+    invokeLoadingState();
     $("#routePanel")
         .hide()
         .removeClass("hidden")
@@ -270,12 +272,12 @@ $("#destinationPointField").on("input", () => {
 })
 
 $("#calculateRouteButton").on("click", async () => {
+    if(!destinationPoint) return;
     if(!startingPoint) {
         startingPoint = await getCurrentLocation();
         $("#startingPointField").val(startingPoint.name);
         isStartingPointSelectedLocation = true;
     }
-    if(!destinationPoint) return;
 
     if(!isStartingPointSelectedLocation) {
         startingPoint = await startingPointSearch.flush();
@@ -286,8 +288,7 @@ $("#calculateRouteButton").on("click", async () => {
         $("#destinationPointField").val(destinationPoint.name);
     }
 
-    $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
-
+    invokeLoadingState();
     $("#routePanel")
         .hide()
         .removeClass("hidden")
