@@ -270,6 +270,13 @@ $("#destinationPointField").on("input", () => {
 })
 
 $("#calculateRouteButton").on("click", async () => {
+    if(!startingPoint) {
+        startingPoint = await getCurrentLocation();
+        $("#startingPointField").val(startingPoint.name);
+        isStartingPointSelectedLocation = true;
+    }
+    if(!destinationPoint) return;
+
     if(!isStartingPointSelectedLocation) {
         startingPoint = await startingPointSearch.flush();
         $("#startingPointField").val(startingPoint.name);
@@ -278,11 +285,6 @@ $("#calculateRouteButton").on("click", async () => {
         destinationPoint = await destinationPointSearch.flush();
         $("#destinationPointField").val(destinationPoint.name);
     }
-    if(!startingPoint) {
-        startingPoint = await getCurrentLocation();
-        $("#startingPointField").val(startingPoint.name);
-    }
-    if(!destinationPoint) return;
 
     $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
 
@@ -297,6 +299,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
     
     $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
@@ -400,7 +403,7 @@ $("#prevRoute").on("click", function () {
     }
 });
 
-function setActiveRoute(currentRouteIndex) {
+function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
     const routeKeys = ["fastest", "cheapest", "minimalTransfers"];
     const activeKey = routeKeys[currentRouteIndex];
 
@@ -420,9 +423,9 @@ function setActiveRoute(currentRouteIndex) {
                 layer.bringToFront();
             } else {
                 if (mode === "jeep") {
-                    layer.setStyle({ color: "#666666", opacity: 1 });
+                    layer.setStyle({ color: "#666666", opacity: hideInactiveRoute ? 0 : 1 });
                 } else {
-                    layer.setStyle({ color: "#888", opacity: 1 });
+                    layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
                 }
             }
         });
@@ -450,6 +453,7 @@ $("#goNow").on("click", async (e) => {
         const isConfirmed = await confirmAction("Do you want to end navigation?");
         
         if (isConfirmed) {
+            // Stop tracking and clear route data
             localStorage.removeItem("start");
             localStorage.removeItem("destination");
             localStorage.removeItem("activeRoute");
@@ -464,9 +468,6 @@ $("#goNow").on("click", async (e) => {
             $("#routeTitle").text("Plan Your Commute");
             $("#commuteContent").stop(true, true).slideDown(250);
             $("#arrow").removeClass("rotate-180");
-            
-            $("#routeNav").removeClass("hidden");
-            $("#routeIndicator").removeClass("mx-auto");
         }
         return;
     }
@@ -490,6 +491,8 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    map.flyTo(currentUserMarkerPosition, 16);
+    setActiveRoute(currentRoute, true)
     $("#routeTitle").text("Following Route");
     $("#goNow")
         .html('<i class="fa fa-stop-circle pe-2"></i><span> End Navigation</span>')
