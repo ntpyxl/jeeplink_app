@@ -1,3 +1,24 @@
+// ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
+export function invokeLoadingState() {
+    $("#routePanel").removeClass("hidden");
+    $("#commuteContent").stop(true, true).slideUp(250);
+    $("#arrow").removeClass("rotate-180");
+    
+    $("#arrow").removeClass("rotate-180");
+
+    // show loading spinner
+    $("#routeSlider").html(`
+        <div id="routeLoading" class="w-full flex flex-col items-center justify-center py-10 gap-3">
+            <div class="w-10 h-10 border-4 border-[#004F11]/20 border-t-[#004F11] rounded-full animate-spin"></div>
+            <p class="text-sm text-gray-600 font-medium">
+                Finding the best routes...
+            </p>
+        </div>
+    `);
+
+    updateControlsPosition();
+}
+
 // ---------- MAP CONTROLS POSITION SYNC ----------
 function isMobile() {
     return window.innerWidth < 768; 
@@ -104,27 +125,6 @@ $(document).ready(function () {
             }, 150);
         }
 
-    });
-
-    // ---------- CALCULATE ROUTE BUTTON (LOADING STATE) ----------
-    $("#calculateRouteButton").on("click", function () {
-        $("#routePanel").removeClass("hidden");
-        $("#commuteContent").stop(true, true).slideUp(250);
-        $("#arrow").removeClass("rotate-180");
-        
-        $("#arrow").removeClass("rotate-180");
-
-        // show loading spinner
-        $("#routeSlider").html(`
-            <div id="routeLoading" class="w-full flex flex-col items-center justify-center py-10 gap-3">
-                <div class="w-10 h-10 border-4 border-[#004F11]/20 border-t-[#004F11] rounded-full animate-spin"></div>
-                <p class="text-sm text-gray-600 font-medium">
-                    Finding the best routes...
-                </p>
-            </div>
-        `);
-
-        updateControlsPosition();
     });
 
     // ---------- REPORT MODAL ----------
