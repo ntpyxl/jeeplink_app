@@ -455,6 +455,30 @@ function playArrivedNotification() {
     arrivedNotificationAudio.play();
 }
 
+function resetNavigationState() {
+    localStorage.removeItem("start");
+    localStorage.removeItem("destination");
+    localStorage.removeItem("activeRoute");
+    localStorage.removeItem("activeRoute_currentStep");
+    
+    // Reset button state
+    $("#goNow")
+        .html('<i class="fa fa-location-arrow pe-2"></i><span>Go Now!</span>')
+        .removeClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]")
+        .addClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]");
+        
+    $("#routeTitle").text("Suggested Routes");
+    closeRoutesPanel();
+    
+    $("#commuteContent").stop(true, true).slideDown(250);
+    $("#toggleCommute").show();
+    $("#arrow").removeClass("rotate-180");
+    
+    // Show route navigation controls again
+    $("#routeNav").removeClass("hidden");
+    $("#routeIndicator").removeClass("mx-auto");
+}
+
 $("#goNow").on("click", async (e) => {
     // Prevent click if button is disabled
     if ($("#goNow").hasClass("pointer-events-none")) {
@@ -468,27 +492,7 @@ $("#goNow").on("click", async (e) => {
         
         if (isConfirmed) {
             // Stop tracking and clear route data
-            localStorage.removeItem("start");
-            localStorage.removeItem("destination");
-            localStorage.removeItem("activeRoute");
-            localStorage.removeItem("activeRoute_currentStep");
-            
-            // Reset button state
-            $("#goNow")
-                .html('<i class="fa fa-location-arrow pe-2"></i><span>Go Now!</span>')
-                .removeClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]")
-                .addClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]");
-                
-            $("#routeTitle").text("Suggested Routes");
-            closeRoutesPanel();
-            
-            $("#commuteContent").stop(true, true).slideDown(250);
-            $("#toggleCommute").show();
-            $("#arrow").removeClass("rotate-180");
-            
-            // Show route navigation controls again
-            $("#routeNav").removeClass("hidden");
-            $("#routeIndicator").removeClass("mx-auto");
+            resetNavigationState();
         }
         return;
     }
@@ -591,6 +595,7 @@ async function followRoute() {
             });
 
             stopAllTracking();
+            resetNavigationState();
             
             localStorage.removeItem("start");
             localStorage.removeItem("destination");
