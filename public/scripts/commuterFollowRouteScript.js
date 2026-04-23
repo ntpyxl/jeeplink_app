@@ -35,10 +35,10 @@ export function simulateUserPosition(map, onUpdate, onError) {
         });
     };
 
-    map.getContainer().addEventListener("touchend", handler); // mobile reliable
+    map.on("mousemove", handler);
 
     // return "watchId" as cleanup function
     return () => {
-        map.off("click", handler);
+        map.off("mousemove", handler);
     };
 }

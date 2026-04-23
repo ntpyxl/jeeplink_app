@@ -512,10 +512,6 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
-    playArrivedNotification()
-    if (Notification.permission === "granted") new Notification("You have arrived at your destination!");
-    navigator.vibrate?.([200,100,200]);
-
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
     $("#routeTitle").text("Following Route");
@@ -526,10 +522,6 @@ async function followRoute() {
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#toggleCommute").hide();
     $("#arrow").addClass("rotate-180");
-
-    if (Notification.permission !== "granted") {
-        await Notification.requestPermission();
-    }
 
     const routeNames = [
         "fastestStepCoords",
@@ -555,8 +547,20 @@ async function followRoute() {
             console.log("User is within 120m of next stop.");
             if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
                 playNearStopNotification();
-                if (Notification.permission === "granted") new Notification("Approaching your stop");
-                navigator.vibrate?.([200,100,200]);
+                Swal.fire({
+                    toast: true,
+                    position: 'top',
+                    icon: 'info',
+                    title: 'Approaching stop',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    background: '#1f2937',
+                    color: '#fff',
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: "toast-navigation-notification-offset"
+                    }
+                });
             }
             isUserNotifiedBeingNearStop = true;
         }
@@ -571,8 +575,21 @@ async function followRoute() {
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
             playArrivedNotification()
-            if (Notification.permission === "granted") new Notification("You have arrived at your destination!");
-            navigator.vibrate?.([200,100,200]);
+            Swal.fire({
+                toast: true,
+                position: 'top',
+                icon: 'info',
+                title: 'You have arrived at your destination',
+                showConfirmButton: false,
+                timer: 5000,
+                background: '#1f2937',
+                color: '#fff',
+                timerProgressBar: true,
+                customClass: {
+                    popup: "toast-navigation-notification-offset"
+                }
+            });
+
             stopAllTracking();
             
             localStorage.removeItem("start");
@@ -601,6 +618,6 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
