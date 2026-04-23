@@ -122,6 +122,10 @@ $("#toggleCommute").on("click", function () {
         }
 
     });
+    //FARE INFO MODAL
+    $(document).on('click', '.fare-info-icon', function () {
+        showFareInfo();
+    });
 
     // DRAG HANDLE
     $("#dragToggle").on("click", function () {
