@@ -55,3 +55,20 @@ function showFareInfo() {
         allowOutsideClick: false
     }).then(result => result.isConfirmed);
 }
+
+function showNotification(title, icon) {
+    return jeeplinkSwal.fire({
+        toast: true,
+        position: 'top',
+        icon: icon,
+        title: title,
+        showConfirmButton: false,
+        timer: 5000,
+        background: '#fff',
+        color: '#000',
+        timerProgressBar: true,
+        customClass: {
+            popup: "toast-navigation-notification-offset"
+        }
+    });
+}

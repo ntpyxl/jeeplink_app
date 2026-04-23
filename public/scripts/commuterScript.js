@@ -512,6 +512,8 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    showNotification("Navigation started", "info");
+
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
     $("#routeTitle").text("Following Route");
@@ -547,20 +549,7 @@ async function followRoute() {
             console.log("User is within 120m of next stop.");
             if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
                 playNearStopNotification();
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    icon: 'info',
-                    title: 'Approaching stop',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    background: '#1f2937',
-                    color: '#fff',
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: "toast-navigation-notification-offset"
-                    }
-                });
+                showNotification("Approaching stop", "info");
             }
             isUserNotifiedBeingNearStop = true;
         }
@@ -574,21 +563,8 @@ async function followRoute() {
 
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
-            playArrivedNotification()
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                icon: 'info',
-                title: 'You have arrived at your destination',
-                showConfirmButton: false,
-                timer: 5000,
-                background: '#1f2937',
-                color: '#fff',
-                timerProgressBar: true,
-                customClass: {
-                    popup: "toast-navigation-notification-offset"
-                }
-            });
+            playArrivedNotification();
+            showNotification("You have arrived at your destination", "success");
 
             stopAllTracking();
             
