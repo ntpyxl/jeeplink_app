@@ -1,8 +1,15 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 
 function selectIssue(button) {
-    $(".issue-category-btn").attr("aria-pressed", "false");
-    button.attr("aria-pressed", "true");
+    $(".issue-category-btn")
+        .attr("aria-pressed", "false")
+        .removeClass("btn-active")
+        .addClass("btn-inactive");
+
+    button
+        .attr("aria-pressed", "true")
+        .removeClass("btn-inactive")
+        .addClass("btn-active");
 }
 
 $(".issue-category-btn").on("click", function () {
@@ -17,7 +24,7 @@ $("#submitReport").on("click", async () => {
             body: JSON.stringify({
                 report_title: $("#reportTitle").val(),
                 report_desc: $("#reportDesc").val(),
-                email: $("reportEmail").val(),
+                reporter_email: $("#reportEmail").val(),
                 report_type: $(".issue-category-btn[aria-pressed='true']").data("category"),
                 jeep_route_reported: null
             })
@@ -61,22 +68,17 @@ $("#cancelBtn").on("click", async () => {
 })
 
 function resetReportForm() {
-    $("#reportModal").addClass("hidden");
+    $(".issue-category-btn")
+        .attr("aria-pressed", "false")
+        .removeClass("btn-active")
+        .addClass("btn-inactive");
 
-    $("#issueJeep")
-        .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
-        .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
+    $(".issue-category-btn").first()
+        .attr("aria-pressed", "true")
+        .removeClass("btn-inactive")
+        .addClass("btn-active");
 
-    $("#issueOther")
-        .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
-        .addClass("border text-[#004F11] hover:bg-[#2E7D32]/5");
-
-    $("#titleField").slideUp(150);
-    
-    $("#descLabel").text("Description (Optional)");
-
-    selectIssue($("#issueJeep").length ? $("#issueJeep") : $("#issueOther"));
     $("#reportTitle").val("");
     $("#reportDesc").val("");
-    $("reportEmail").val("");
+    $("#reportEmail").val("");
 }

@@ -159,6 +159,46 @@ $(document).on("change", ".status-dropdown", async function () {
     
 });
 
+// Filter state
+let currentFilter = null;
+let currentStatusFilter = null;
+
+// Report type filter
+$(document).on("click", ".filter-btn", async function () {
+    $(".filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100");
+    $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
+
+    currentFilter = $(this).data("type") || null;
+
+    try {
+        showLoading();
+        const data = await getReportsData({ report_type: currentFilter, report_status: currentStatusFilter });
+        renderReports(data.reports);
+    } catch (error) {
+        console.error("Error filtering reports:", error);
+    } finally {
+        hideLoading();
+    }
+});
+
+// Status filter
+$(document).on("click", ".status-filter-btn", async function () {
+    $(".status-filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100");
+    $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
+
+    currentStatusFilter = $(this).data("status") || null;
+
+    try {
+        showLoading();
+        const data = await getReportsData({ report_type: currentFilter, report_status: currentStatusFilter });
+        renderReports(data.reports);
+    } catch (error) {
+        console.error("Error filtering by status:", error);
+    } finally {
+        hideLoading();
+    }
+});
+
 // Initial load
 $(document).ready(async function () {
     try {

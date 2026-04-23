@@ -150,24 +150,13 @@
                 <div class="mx-auto w-full max-w-5xl">
 
                     <!-- Issue type pills -->
-                    <div class="grid grid-cols-2 md:justify-between sm:grid-cols-2 md:flex md:flex-wrap gap-3 md:gap-6">
-                        <!-- <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
-                            Wrong Route
+                    <div class="flex flex-wrap gap-3">
+                        <button id="issueJeepDiverted" aria-pressed="true" data-category="jeep_diverted"
+                            class="issue-category-btn btn-active px-6 py-2 rounded-md border-2 border-[#2E7D32] text-sm md:text-base cursor-pointer">
+                            Jeep Diverted
                         </button>
-                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer">
-                            No Jeepney
-                        </button>
-                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer">
-                            Wrong Fare
-                        </button>
-                        <button class="w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-white text-black text-sm md:text-base cursor-pointer ">
-                            Other Issues
-                        </button> -->
-                        <button 
-                            id="issueOther"
-                            aria-pressed="true"
-                            data-category="other_issues"
-                            class="issue-category-btn w-full md:w-auto px-4 md:px-16 py-2 rounded-md border-2 border-[#2E7D32] bg-[#5AA05F] text-[#E9CD2D] text-sm md:text-base cursor-pointer">
+                        <button id="issueOther" aria-pressed="false" data-category="other_issues"
+                            class="issue-category-btn btn-inactive px-6 py-2 rounded-md border-2 border-[#2E7D32] text-sm md:text-base cursor-pointer">
                             Other Issues
                         </button>
                     </div>
