@@ -17,7 +17,7 @@ $("#submitReport").on("click", async () => {
             body: JSON.stringify({
                 report_title: $("#reportTitle").val(),
                 report_desc: $("#reportDesc").val(),
-                email: $("reportEmail").val(),
+                email: $("#reportEmail").val(),
                 report_type: $(".issue-category-btn[aria-pressed='true']").data("category"),
                 jeep_route_reported: null
             })
@@ -78,5 +78,5 @@ function resetReportForm() {
     selectIssue($("#issueJeep").length ? $("#issueJeep") : $("#issueOther"));
     $("#reportTitle").val("");
     $("#reportDesc").val("");
-    $("reportEmail").val("");
+    $("#reportEmail").val("");
 }
