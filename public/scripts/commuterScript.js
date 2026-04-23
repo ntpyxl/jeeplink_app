@@ -512,6 +512,10 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    playArrivedNotification()
+    if (Notification.permission === "granted") new Notification("You have arrived at your destination!");
+    navigator.vibrate?.([200,100,200]);
+
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
     $("#routeTitle").text("Following Route");
