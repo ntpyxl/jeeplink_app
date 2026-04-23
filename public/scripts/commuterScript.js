@@ -211,6 +211,7 @@ if (start) {
     sessionStorage.removeItem("start");
     if(!localStorage.getItem("activeRoute") && sessionStorage.getItem("start")) localStorage.removeItem("start");
     $("#startingPointField").val(startingPoint.name);
+    updateGoNowButton();
     addRouteNode(startingPoint, "start");
 }
 
@@ -239,8 +240,6 @@ if (start && destination) {
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     renderRoutes(completeRouteInformation);
-    
-    $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
 }
 
 const startingPointSearch = setupLocationSearch({
@@ -251,10 +250,12 @@ const startingPointSearch = setupLocationSearch({
         startingPoint = location;
         addRouteNode(startingPoint, "start");
         isStartingPointSelectedLocation = true;
+        updateGoNowButton();
     }
 });
 $("#startingPointField").on("input", () => {
     isStartingPointSelectedLocation = false;
+    updateGoNowButton();
 })
 
 const destinationPointSearch = setupLocationSearch({
@@ -278,6 +279,8 @@ $("#calculateRouteButton").on("click", async () => {
         $("#startingPointField").val(startingPoint.name);
         isStartingPointSelectedLocation = true;
     }
+
+    updateGoNowButton();
 
     if(!isStartingPointSelectedLocation) {
         startingPoint = await startingPointSearch.flush();
@@ -304,16 +307,18 @@ $("#calculateRouteButton").on("click", async () => {
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
-    
-    $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
 })
 
-function renderRoutes(routeInformation) {
+function updateGoNowButton() {
     if($("#startingPointField").val() !== "Your Location") {
-        $("#goNow").addClass("hidden");
+        $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
     } else {
-        $("#goNow").removeClass("hidden");
+        $("#goNow").removeClass("pointer-events-none opacity-50 cursor-not-allowed");
     }
+}
+
+function renderRoutes(routeInformation) {
+    updateGoNowButton();
     $("#routeSlider").empty(); 
     $("#routePanel").removeClass("hidden");
     
