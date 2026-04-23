@@ -41,6 +41,8 @@ let userMarker;
 let userMarker_watchLocation;
 let userMarker_stopSimulationFunction;
 let currentUserMarkerPosition = null;
+let hasZoomedToUser = false;
+
 function handleUserMarkerUpdate(location) {
     currentUserMarkerPosition = [location.coords[1], location.coords[0]]
 
@@ -53,10 +55,19 @@ function handleUserMarkerUpdate(location) {
             weight: 3,
             pane: "userPositionPane"
         }).addTo(map);
-    } 
-    // Update marker position when moved
-    else {
+    } else {
         userMarker.setLatLng(currentUserMarkerPosition);
+    }
+
+    if (!hasZoomedToUser) {
+        hasZoomedToUser = true;
+
+        setTimeout(() => {
+            map.flyTo(currentUserMarkerPosition, 16, {
+                animate: true,
+                duration: 1.8
+            });
+        }, 800); 
     }
 }
 
