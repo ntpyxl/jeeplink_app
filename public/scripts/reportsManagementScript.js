@@ -37,17 +37,16 @@ function renderReports(reports) {
     $tbody.find("tr:not(#tableLoading)").remove();
 
     $.each(reports, function (index, report) {
-
-        const description = report.description || "No Description";
-        const title = report.title || "No Title";
-        const reporterEmail = report.reporter_email || "N/A";
         const reportType = formatType(report.report_type);
+        const title = report.title;
+        const description = report.description;
+        const reporterEmail = report.reporter_email;
         const date = formatDate(report.submitted_at);
         const status = formatStatusDropdown(report.report_status, report.id);
 
         const row = `
             <tr class="border-b hover:bg-gray-50">
-                <td class="py-3">REP${report.id}</td>
+                <td class="py-3">${report.id}</td>
                 <td class="py-3">${reportType}</td>
                 <td class="py-3">${title}</td>
                 <td class="py-3 w-1/3">${description}</td>
@@ -80,11 +79,13 @@ function formatType(type) {
 
 function formatStatusDropdown(status, reportId) {
     return `
-        <select class="status-dropdown px-2 py-1 rounded-full text-xs border"
-                data-id="${reportId}">
-            <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
+        <select
+            class="status-dropdown px-2 py-1 rounded-full text-xs border"
+            data-id="${reportId}"
+            data-original-value="${status}"
+        >
+            <option value="ongoing" ${status === "ongoing" ? "selected" : ""}>Ongoing</option>
             <option value="resolved" ${status === "resolved" ? "selected" : ""}>Resolved</option>
-            <option value="unresolved" ${status === "unresolved" ? "selected" : ""}>Unresolved</option>
         </select>
     `;
 }
@@ -109,7 +110,7 @@ function applyStatusColors() {
 
         if (val === "resolved") {
             $(this).addClass("bg-green-100 text-green-600");
-        } else if (val === "pending") {
+        } else if (val === "ongoing") {
             $(this).addClass("bg-yellow-100 text-yellow-600");
         } else {
             $(this).addClass("bg-red-100 text-red-600");
@@ -118,8 +119,44 @@ function applyStatusColors() {
 }
 
 // Event listener for status change
-$(document).on("change", ".status-dropdown", function () {
+$(document).on("change", ".status-dropdown", async function () {
+    const reportId = $(this).data("id");
+    const oldStatus = $(this).data("original-value")
+    const newStatus = $(this).val();
+
     applyStatusColors();
+
+    const confirmation = await jeeplinkSwal.fire({
+        icon: "question",
+        title: "Are you sure?",
+        text: `You will be changing Report ID# ${reportId}'s status to ${newStatus}`,
+        showConfirmButton: true,
+        showCancelButton: true,
+        allowOutsideClick: false
+    });
+
+    if(!confirmation.isConfirmed) {
+        $(this).val(oldStatus);
+        applyStatusColors();
+        return;
+    }
+
+    try {
+        const response = await apiFetch("/changeReportStatus", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                report_status: newStatus,
+                report_id: reportId
+            })
+        });
+        $(this).data("original-value", newStatus);
+    } catch (err) {
+        console.error(err);
+        $(this).val(oldStatus);
+        applyStatusColors();
+    }
+    
 });
 
 // Initial load
