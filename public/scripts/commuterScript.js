@@ -443,10 +443,16 @@ function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
 }
 
 const nearStopNotificationAudio = new Audio("/audio/commuter_near_stop_notification.mp3");
+const arrivedNotificationAudio = new Audio("/audio/commuter_arrived_destination_notification.mp3");
 
 function playNearStopNotification() {
     nearStopNotificationAudio.currentTime = 0;
     nearStopNotificationAudio.play();
+}
+
+function playArrivedNotification() {
+    arrivedNotificationAudio.currentTime = 0;
+    arrivedNotificationAudio.play();
 }
 
 $("#goNow").on("click", async (e) => {
@@ -560,6 +566,9 @@ async function followRoute() {
 
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
+            playArrivedNotification()
+            if (Notification.permission === "granted") new Notification("You have arrived at your destination!");
+            navigator.vibrate?.([200,100,200]);
             stopAllTracking();
             
             localStorage.removeItem("start");
@@ -588,6 +597,6 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
