@@ -23,7 +23,10 @@ export function createRouteTotalPrices(routeCost) {
     return $(`
         <div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-700">
             <div class="flex items-center justify-between gap-3 mb-2">
-                <div class="font-medium text-gray-800">Total Fare</div>
+                <div class="font-medium text-gray-800">
+                    Total Fare 
+                    <i class="fa-solid fa-circle-info fare-info-icon text-gray-400 hover:text-gray-600 transition-colors cursor-pointer ml-1"></i>
+                </div>
                 <div class="inline-flex rounded-full border border-gray-300 bg-white shadow-sm overflow-hidden">
                     <button type="button" class="price-toggle-btn active px-3 py-1 text-[11px] font-semibold text-[#004F11] bg-[#E9CD2D]/20 cursor-pointer" data-mode="regular">Regular</button>
                     <button type="button" class="price-toggle-btn px-3 py-1 text-[11px] font-semibold text-gray-500 cursor-pointer" data-mode="discounted">Discounted</button>
@@ -51,6 +54,11 @@ export function createRouteTotalPrices(routeCost) {
             </div>
         </div>
     `);
+
+    Element.find(".fare-info-icon").on("click", function () {
+        showFareInfo();
+    });
+
 }
 
 export function createRouteInformationCard(routeTitle, routeInformation, routeSteps, totalRidePrices) {
