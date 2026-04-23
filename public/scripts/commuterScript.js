@@ -525,6 +525,9 @@ async function followRoute() {
     $("#toggleCommute").hide();
     $("#arrow").addClass("rotate-180");
 
+    updateControlsPosition();
+
+
     const routeNames = [
         "fastestStepCoords",
         "cheapestStepCoords",
