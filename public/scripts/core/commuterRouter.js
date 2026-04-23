@@ -105,15 +105,17 @@ export class CommuterRouter {
             layer.bringToFront();
         });
 
-        if (this.allNodes.length > 0) {
-            this.map.fitBounds(L.latLngBounds(this.allNodes), {
-                paddingTopLeft: [250, 150],
-                paddingBottomRight: [50, 150],
-                animate: true,
-                duration: 0.6,
-                maxZoom: 14
-            });
-        }
+        // Fit map
+        const isMobile = window.innerWidth <= 768;
+
+        this.map.fitBounds(L.latLngBounds(this.allNodes), {
+            paddingTopLeft: isMobile ? [60, 100] : [200, 120],
+            paddingBottomRight: isMobile ? [60, 180] : [50, 120],
+            animate: true,
+            duration: 0.6,
+            maxZoom: isMobile ? 14 : 17,
+            max: isMobile ? 14 : 17
+        });
 
         const routeTypes = {
             fastest: paths.fastestRoute,
