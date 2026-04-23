@@ -517,6 +517,8 @@ async function followRoute() {
     $("#toggleCommute").hide();
     $("#arrow").addClass("rotate-180");
 
+    updateControlsPosition();
+
     if (Notification.permission !== "granted") {
         await Notification.requestPermission();
     }
