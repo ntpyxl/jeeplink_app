@@ -1,4 +1,4 @@
-import { createCurrentLocationItem, createPlacePinLocationItem, createLocationResultItem, createNoLocationResultMessage } from "../../ui/dropdownElements.js";
+import { createCurrentLocationItem, createPlacePinLocationItem, createLocationResultItem, createMessageRow } from "../../ui/dropdownElements.js";
 
 export class LocationSearchAutocomplete {
     constructor(inputSelector, delay = 500, maxResults = 5) {
@@ -81,7 +81,6 @@ async function searchLocations(query) {
 
         if (pointsResults.length > 0) return pointsResults;
 
-	    // TODO: Add attribution to OSM if results are from OSM
         const nominatimSearchParams = new URLSearchParams({
             format: "jsonv2",
             limit: 5,
@@ -107,7 +106,7 @@ async function searchLocations(query) {
                 name: loc.display_name.split(",")[0],
                 searchName: normalizeText(loc.display_name.split(",")[0]),
                 coords: [parseFloat(loc.lon), parseFloat(loc.lat)],
-                data: loc
+                attribution: "© OpenStreetMap (Nominatim)"
             }));
         
         if (nominatimMapped.length > 0) return nominatimMapped;
@@ -215,13 +214,13 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
         suggestionBox.append(currentLocationItem);
         suggestionBox.append(PlacePinLocationItem);
         if (!results || results.length === 0) {
-            const message = createNoLocationResultMessage("Location can't be found. Pin a location instead!");
+            const message = createMessageRow("Location can't be found. Pin a location instead!");
             suggestionBox.append(message);
             return;
         }
 
         results.forEach(result => {
-            const item = createLocationResultItem(result.name);
+            const item = createLocationResultItem(result.name, result?.attribution);
 
             item.on("click", () => {
                 field.val(result.name);

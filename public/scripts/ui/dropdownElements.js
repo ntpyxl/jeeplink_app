@@ -20,7 +20,7 @@ export function createPlacePinLocationItem() {
     `);
 }
 
-export function createLocationResultItem(text) {
+export function createLocationResultItem(text, attribution) {
     return $(`
         <div class="flex items-center gap-4 px-5 py-4 cursor-pointer
                     transition-all duration-200
@@ -37,13 +37,22 @@ export function createLocationResultItem(text) {
                 <span class="text-[#003B01] font-semibold text-sm md:text-base">
                     ${text}
                 </span>
-            </div>
 
+                ${
+                    attribution
+                        ? `
+                            <span class="text-gray-500 text-xs md:text-sm">
+                                ${attribution}
+                            </span>
+                        `
+                        : ""
+                }
+            </div>
         </div>
     `);
 }
 
-export function createNoLocationResultMessage(text) {
+export function createMessageRow(text) {
     return $(`
         <div class="flex items-center gap-4 px-5 py-4">
 
