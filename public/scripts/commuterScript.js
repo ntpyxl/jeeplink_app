@@ -305,6 +305,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    console.log(completeRouteInformation.fastestRouteInformation.routeInformation.jeepRidesIdList)
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
@@ -544,8 +545,12 @@ async function followRoute() {
     ];
     const activeRouteName = routeNames[currentRoute];
 
+    const jeepRidesIdList = completeRouteInformation.fastestRouteInformation.routeInformation.jeepRidesIdList;
+
     const finalStepCoordIndex = routesStepCoords[activeRouteName].length;
-    let stepCoordIndex = parseInt(localStorage.getItem("activeRoute_currentStep")) || 0;
+    let stepCoordIndex = parseInt(
+        JSON.parse(localStorage.getItem("activeRoute_currentStep"))?.stepCoordIndex
+    ) || 0;
     let isUserNotifiedBeingNearStop = false;
     let isUserNotifiedDeviatingFromRoute = false;
 
@@ -557,7 +562,7 @@ async function followRoute() {
     let latestIsCurrentRouteInJeepney = false;
 
     let deviationStartTime = null;
-    
+
     const deviationThreshold = 80;
     const confirmationMs = 10000;
 
@@ -620,7 +625,10 @@ async function followRoute() {
             console.log("Reached step:", stepCoordIndex);
             stepCoordIndex++;
             isUserNotifiedBeingNearStop = false;
-            localStorage.setItem("activeRoute_currentStep", stepCoordIndex);
+            localStorage.setItem("activeRoute_currentStep", JSON.stringify({
+                stepCoordIndex: stepCoordIndex,
+                currentJeepRouteId: jeepRidesIdList[stepCoordIndex]
+            }));
         }
 
         if (stepCoordIndex >= finalStepCoordIndex) {
@@ -645,8 +653,8 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
 
 function stopAllTracking() {

@@ -349,6 +349,7 @@ function buildRouteInstructions(edges) {
     const instructions = [];
 
     let currentMode = null;
+    let currentRouteId = null;
     let currentRoute = null;
     let start = null;
     let distance = 0;
@@ -356,16 +357,19 @@ function buildRouteInstructions(edges) {
     for (const edge of edges) {
         if (!currentMode) {
             currentMode = edge.mode;
+            currentRouteId = edge.route_id || null;
             currentRoute = edge.route_name || null;
             start = edge.from;
         }
 
         const modeChanged = edge.mode !== currentMode;
+        const routeIdChanged = edge.route_id !== currentRouteId;
         const routeChanged = edge.route_name !== currentRoute;
 
         if (modeChanged || routeChanged) {
             instructions.push({
                 mode: currentMode,
+                route_id: currentRouteId,
                 route_name: currentRoute,
                 start,
                 end: edge.from,
@@ -373,6 +377,7 @@ function buildRouteInstructions(edges) {
             });
 
             currentMode = edge.mode;
+            currentRouteId = edge.route_id || null;
             currentRoute = edge.route_name || null;
             start = edge.from;
             distance = 0;
@@ -384,6 +389,7 @@ function buildRouteInstructions(edges) {
     if (edges.length) {
         instructions.push({
             mode: currentMode,
+            route_id: currentRouteId,
             route_name: currentRoute,
             start,
             end: edges[edges.length - 1].to,
@@ -410,6 +416,9 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
     parts.push(`${seconds.toString().padStart(2, "0")} sec`);
 
     const tripDurationFormatted = parts.join(" ");
+
+    const jeepRidesIdList = steps
+        .map(step => step.route_id || null);
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
@@ -466,6 +475,7 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
         title: routeInformation?.title || "Route",
         routeDistance,
         jeepRidesCount,
+        jeepRidesIdList,
         tripDurationSeconds,
         tripDurationFormatted,
         routeCost
