@@ -42,3 +42,24 @@ export function createLocationResultItem(text) {
         </div>
     `);
 }
+
+export function createNoLocationResultMessage(text) {
+    return $(`
+        <div class="flex items-center gap-4 px-5 py-4">
+
+            <!-- Icon -->
+            <div class="w-10 h-10 flex items-center justify-center
+                        bg-green-100 text-[#2E7D32] rounded-full">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </div>
+
+            <!-- Text -->
+            <div class="flex flex-col">
+                <span class="text-[#003B01] font-semibold text-sm md:text-base">
+                    ${text}
+                </span>
+            </div>
+
+        </div>
+    `);
+}

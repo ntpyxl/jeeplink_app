@@ -1,4 +1,4 @@
-import { createCurrentLocationItem, createPlacePinLocationItem, createLocationResultItem } from "../../ui/dropdownElements.js";
+import { createCurrentLocationItem, createPlacePinLocationItem, createLocationResultItem, createNoLocationResultMessage } from "../../ui/dropdownElements.js";
 
 export class LocationSearchAutocomplete {
     constructor(inputSelector, delay = 500, maxResults = 5) {
@@ -24,10 +24,13 @@ export class LocationSearchAutocomplete {
     }
 
     async runSearch(query) {
-        if (query.trim() !== "") {
-            const results = (await searchLocations(query)).slice(0, this.maxResults);
-            this.onResults(results);
+        if (query.trim() === "") {
+            this.onResults([]);
+            return;
         }
+
+        const results = await searchLocations(query);
+        this.onResults(results.slice(0, this.maxResults));
     }
 
     async flush() {
@@ -37,31 +40,33 @@ export class LocationSearchAutocomplete {
         }
 
         const query = normalizeText(this.input.val());
-        if (query.trim() !== "") {
-            const results = (await searchLocations(query)).slice(0, this.maxResults);
-            if (results.length > 0) {
-                this.onResults(results);
-                return results[0];
-            }
+
+        if (query.trim() === "") {
+            this.onResults([]);
+            return null;
         }
-        return null;
+
+        const results = await searchLocations(query);
+        const trimmed = results.slice(0, this.maxResults);
+
+        this.onResults(trimmed);
+
+        return trimmed.length > 0 ? trimmed[0] : null;
     }
 
     onResults(results) {}
 }
 
-let namedLocations = null;
+let namedLocations = [];
 export function setupNamedLocations(pointsGeoJSON) {
     namedLocations = pointsGeoJSON.features
     .filter(feature => feature.properties?.name)
     .map(feature => {
         const coords = feature.geometry.coordinates;
-
         return {
             name: feature.properties.name,
             searchName: normalizeText(feature.properties.name),
-            coords: coords,
-            data: feature // TODO: Just resending all the data here again. Double check this soon.
+            coords: coords
         };
     });
 }
@@ -70,11 +75,11 @@ async function searchLocations(query) {
     const normalizedQuery = normalizeText(query);
 
     try {
-        let results = namedLocations.filter(place =>
+        let pointsResults = namedLocations.filter(place =>
             place.searchName.startsWith(normalizedQuery)
         );
 
-        if (results.length > 0) return results;
+        if (pointsResults.length > 0) return pointsResults;
 
 	    // TODO: Add attribution to OSM if results are from OSM
         const nominatimSearchParams = new URLSearchParams({
@@ -85,8 +90,14 @@ async function searchLocations(query) {
             amenity: query
         });
 
-        const nominatimURL = `https://nominatim.openstreetmap.org/search?${nominatimSearchParams.toString()}`;
-        const response = await fetch(nominatimURL, { headers: { "Accept-Language": "en", "User-Agent": "JeepLink/1.0" } });
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?${nominatimSearchParams.toString()}`,
+            { 
+                headers: {
+                    "Accept-Language": "en",
+                    "User-Agent": "JeepLink/1.0"
+                } 
+            }
+        );
         
 	    const nominatimResults = await response.json();
 
@@ -99,7 +110,9 @@ async function searchLocations(query) {
                 data: loc
             }));
         
-        return nominatimMapped;
+        if (nominatimMapped.length > 0) return nominatimMapped;
+
+        return [];
     } catch (err) {
         console.error("Cannot find: " + query, err);
         return [];
@@ -202,7 +215,8 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
         suggestionBox.append(currentLocationItem);
         suggestionBox.append(PlacePinLocationItem);
         if (!results || results.length === 0) {
-            suggestionBox.addClass("hidden");
+            const message = createNoLocationResultMessage("Location can't be found. Pin a location instead!");
+            suggestionBox.append(message);
             return;
         }
 
