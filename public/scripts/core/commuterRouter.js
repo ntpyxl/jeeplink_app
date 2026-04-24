@@ -92,22 +92,11 @@ export class CommuterRouter {
 
         this.allNodes = [];
 
-        let fastestStepCoords, cheapestStepCoords, minimalTransferStepCoords = null;
-        fastestStepCoords = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
-        if (paths.cheapestRoute) {
-            cheapestStepCoords = this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
-        }
-        if (paths.minimalTransferRoute) {
-            minimalTransferStepCoords = this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
-        }
+        const fastestStepCoords = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
+        const cheapestStepCoords = this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
+        const minimalTransferStepCoords = this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
 
-        this.routeLayers.fastest.eachLayer(layer => {
-            layer.bringToFront();
-        });
-
-        // Fit map
         const isMobile = window.innerWidth <= 768;
-
         this.map.fitBounds(L.latLngBounds(this.allNodes), {
             paddingTopLeft: isMobile ? [60, 100] : [200, 120],
             paddingBottomRight: isMobile ? [60, 180] : [50, 120],

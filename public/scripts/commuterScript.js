@@ -492,6 +492,7 @@ $("#goNow").on("click", async (e) => {
         
         if (isConfirmed) {
             // Stop tracking and clear route data
+            stopAllTracking();
             resetNavigationState();
         }
         return;
@@ -506,7 +507,7 @@ $("#goNow").on("click", async (e) => {
     localStorage.setItem("start", JSON.stringify(startingPoint));
     localStorage.setItem("destination", JSON.stringify(destinationPoint));
 
-    followRoute(currentRoute)
+    followRoute()
 })
 
 if(localStorage.getItem("activeRoute")) {
@@ -541,9 +542,15 @@ async function followRoute() {
     const finalStepCoordIndex = routesStepCoords[activeRouteName].length;
     let stepCoordIndex = parseInt(localStorage.getItem("activeRoute_currentStep")) || 0;
     let isUserNotifiedBeingNearStop = false;
+    let isUserNotifiedDeviatingFromRoute = false;
+
+    const routeLine = turf.lineString(
+        routesStepCoords[activeRouteName].map(s => [s.coord[0], s.coord[1]])
+    );
 
     function handleNavigationUpdate(location) {
         const nextStopCoordinates = routesStepCoords[activeRouteName][stepCoordIndex].coord;
+        const isCurrentRouteInJeepney = routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep";
 
         const distance = turf.distance(
             turf.point([location.coords[1], location.coords[0]]),
@@ -551,9 +558,24 @@ async function followRoute() {
             { units: "meters" }
         );
 
+        const userPoint = turf.point([location.coords[1], location.coords[0]]);
+        const distanceFromRoute = turf.pointToLineDistance(userPoint, routeLine, {
+            units: "meters"
+        });
+
+        const deviationThreshold = 80 // meters
+        if (distanceFromRoute > deviationThreshold && isCurrentRouteInJeepney && !isUserNotifiedDeviatingFromRoute) {
+            console.warn("User deviated from route!");
+            isUserNotifiedDeviatingFromRoute = true;
+        }
+
+        if (distanceFromRoute < deviationThreshold - 10 && isCurrentRouteInJeepney && isUserNotifiedDeviatingFromRoute) {
+            isUserNotifiedDeviatingFromRoute = false;
+        }
+
         if (distance < 120 && !isUserNotifiedBeingNearStop) {
             console.log("User is within 120m of next stop.");
-            if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
+            if(isCurrentRouteInJeepney) {
                 playNearStopNotification();
                 showNotification("Approaching stop", "info");
             }
@@ -601,6 +623,6 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
