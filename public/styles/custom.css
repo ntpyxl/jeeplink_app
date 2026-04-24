@@ -13,6 +13,16 @@ html, body {
     height: 100dvh;
 }
 
+.btn-active {
+    background-color: #5AA05F;
+    color: #E9CD2D;
+}
+
+.btn-inactive {
+    background-color: white;
+    color: #2E7D32;
+}
+
 .search-bar input::placeholder {
     opacity: 1;
 }

@@ -16,6 +16,15 @@ const map = L.map("map", {
     maxZoom: 18,
     zoomControl: false
 }).setView([14.3272, 120.9404], 15);
+
+map.whenReady(() => {
+    setTimeout(() => {
+        map.flyTo([14.3272, 120.9404], 13, {
+            duration: 1
+        });
+    }, 1500); 
+});
+
 map.createPane("routePane");
 map.createPane("nodePane");
 map.createPane("userPositionPane")
@@ -41,6 +50,7 @@ let userMarker;
 let userMarker_watchLocation;
 let userMarker_stopSimulationFunction;
 let currentUserMarkerPosition = null;
+
 function handleUserMarkerUpdate(location) {
     currentUserMarkerPosition = [location.coords[1], location.coords[0]]
 
@@ -53,9 +63,7 @@ function handleUserMarkerUpdate(location) {
             weight: 3,
             pane: "userPositionPane"
         }).addTo(map);
-    } 
-    // Update marker position when moved
-    else {
+    } else {
         userMarker.setLatLng(currentUserMarkerPosition);
     }
 }
@@ -516,6 +524,8 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
+    showNotification("Navigation started", "info");
+
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
     $("#routeTitle").text("Following Route");
@@ -526,6 +536,9 @@ async function followRoute() {
     $("#commuteContent").stop(true, true).slideUp(250);
     $("#toggleCommute").hide();
     $("#arrow").addClass("rotate-180");
+
+    updateControlsPosition();
+
 
     const routeNames = [
         "fastestStepCoords",
@@ -551,20 +564,7 @@ async function followRoute() {
             console.log("User is within 120m of next stop.");
             if(routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep") {
                 playNearStopNotification();
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    icon: 'info',
-                    title: 'Approaching stop',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    background: '#1f2937',
-                    color: '#fff',
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: "toast-navigation-notification-offset"
-                    }
-                });
+                showNotification("Approaching stop", "info");
             }
             isUserNotifiedBeingNearStop = true;
         }
@@ -578,21 +578,8 @@ async function followRoute() {
 
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
-            playArrivedNotification()
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                icon: 'info',
-                title: 'You have arrived at your destination',
-                showConfirmButton: false,
-                timer: 5000,
-                background: '#1f2937',
-                color: '#fff',
-                timerProgressBar: true,
-                customClass: {
-                    popup: "toast-navigation-notification-offset"
-                }
-            });
+            playArrivedNotification();
+            showNotification("You have arrived at your destination", "success");
 
             stopAllTracking();
             resetNavigationState();

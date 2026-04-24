@@ -43,3 +43,32 @@ function confirmAction(message) {
         allowOutsideClick: false
     }).then(result => result.isConfirmed);
 }
+
+function showFareInfo() {
+    return jeeplinkSwal.fire({
+        title: "Fare Information",
+        html: `
+            <p class="text-md text-gray-700 leading-relaxed">
+                Fare pricing is usually rounded up to the nearest whole number when traveling on jeepneys.
+            </p>`,
+        confirmButtonText: "Ok",
+        allowOutsideClick: false
+    }).then(result => result.isConfirmed);
+}
+
+function showNotification(title, icon) {
+    return jeeplinkSwal.fire({
+        toast: true,
+        position: 'top',
+        icon: icon,
+        title: title,
+        showConfirmButton: false,
+        timer: 5000,
+        background: '#fff',
+        color: '#000',
+        timerProgressBar: true,
+        customClass: {
+            popup: "toast-navigation-notification-offset"
+        }
+    });
+}

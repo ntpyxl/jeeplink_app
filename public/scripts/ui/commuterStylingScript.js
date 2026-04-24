@@ -39,9 +39,16 @@ let isOpen = false;
 
 export function updateControlsPosition() {
     if (isMobile()) {
-        // ONLY apply on mobile
         if (!routePanel.hasClass("hidden")) {
-            controls.css("bottom", "220px");
+
+            const goNowText = $("#goNow span").text().trim();
+
+            if (goNowText === "End Navigation") {
+                controls.css("bottom", "160px"); 
+            } else {
+                controls.css("bottom", "220px"); 
+            }
+
         } else {
             controls.css("bottom", "16px"); 
         }
@@ -114,6 +121,10 @@ $("#toggleCommute").on("click", function () {
             isOpen = true;
         }
 
+    });
+    //FARE INFO MODAL
+    $(document).on('click', '.fare-info-icon', function () {
+        showFareInfo();
     });
 
     // DRAG HANDLE

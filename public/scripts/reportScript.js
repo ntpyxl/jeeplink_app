@@ -1,8 +1,15 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 
 function selectIssue(button) {
-    $(".issue-category-btn").attr("aria-pressed", "false");
-    button.attr("aria-pressed", "true");
+    $(".issue-category-btn")
+        .attr("aria-pressed", "false")
+        .removeClass("btn-active")
+        .addClass("btn-inactive");
+
+    button
+        .attr("aria-pressed", "true")
+        .removeClass("btn-inactive")
+        .addClass("btn-active");
 }
 
 $(".issue-category-btn").on("click", function () {
@@ -61,21 +68,16 @@ $("#cancelBtn").on("click", async () => {
 })
 
 function resetReportForm() {
-    $("#reportModal").addClass("hidden");
+    $(".issue-category-btn")
+        .attr("aria-pressed", "false")
+        .removeClass("btn-active")
+        .addClass("btn-inactive");
 
-    $("#issueJeep")
-        .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
-        .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
+    $(".issue-category-btn").first()
+        .attr("aria-pressed", "true")
+        .removeClass("btn-inactive")
+        .addClass("btn-active");
 
-    $("#issueOther")
-        .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
-        .addClass("border text-[#004F11] hover:bg-[#2E7D32]/5");
-
-    $("#titleField").slideUp(150);
-    
-    $("#descLabel").text("Description (Optional)");
-
-    selectIssue($("#issueJeep").length ? $("#issueJeep") : $("#issueOther"));
     $("#reportTitle").val("");
     $("#reportDesc").val("");
     $("#reportEmail").val("");
