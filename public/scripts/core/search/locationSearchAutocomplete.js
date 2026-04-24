@@ -7,6 +7,9 @@ export class LocationSearchAutocomplete {
         this.maxResults = maxResults;
         this.typingTimer = null;
 
+        this.lastQuery = "";
+        this.lastResults = [];
+
         this.init();
     }
 
@@ -25,12 +28,18 @@ export class LocationSearchAutocomplete {
 
     async runSearch(query) {
         if (query.trim() === "") {
+            this.lastQuery = "";
+            this.lastResults = [];
             this.onResults([]);
             return;
         }
 
         const results = await searchLocations(query);
-        this.onResults(results.slice(0, this.maxResults));
+        const trimmedResults = results.slice(0, this.maxResults);
+        
+        this.lastQuery = query;
+        this.lastResults = trimmedResults;
+        this.onResults(trimmedResults);
     }
 
     async flush() {
@@ -42,16 +51,25 @@ export class LocationSearchAutocomplete {
         const query = normalizeText(this.input.val());
 
         if (query.trim() === "") {
+            this.lastQuery = "";
+            this.lastResults = [];
             this.onResults([]);
             return null;
         }
 
+        if (query === this.lastQuery) {
+            this.onResults(this.lastResults);
+            return this.lastResults[0] || null;
+        }
+
         const results = await searchLocations(query);
-        const trimmed = results.slice(0, this.maxResults);
+        const trimmedResults = results.slice(0, this.maxResults);
 
-        this.onResults(trimmed);
+        this.lastQuery = query;
+        this.lastResults = trimmed;
+        this.onResults(trimmedResults);
 
-        return trimmed.length > 0 ? trimmed[0] : null;
+        return trimmed[0] || null;
     }
 
     onResults(results) {}
@@ -60,22 +78,19 @@ export class LocationSearchAutocomplete {
 let namedLocations = [];
 export function setupNamedLocations(pointsGeoJSON) {
     namedLocations = pointsGeoJSON.features
-    .filter(feature => feature.properties?.name)
-    .map(feature => {
-        const coords = feature.geometry.coordinates;
-        return {
+        .filter(feature => feature.properties?.name)
+        .map(feature => ({
             name: feature.properties.name,
             searchName: normalizeText(feature.properties.name),
-            coords: coords
-        };
-    });
+            coords: feature.geometry.coordinates
+        }));
 }
 
 async function searchLocations(query) {
     const normalizedQuery = normalizeText(query);
 
     try {
-        let pointsResults = namedLocations.filter(place =>
+        const pointsResults = namedLocations.filter(place =>
             place.searchName.startsWith(normalizedQuery)
         );
 
@@ -100,7 +115,7 @@ async function searchLocations(query) {
         
 	    const nominatimResults = await response.json();
 
-        const nominatimMapped = (Array.isArray(nominatimResults) ? nominatimResults : [])
+        return (Array.isArray(nominatimResults) ? nominatimResults : [])
             .filter(loc => loc.lat && loc.lon)
             .map(loc => ({
                 name: loc.display_name.split(",")[0],
@@ -108,10 +123,6 @@ async function searchLocations(query) {
                 coords: [parseFloat(loc.lon), parseFloat(loc.lat)],
                 attribution: "© OpenStreetMap (Nominatim)"
             }));
-        
-        if (nominatimMapped.length > 0) return nominatimMapped;
-
-        return [];
     } catch (err) {
         console.error("Cannot find: " + query, err);
         return [];
@@ -128,94 +139,78 @@ function normalizeText(text) {
 export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
     const search = new LocationSearchAutocomplete(field);
 
-    field.on("focus click", async () => {
-        suggestionBox.empty();
-
+    function renderSpecialRows() {
         const currentLocationItem = createCurrentLocationItem();
         currentLocationItem.on("click", async () => {
             field.val("Getting your location...");
-            const location = await getCurrentLocation();
 
-            field.val("Your Location");
-            suggestionBox.addClass("hidden");
+            try {
+                const location = await getCurrentLocation();
 
-            onSelect(location);
+                field.val("Your Location");
+                suggestionBox.addClass("hidden");
+
+                onSelect(location);
+            } catch {
+                field.val("");
+            }
+            
         });
 
         const PlacePinLocationItem = createPlacePinLocationItem();
-            PlacePinLocationItem.on("click", async () => {
-                if(map){
-                    field.val("Place a pin on the map");
-                    
-                    const result = await new Promise(resolve => {
-                        map.getContainer().style.cursor = "crosshair";
+        PlacePinLocationItem.on("click", async () => {
+            if(!map){
+                window.location.href="./map.html";
+                return;
+            }
 
-                        map.once("click", (e) => {
-                            map.getContainer().style.cursor = "";
-                            resolve({
-                                name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
-                                searchName: "Pinned Location",
-                                coords: [e.latlng.lng, e.latlng.lat]
-                            });
-                        });
+            field.val("Place a pin on the map");
+            
+            const result = await new Promise(resolve => {
+                map.getContainer().style.cursor = "crosshair";
+
+                map.once("click", (e) => {
+                    map.getContainer().style.cursor = "";
+                    resolve({
+                        name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
+                        searchName: "Pinned Location",
+                        coords: [e.latlng.lng, e.latlng.lat]
                     });
-
-                    field.val(result.name);
-                    onSelect(result);
-                } else {
-                    window.location.href="./map.html";
-                }
+                });
             });
+
+            field.val(result.name);
+            suggestionBox.addClass("hidden");
+            onSelect(result);
+        });
 
         suggestionBox.append(currentLocationItem);
         suggestionBox.append(PlacePinLocationItem);
+    }
+
+    field.on("focus click", async () => {
+        const query = normalizeText(field.val());
+
+        // Reuse saved results
+        if (query !== "" && query === search.lastQuery && search.lastResults.length > 0) {
+            search.onResults(search.lastResults);
+            return;
+        }
+
+        suggestionBox.empty();
+        renderSpecialRows();
         suggestionBox.removeClass("hidden");
     });
 
     search.onResults = async function(results) {
         suggestionBox.empty();
+        renderSpecialRows();
 
-        const currentLocationItem = createCurrentLocationItem();
-        currentLocationItem.on("click", async () => {
-            field.val("Getting your location...");
-            const location = await getCurrentLocation();
-
-            field.val("Your Location");
-            suggestionBox.addClass("hidden");
-
-            onSelect(location);
-        });
-
-        const PlacePinLocationItem = createPlacePinLocationItem();
-        PlacePinLocationItem.on("click", async () => {
-            if(map){
-                field.val("Place a pin on the map");
-                
-                const result = await new Promise(resolve => {
-                    map.getContainer().style.cursor = "crosshair";
-
-                    map.once("click", (e) => {
-                        map.getContainer().style.cursor = "";
-                        resolve({
-                            name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
-                            searchName: "Pinned Location",
-                            coords: [e.latlng.lng, e.latlng.lat]
-                        });
-                    });
-                });
-
-                field.val(result.name);
-                onSelect(result);
-            } else {
-                window.location.href="./map.html";
-            }
-        });
-
-        suggestionBox.append(currentLocationItem);
-        suggestionBox.append(PlacePinLocationItem);
         if (!results || results.length === 0) {
             const message = createMessageRow("Location can't be found. Pin a location instead!");
+
             suggestionBox.append(message);
+            suggestionBox.removeClass("hidden");
             return;
         }
 
