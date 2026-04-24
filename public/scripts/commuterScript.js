@@ -15,15 +15,7 @@ const map = L.map("map", {
     minZoom: 12,
     maxZoom: 18,
     zoomControl: false
-}).setView([14.3272, 120.9404], 15);
-
-map.whenReady(() => {
-    setTimeout(() => {
-        map.flyTo([14.3272, 120.9404], 13, {
-            duration: 1
-        });
-    }, 1500); 
-});
+}).setView([14.3202, 120.9404], 13);
 
 map.createPane("routePane");
 map.createPane("nodePane");
@@ -538,7 +530,6 @@ async function followRoute() {
     $("#arrow").addClass("rotate-180");
 
     updateControlsPosition();
-
 
     const routeNames = [
         "fastestStepCoords",
