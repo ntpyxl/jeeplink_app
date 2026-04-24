@@ -18,6 +18,16 @@ $(".issue-category-btn").on("click", function () {
 
 $("#submitReport").on("click", async () => {
     try {
+        const reportType = $(".issue-category-btn[aria-pressed='true']").data("category");
+        const currentJeepRouteId = JSON.parse(localStorage.getItem("activeRoute_currentStep"))?.currentJeepRouteId ?? null;
+        
+        if(reportType === "jeep_diverted" && currentJeepRouteId == null) {
+            throw new Error("You're currently not following any jeep route.")
+        }
+
+        if (!$("#reportDesc").val().trim()) {
+            throw new Error("A description of the issue is required.")
+        }
         const response = await apiFetch("/submitReport", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -25,8 +35,8 @@ $("#submitReport").on("click", async () => {
                 report_title: $("#reportTitle").val(),
                 report_desc: $("#reportDesc").val(),
                 email: $("#reportEmail").val(),
-                report_type: $(".issue-category-btn[aria-pressed='true']").data("category"),
-                jeep_route_reported: null
+                report_type: reportType,
+                jeep_route_reported: currentJeepRouteId
             })
         });
 
@@ -60,6 +70,8 @@ $("#submitReport").on("click", async () => {
             text: err,
             allowOutsideClick: false
         });
+    } finally {
+        $("#reportModal").addClass("hidden");
     }
 })
 
