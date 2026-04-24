@@ -56,12 +56,13 @@ function showFareInfo() {
     }).then(result => result.isConfirmed);
 }
 
-function showNotification(title, icon) {
+function showNotification({title = "", description = "", icon = "info"}) {
     return jeeplinkSwal.fire({
         toast: true,
         position: 'top',
         icon: icon,
         title: title,
+        text: description ? description : null,
         showConfirmButton: false,
         timer: 5000,
         background: '#fff',

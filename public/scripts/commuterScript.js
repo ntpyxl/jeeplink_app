@@ -510,6 +510,11 @@ $("#goNow").on("click", async (e) => {
     followRoute()
 })
 
+let followRoute_watchLocation = null;
+let followRoute_stopSimulationFunction = null;
+
+let deviationChecker = null;
+
 if(localStorage.getItem("activeRoute")) {
     currentRoute = parseInt(localStorage.getItem("activeRoute"));
     followRoute();
@@ -517,7 +522,7 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
-    showNotification("Navigation started", "info");
+    showNotification({title: "Navigation started!", icon: "info"});
 
     map.flyTo(currentUserMarkerPosition, 16);
     setActiveRoute(currentRoute, true)
@@ -548,6 +553,38 @@ async function followRoute() {
         routesStepCoords[activeRouteName].map(s => [s.coord[0], s.coord[1]])
     );
 
+    let latestDistanceFromRoute = 0;
+    let latestIsCurrentRouteInJeepney = false;
+
+    let deviationStartTime = null;
+    
+    const deviationThreshold = 80;
+    const confirmationMs = 10000;
+
+    deviationChecker = setInterval(() => {
+        if (latestDistanceFromRoute > deviationThreshold && latestIsCurrentRouteInJeepney && !isUserNotifiedDeviatingFromRoute) {
+            if (!deviationStartTime) deviationStartTime = Date.now();
+            
+            const elapsed = Date.now() - deviationStartTime;
+            if (elapsed >= confirmationMs) {
+                showNotification({
+                    title: "Possible jeep route deviation",
+                    description: "Feel like your jeepney deviated from its route? Feel free to report it as an issue!",
+                    icon: "info"
+                });
+
+                isUserNotifiedDeviatingFromRoute = true;
+                deviationStartTime = null;
+            }
+        } else {
+            deviationStartTime = null;
+        }
+
+        // Reset when back near route
+        if (latestDistanceFromRoute <= deviationThreshold - 15 && isUserNotifiedDeviatingFromRoute) isUserNotifiedDeviatingFromRoute = false;
+    }, 1000);
+
+    if (stepCoordIndex >= finalStepCoordIndex) return;
     function handleNavigationUpdate(location) {
         const nextStopCoordinates = routesStepCoords[activeRouteName][stepCoordIndex].coord;
         const isCurrentRouteInJeepney = routesStepCoords[activeRouteName][stepCoordIndex].mode === "jeep";
@@ -563,21 +600,18 @@ async function followRoute() {
             units: "meters"
         });
 
-        const deviationThreshold = 80 // meters
-        if (distanceFromRoute > deviationThreshold && isCurrentRouteInJeepney && !isUserNotifiedDeviatingFromRoute) {
-            console.warn("User deviated from route!");
-            isUserNotifiedDeviatingFromRoute = true;
-        }
-
-        if (distanceFromRoute < deviationThreshold - 10 && isCurrentRouteInJeepney && isUserNotifiedDeviatingFromRoute) {
-            isUserNotifiedDeviatingFromRoute = false;
-        }
+        latestDistanceFromRoute = distanceFromRoute;
+        latestIsCurrentRouteInJeepney = isCurrentRouteInJeepney;
 
         if (distance < 120 && !isUserNotifiedBeingNearStop) {
             console.log("User is within 120m of next stop.");
             if(isCurrentRouteInJeepney) {
                 playNearStopNotification();
-                showNotification("Approaching stop", "info");
+                showNotification({
+                    title: "Approaching stop",
+                    description: "You are ~100m near your stop!",
+                    icon: "info"
+                });
             }
             isUserNotifiedBeingNearStop = true;
         }
@@ -592,7 +626,10 @@ async function followRoute() {
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
             playArrivedNotification();
-            showNotification("You have arrived at your destination", "success");
+            showNotification({
+                title: "You have arrived at your destination!",
+                icon: "success"
+            });
 
             stopAllTracking();
             resetNavigationState();
@@ -604,25 +641,24 @@ async function followRoute() {
         }
     }
 
-    let followRoute_watchLocation = null;
-    let followRoute_stopSimulationFunction = null;
-
-    function stopAllTracking() {
-        if (followRoute_watchLocation !== null) {
-            navigator.geolocation.clearWatch(followRoute_watchLocation);
-            followRoute_watchLocation = null;
-        }
-
-        if (followRoute_stopSimulationFunction) {
-            followRoute_stopSimulationFunction();
-            followRoute_stopSimulationFunction = null;
-        }
-    }
-
     // Uncomment either one, but not both
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
     //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
     followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+}
+
+function stopAllTracking() {
+    clearInterval(deviationChecker);
+
+    if (followRoute_watchLocation !== null) {
+        navigator.geolocation.clearWatch(followRoute_watchLocation);
+        followRoute_watchLocation = null;
+    }
+
+    if (followRoute_stopSimulationFunction) {
+        followRoute_stopSimulationFunction();
+        followRoute_stopSimulationFunction = null;
+    }
 }
