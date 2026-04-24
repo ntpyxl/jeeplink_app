@@ -18,6 +18,10 @@ $(".issue-category-btn").on("click", function () {
 
 $("#submitReport").on("click", async () => {
     try {
+        if (!$("#reportDesc").val().trim()) {
+            throw new Error("A description of the issue is required.")
+        }
+
         const response = await apiFetch("/submitReport", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -60,6 +64,8 @@ $("#submitReport").on("click", async () => {
             text: err,
             allowOutsideClick: false
         });
+    } finally {
+        $("#reportModal").addClass("hidden");
     }
 })
 

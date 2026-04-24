@@ -190,7 +190,7 @@ $("#toggleCommute").on("click", function () {
 
         $("#titleField").slideUp(150);
 
-        $("#descLabel").text("Description (Optional)");
+        $("#descLabel").text("Description");
     });
 
     $("#issueOther").on("click", function () {
