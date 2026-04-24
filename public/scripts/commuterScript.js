@@ -16,6 +16,15 @@ const map = L.map("map", {
     maxZoom: 18,
     zoomControl: false
 }).setView([14.3272, 120.9404], 15);
+
+map.whenReady(() => {
+    setTimeout(() => {
+        map.flyTo([14.3272, 120.9404], 13, {
+            duration: 1
+        });
+    }, 1500); 
+});
+
 map.createPane("routePane");
 map.createPane("nodePane");
 map.createPane("userPositionPane")
@@ -41,7 +50,6 @@ let userMarker;
 let userMarker_watchLocation;
 let userMarker_stopSimulationFunction;
 let currentUserMarkerPosition = null;
-let hasZoomedToUser = false;
 
 function handleUserMarkerUpdate(location) {
     currentUserMarkerPosition = [location.coords[1], location.coords[0]]
@@ -57,17 +65,6 @@ function handleUserMarkerUpdate(location) {
         }).addTo(map);
     } else {
         userMarker.setLatLng(currentUserMarkerPosition);
-    }
-
-    if (!hasZoomedToUser) {
-        hasZoomedToUser = true;
-
-        setTimeout(() => {
-            map.flyTo(currentUserMarkerPosition, 16, {
-                animate: true,
-                duration: 1.8
-            });
-        }, 800); 
     }
 }
 
