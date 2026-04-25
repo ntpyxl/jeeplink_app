@@ -41,15 +41,18 @@ let filteredReports = [];
 // Render reports in the table
 function renderReports(reports) {
     const $tbody = $("#reportsTableBody");
-
     $tbody.find("tr:not(#tableLoading)").remove();
 
     if (!reports.length) {
         $tbody.append(`
             <tr class="border-b">
-                <td colspan="7" class="py-6 text-center text-gray-400">No reports found.</td>
+                <td colspan="7" class="py-3 text-center text-gray-400">No reports found.</td>
             </tr>
         `);
+        // Fill remaining 9 rows
+        for (let i = 0; i < rowsPerPage - 1; i++) {
+            $tbody.append(`<tr class="border-b"><td colspan="7" class="py-3">&nbsp;</td></tr>`);
+        }
         return;
     }
 
@@ -61,24 +64,26 @@ function renderReports(reports) {
         const date = formatDate(report.submitted_at);
         const status = formatStatusDropdown(report.report_status, report.id);
 
-        const row = `
+        $tbody.append(`
             <tr class="border-b hover:bg-gray-50">
                 <td class="py-3">${report.id}</td>
                 <td class="py-3">${reportType}</td>
                 <td class="py-3">${title}</td>
-                <td class="py-3 w-1/3">${description}</td>
+                <td class="py-3">${description}</td>
                 <td class="py-3">${reporterEmail}</td>
-                <td class="py-3">${date}</td> 
-                <td class="py-3 text-center">
-                    ${status}
-                </td>
+                <td class="py-3">${date}</td>
+                <td class="py-3 text-center">${status}</td>
             </tr>
-        `;
-
-        $tbody.append(row);
+        `);
     });
 
     applyStatusColors();
+
+    // Padding for empty rows up to rowsPerPage
+    const fillerCount = rowsPerPage - reports.length;
+    for (let i = 0; i < fillerCount; i++) {
+        $tbody.append(`<tr class="border-b"><td colspan="7" class="py-3">&nbsp;</td></tr>`);
+    }
 }
 
 // Helper functions
