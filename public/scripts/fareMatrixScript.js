@@ -199,16 +199,14 @@ $('#uploadFareMatrixFile').on('click', async () => {
             body: formData
         });
 
-        if (response.status == "Received") {
-            // TODO: Should add a modal that says upload is a success
-            console.log("Upload successful!");
-        }
-
         await loadFareMatrices();
         closeUpdateMatrixModal();
+        showSuccess("Successfully updated fare matrix table!")
+
         file = null;
     } catch (err) {
         console.error("Error:", err);
+        showError("Failed to update fare matrix table.");
     }
 });
 
