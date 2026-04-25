@@ -203,16 +203,10 @@ $(document).on("click", ".status-filter-btn", async function () {
 $(document).ready(async function () {
     try {
         showLoading(); 
-
         const data = await getReportsData();
-
-        console.log(data);
-
         renderReports(data.reports);
-
     } catch (error) {
         console.error("Error loading reports:", error);
-
     } finally {
         hideLoading(); 
     }

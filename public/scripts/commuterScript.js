@@ -305,7 +305,6 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
-    console.log(completeRouteInformation.fastestRouteInformation.routeInformation.jeepRidesIdList)
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })

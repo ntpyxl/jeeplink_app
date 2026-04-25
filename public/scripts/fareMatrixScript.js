@@ -200,6 +200,7 @@ $('#uploadFareMatrixFile').on('click', async () => {
         });
 
         if (response.status == "Received") {
+            // TODO: Should add a modal that says upload is a success
             console.log("Upload successful!");
         }
 
