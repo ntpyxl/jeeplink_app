@@ -265,8 +265,8 @@ async function loadReportsData() {
 
 // Report type filter
 $(document).on("click", ".filter-btn", async function () {
-    $(".filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100");
-    $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
+    $(".filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100 hover:bg-gray-200");
+    $(this).removeClass("bg-gray-100 hover:bg-gray-200").addClass("bg-[#84C177] text-black font-medium");
 
     currentFilter = $(this).data("type") || null;
     currentPage = 1;
@@ -275,8 +275,8 @@ $(document).on("click", ".filter-btn", async function () {
 
 // Status filter
 $(document).on("click", ".status-filter-btn", async function () {
-    $(".status-filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100");
-    $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
+    $(".status-filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100 hover:bg-gray-200");
+    $(this).removeClass("bg-gray-100 hover:bg-gray-200").addClass("bg-[#84C177] text-black font-medium");
 
     currentStatusFilter = $(this).data("status") || null;
     currentPage = 1;
