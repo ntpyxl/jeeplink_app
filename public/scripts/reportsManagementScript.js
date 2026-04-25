@@ -30,11 +30,28 @@ async function getReportsData({page_number = null, report_type = null, report_st
     }
 }
 
+const rowsPerPage = 10;
+let currentPage = 1;
+let currentFilter = null;
+let currentStatusFilter = null;
+let currentSearch = "";
+let allReports = [];
+let filteredReports = [];
+
 // Render reports in the table
 function renderReports(reports) {
     const $tbody = $("#reportsTableBody");
 
     $tbody.find("tr:not(#tableLoading)").remove();
+
+    if (!reports.length) {
+        $tbody.append(`
+            <tr class="border-b">
+                <td colspan="7" class="py-6 text-center text-gray-400">No reports found.</td>
+            </tr>
+        `);
+        return;
+    }
 
     $.each(reports, function (index, report) {
         const reportType = formatType(report.report_type);
@@ -159,9 +176,92 @@ $(document).on("change", ".status-dropdown", async function () {
     
 });
 
-// Filter state
-let currentFilter = null;
-let currentStatusFilter = null;
+function normalizeText(value) {
+    if (value === null || value === undefined) return "";
+    return String(value).toLowerCase();
+}
+
+function getFilteredReports() {
+    const query = normalizeText(currentSearch).trim();
+
+    return allReports.filter((report) => {
+        const typeMatches = !currentFilter || report.report_type === currentFilter;
+        const statusMatches = !currentStatusFilter || report.report_status === currentStatusFilter;
+
+        if (!query) return typeMatches && statusMatches;
+
+        const searchable = [
+            report.id,
+            formatType(report.report_type),
+            report.title,
+            report.description,
+            report.reporter_email,
+            formatDate(report.submitted_at),
+            report.report_status
+        ].map(normalizeText).join(" ");
+
+        return typeMatches && statusMatches && searchable.includes(query);
+    });
+}
+
+function renderPagination() {
+    const totalRows = filteredReports.length;
+    const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+    currentPage = Math.min(currentPage, totalPages);
+
+    const start = totalRows ? (currentPage - 1) * rowsPerPage + 1 : 0;
+    const end = totalRows ? Math.min(currentPage * rowsPerPage, totalRows) : 0;
+
+    $("#paginationInfo").text(`Showing ${start} to ${end} of ${totalRows} entries`);
+
+    $("#prevBtn").prop("disabled", currentPage === 1)
+        .toggleClass("opacity-50 cursor-not-allowed", currentPage === 1);
+    $("#nextBtn").prop("disabled", currentPage === totalPages || totalRows === 0)
+        .toggleClass("opacity-50 cursor-not-allowed", currentPage === totalPages || totalRows === 0);
+
+    const $pageNumbers = $("#pageNumbers");
+    $pageNumbers.empty();
+
+    for (let i = 1; i <= totalPages; i += 1) {
+        const isActive = i === currentPage;
+        const button = $(`
+            <button class="cursor-pointer px-3 py-1 border rounded-lg ${isActive ? "bg-[#35903A] text-white border-[#35903A]" : "hover:bg-gray-100"}">
+                ${i}
+            </button>
+        `);
+
+        button.on("click", () => {
+            currentPage = i;
+            refreshTable();
+        });
+
+        $pageNumbers.append(button);
+    }
+}
+
+function refreshTable() {
+    filteredReports = getFilteredReports();
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const pageRows = filteredReports.slice(startIndex, startIndex + rowsPerPage);
+
+    renderReports(pageRows);
+    renderPagination();
+}
+
+async function loadReportsData() {
+    showLoading();
+    try {
+        const data = await getReportsData();
+        allReports = data?.reports || [];
+        refreshTable();
+    } catch (error) {
+        console.error("Error loading reports:", error);
+        allReports = [];
+        refreshTable();
+    } finally {
+        hideLoading();
+    }
+}
 
 // Report type filter
 $(document).on("click", ".filter-btn", async function () {
@@ -169,16 +269,8 @@ $(document).on("click", ".filter-btn", async function () {
     $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
 
     currentFilter = $(this).data("type") || null;
-
-    try {
-        showLoading();
-        const data = await getReportsData({ report_type: currentFilter, report_status: currentStatusFilter });
-        renderReports(data.reports);
-    } catch (error) {
-        console.error("Error filtering reports:", error);
-    } finally {
-        hideLoading();
-    }
+    currentPage = 1;
+    refreshTable();
 });
 
 // Status filter
@@ -187,29 +279,34 @@ $(document).on("click", ".status-filter-btn", async function () {
     $(this).removeClass("bg-gray-100").addClass("bg-[#84C177] text-black font-medium");
 
     currentStatusFilter = $(this).data("status") || null;
-
-    try {
-        showLoading();
-        const data = await getReportsData({ report_type: currentFilter, report_status: currentStatusFilter });
-        renderReports(data.reports);
-    } catch (error) {
-        console.error("Error filtering by status:", error);
-    } finally {
-        hideLoading();
-    }
+    currentPage = 1;
+    refreshTable();
 });
 
 // Initial load
 $(document).ready(async function () {
-    try {
-        showLoading(); 
-        const data = await getReportsData();
-        renderReports(data.reports);
-    } catch (error) {
-        console.error("Error loading reports:", error);
-    } finally {
-        hideLoading(); 
-    }
+    $("#reportsSearch").on("input", function () {
+        currentSearch = $(this).val();
+        currentPage = 1;
+        refreshTable();
+    });
+
+    $("#prevBtn").on("click", function () {
+        if (currentPage > 1) {
+            currentPage -= 1;
+            refreshTable();
+        }
+    });
+
+    $("#nextBtn").on("click", function () {
+        const totalPages = Math.max(1, Math.ceil(filteredReports.length / rowsPerPage));
+        if (currentPage < totalPages) {
+            currentPage += 1;
+            refreshTable();
+        }
+    });
+
+    await loadReportsData();
 });
 
 // Loading Spinner Script
