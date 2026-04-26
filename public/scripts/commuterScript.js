@@ -239,6 +239,7 @@ if (start && destination) {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 }
 
