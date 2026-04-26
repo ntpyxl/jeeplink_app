@@ -432,7 +432,7 @@ function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
                 layer.bringToFront();
             } else {
                 if (mode === "jeep") {
-                    layer.setStyle({ color: "#666666", opacity: hideInactiveRoute ? 0 : 1 });
+                    layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
                 } else {
                     layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
                 }
