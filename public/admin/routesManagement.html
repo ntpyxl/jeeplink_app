@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeepLink - Admin Routes Management</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="../images/tab-logo.png">
+
+    <!-- Tailwind CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- JQuery CDN-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+    <!-- SweetAlert 2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/admin.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body { visibility: hidden; }
+    </style>
+
+    <script type="module">
+        import { checkAuth } from "../scripts/core/accountHandler.js";
+
+        checkAuth();
+    </script>
+</head>
+<body>
+    <div class="flex">
+        <!-- Overlay -->
+        <div id="sidebarOverlay" 
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            onclick="closeSidebar()">
+        </div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-[23rem] h-screen overflow-y-auto fixed left-0 top-0 
+                bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+            <div class="px-12">            
+                <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
+
+                <hr class="text-[#90B67A]">
+            </div>
+
+        <!-- Main Navigation -->
+            <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <a href="dashboard.html" class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition z-10">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-line text-white"></i>
+                    </div>
+
+                    <!-- Label -->
+                    <span class="nav-label">Dashboard</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        View system overview and key statistics
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- ACTIVE -->
+                <a href="routesManagement.html" class="relative group w-full flex items-center gap-3 py-3 px-14 bg-[#84C177] text-black font-semibold ">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-black rounded-full">
+                        <i class="fas fa-route text-black"></i>
+                    </div>
+
+                    <!-- Label -->
+                    <span class="nav-label">Routes Management</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        Add, edit, and manage routes
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="roadsManagement.html" class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-road text-white"></i>
+                    </div>
+
+                    <!-- Label -->
+                    <span class="nav-label">Roads Management</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        Enable or disable roads
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="reportsManagement.html" class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-chart-bar text-white"></i>
+                    </div>
+                    
+                    <!-- Label -->
+                    <span class="nav-label">Reports Management</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        View reports, analytics, and system insights
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="fareMatrixManagement.html" class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-money-bill text-white"></i>
+                    </div>
+
+                    <!-- Label -->
+                    <span class="nav-label text-lg">Fare Matrix Management</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        Manage fare matrices and pricing
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+            </nav>
+
+            <!-- Line -->
+            <!-- <div class="px-12 my-12">            
+                <hr class="text-[#90B67A]">
+            </div> -->
+
+            <!-- CRUD Navigation -->
+            <!-- <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    Report Webpage
+                </a>
+
+                <a href="#" class="w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-book text-white"></i>
+                    </div>
+                    Guide Webpage
+                </a>
+
+                <a href="faqsManagement.html" class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+                 
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-question text-white"></i>
+                    </div>
+
+                  
+                    <span class="nav-label text-lg">FAQs Webpage</span>
+
+                    
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        Manage fare matrices and pricing
+
+                      
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+            </nav> -->
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-[23rem] p-4 lg:p-6">
+            <!-- Header -->
+            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+                <!-- Left Side -->
+                <div class="flex items-center">
+                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 lg:hidden">
+                        <i class="fas fa-bars text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
+                        Welcome back, Admin!
+                    </h1>
+                </div>
+
+
+                <!-- Right Side -->
+                <div class="flex items-center gap-6">
+
+                    <!-- Notification Icon -->
+                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+
+                    <!-- Divider  -->
+                    <div class="w-px h-12 bg-gray-300"></div>
+
+                    <div class="relative">
+                        <!-- Profile -->
+                        <div id="profileBtn" class="flex items-center gap-3 cursor-pointer">
+                            <img src="../images/hero1.jpg"
+                                alt="Admin avatar"
+                                onerror="this.style.display='none'"
+                                class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                            <span class="text-gray-700 font-medium">Admin</span>
+                        </div>
+
+                        <!-- Dropdown -->
+                        <div id="profileDropdown"
+                            class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md 
+                                    border border-gray-200 rounded-2xl shadow-xl overflow-hidden
+
+                                    opacity-0 scale-95 translate-y-2 pointer-events-none
+                                    transition-all duration-200 ease-out">
+
+                            <!-- User Info -->
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-800">Admin</p>
+                                <p class="text-xs text-gray-500">admin@email.com</p>
+                            </div>
+
+                            <!-- Logout -->
+                            <button id="logoutBtn"
+                                    class="w-full flex items-center gap-3 px-4 py-3 
+                                        text-gray-700 hover:bg-red-50 hover:text-red-500 
+                                        transition-all duration-200">
+                                <i class="fas fa-sign-out-alt text-sm"></i>
+                                <span class="font-medium">Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Routes Management Content -->
+            <div class="w-full p-6">
+                <div class="border-b-1 border-gray-200">
+                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Routes Management</h2>
+                </div>
+
+                <!-- Search + Table Container -->
+                <div class="bg-white mt-6 p-6 rounded-xl shadow">
+
+                    <!-- Top Bar -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+                        <!-- Search Bar -->
+                        <div class="relative w-full md:w-1/3">
+                            <input id="routeSearch" type="text" placeholder="Search routes..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-gray-500 text-sm border-b">
+                                    <th class="py-3">Route ID</th>
+                                    <th class="py-3">Route Name</th>
+                                    <th class="py-3">Parent Route ID</th>
+                                    <th class="py-3">Status</th>
+                                    <th class="py-3">Route Type</th>
+                                    <th class="py-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <!-- Render Routes Table -->
+                            <tbody id="routesTableBody" class="text-gray-700 text-sm">
+
+                                <!-- Loading Spinner Row -->
+                                <tr id="tableLoading" class="hidden">
+                                    <td colspan="6" class="py-6">
+                                        <!-- Loading Spinner -->
+                                        <div class="flex justify-center items-center">
+                                            <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
+
+                        <!-- Info -->
+                        <span id="paginationInfo" class="text-sm text-gray-500">
+                            Showing 0 to 0 of 0 entries
+                        </span>
+
+                        <!-- Controls -->
+                        <div class="flex items-center gap-2">
+
+                            <button id="prevBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                                Prev
+                            </button>
+
+                            <div id="pageNumbers" class="flex gap-2 cursor-pointer">
+                                <!-- Pages will be generated here -->
+                            </div>
+
+                            <button id="nextBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                                Next
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Add Routes Content -->
+            <div class="w-full p-6">
+                <div class="border-b-1 border-gray-200">
+                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Add Routes</h2>
+                </div>
+
+                <!-- Add Coordinates -->
+                <div class="bg-white p-4 rounded-xl mt-4">
+
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+                        <!-- LEFT SIDE -->
+                        <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
+
+                            <!-- Added Route Name -->
+                            <div class="relative w-full sm:w-64 min-w-0">
+                                <input type="text" id="drawnJeepRouteName" placeholder="Route Name"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                            </div>
+
+                            <!-- Edit-only fields -->
+                            <div id="editRouteFields" class="hidden flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                                
+
+                                <div class="relative w-full sm:w-40">
+                                    <select id="drawnJeepRouteStatus"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                        <option value="enabled">Enabled</option>
+                                        <option value="disabled">Disabled</option>
+                                    </select>
+                                </div>
+
+                                <div class="relative w-full sm:w-40">
+                                    <input type="text" id="drawnJeepRouteParentId" autocomplete="off"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]"
+                                        placeholder="Parent Route">
+
+                                    <!-- Parent Route Suggestions -->
+                                    <div id="parentRouteSuggestions"
+                                        class="absolute left-0 top-full w-full mt-2 hidden z-999
+                                            bg-white/95 backdrop-blur-md
+                                            rounded-lg shadow-lg border border-gray-300
+                                            max-h-48 overflow-y-auto">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cancel + Save Button Group -->
+                            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto min-w-full sm:min-w-max">
+                                <button id="cancelEditRoute" class="cursor-pointer w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-black hover:bg-gray-300 transition text-sm shadow-sm hidden">
+                                    Cancel
+                                </button>
+
+                                <button id="saveDrawnJeepRoute" class="cursor-pointer w-full sm:w-auto bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap flex items-center justify-center gap-2">
+                                    <i class="fas fa-plus fa-xs"></i>
+                                    <span>Add Route</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT SIDE -->
+                        <div class="flex flex-wrap gap-2 justify-start md:justify-end">
+
+                            <!-- Rebuild Graph -->
+                            <button id="rebuildPublicRoadsGraph"
+                                class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm cursor-pointer">
+                                <i class="fas fa-save text-gray-600"></i>
+                                Rebuild Roads Graph
+                            </button>
+
+                            <!-- Clear -->
+                            <button id="clearDrawnJeepRoute"
+                                class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm">
+                                <i class="fas fa-trash-alt text-gray-600"></i>
+                                Clear
+                            </button>
+
+                            <!-- Toggle -->
+                            <button id="toggleJeepRoutes"
+                                class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg bg-[#35903A] text-white hover:bg-[#2f7a33] transition text-sm shadow-sm">
+                                <i class="fas fa-eye"></i>
+                                Toggle
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Map Container -->
+                <div class="flex flex-col w-full mb-4 gap-4">
+                    <div class="">
+                        <div id="map" class="border border-gray-300 rounded-lg  " style="height: 900px; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Delete Route Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-9999 backdrop-blur-sm">
+
+        <div class="relative bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden">
+
+            <!-- Header Bar -->
+            <div class="bg-gradient-to-r from-red-400 to-red-600 px-6 py-4">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    Delete Route
+                </h2>
+            </div>
+
+            <div class="p-6 text-center">
+                <input type="hidden" id="deleteRouteId">
+
+                <!-- Message -->
+                <p class="text-gray-700 text-sm mb-2">
+                    Are you sure you want to delete this route?
+                    
+                </p>
+
+                <div class="mb-4 flex flex-col items-center justify-center gap-2">
+
+                    <i class="fas fa-exclamation-triangle text-red-500 text-4xl"></i>
+
+                    <span id="deleteRouteName"
+                        class="font-bold text-red-600 underline text-center">
+                        sm dasma - bayan
+                    </span>
+
+                </div>
+                
+
+                <p class="text-xs text-red-500 mb-5">
+                    This action cannot be undone.
+                </p>
+
+                <!-- Buttons -->
+                <div class="flex justify-center gap-3">
+                    <button id="cancelDelete"
+                        class="cursor-pointer px-4 py-2 rounded-lg bg-gray-200 text-black 
+                            hover:bg-gray-300 transition text-sm shadow-sm">
+                        Cancel
+                    </button>
+
+                    <button id="confirmDelete"
+                        class="cursor-pointer px-4 py-2 rounded-lg 
+                        bg-red-500 text-white 
+                        hover:bg-red-600 transition text-sm shadow-md">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="../images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to landscape mode.
+        </p>
+    </div>
+
+    <!-- Admin Front End Script -->
+    <script src="../scripts/ui/adminStylingScript.js" type="module"></script>
+
+    <!-- Custom Swal Script -->
+    <script src="../scripts/ui/customSwal.js"></script>
+
+    <!-- Map Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+    <!-- Core Scripts -->
+    <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="../scripts/routeManagementScript.js" type="module"></script>
+
+</body>
+</html>

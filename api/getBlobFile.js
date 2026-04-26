@@ -1,0 +1,36 @@
+import { get } from "@vercel/blob";
+
+export default async function handler(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    try {
+        const { filename } = req.query;
+
+        const URL = `https://kb05hljdd5v8jslb.private.blob.vercel-storage.com/${filename}`;
+
+        const blobResponse = await get(URL, {
+            access: 'private',
+            token: process.env.BLOB_READ_WRITE_TOKEN
+        });
+
+        if (blobResponse.stream) {
+            const data = await new Response(blobResponse.stream).json();
+
+            res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=86400');
+            res.setHeader('Vary', 'Accept-Encoding');
+
+            return res.status(200).json(data);
+        }
+
+        throw new Error("Blob stream is unavailable");
+
+    } catch (err) {
+        console.error("Blob Getting Error:", err);
+        return res.status(500).json({ 
+            error: "Failed to read blob", 
+            details: err.message 
+        });
+    }
+}

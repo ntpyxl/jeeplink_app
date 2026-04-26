@@ -1,0 +1,100 @@
+* {
+    font-family: 'Itim', cursive;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100dvh;
+}
+
+.btn-active {
+    background-color: #5AA05F;
+    color: #E9CD2D;
+}
+
+.btn-inactive {
+    background-color: white;
+    color: #2E7D32;
+}
+
+.search-bar input::placeholder {
+    opacity: 1;
+}
+
+.search-bar {
+    overflow: visible;
+}
+
+.hero-bg {
+    background-image: linear-gradient(to bottom, rgba(31,55,32,0.9), rgba(81,145,84,0.5)), url("../images/hero1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.report-grid-bg, .privacy-grid-bg {
+    background-color: #f8fbf7;
+    background-image:
+        linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-repeat: repeat;
+    background-position: 0 0;
+    /* Ensure the grid fills the available vertical space */
+    min-height: 100%;
+}
+
+/* Sidebar mobile helpers */
+@media (max-width: 767px) {
+    .mobile-aside {
+        transition: transform 0.25s ease, width 0.25s ease;
+        transform: translateX(0);
+        will-change: transform, width;
+        /* default to icons-only narrow bar on mobile */
+        width: 5rem;
+        overflow: visible;
+    }
+
+    .mobile-aside .nav-label {
+        display: none;
+    }
+
+    .mobile-aside.expanded {
+        width: 23rem; /* match w-92 (~23rem) */
+        transform: translateX(0);
+    }
+
+    .mobile-aside.mobile-hidden {
+        transform: translateX(-100%);
+    }
+
+}
+
+.report-hero-bg, .guide-hero-bg, .privacy-hero-bg {
+    background: linear-gradient(180deg, #335c35 0%, #61ad64 100%);
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+@keyframes drop {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.swal-popup {
+    border-radius: 20px !important;
+}

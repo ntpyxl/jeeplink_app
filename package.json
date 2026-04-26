@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "echo 'Nothing to build'",
+    "deployPreview": "vercel build && vercel deploy --prebuilt"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.3.0"
+  }
+}

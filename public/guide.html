@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeepLink - Guide</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="images/tab-logo.png">
+
+    <!-- Tailwind CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- JQuery CDN-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+</head>
+<body>
+    <!-- Start of Navigation Bar -->
+    <nav class="bg-white shadow relative z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 ">
+
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center">
+                <img src="images/JeepLink-Logo.png" 
+                    alt="JeepLink Logo" 
+                    class="h-20 sm:h-16 md:h-24 lg:h-28 transition-all">
+            </a>
+
+            <!-- Desktop links -->
+            <div class="hidden lg:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
+                <a href="index.html" class="hover:text-black transition">Home</a>
+                <a href="map.html" class="hover:text-black transition">Map</a>
+                <a href="report.html" class="hover:text-black transition">Report</a>
+                                
+                <!-- Help -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
+                        Help
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="guide.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Guide
+                            </a>
+
+                            <a href="faqs.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            FAQs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
+                        Legal
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="privacy.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Privacy Policy
+                            </a>
+
+                            <a href="terms.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Terms of Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hamburger Button -->
+            <button id="menuBtn" class="lg:hidden p-2 rounded-lg">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="17" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" 
+            class="lg:hidden absolute left-0 top-full w-full 
+                    bg-white rounded-b-2xl shadow-lg overflow-hidden
+                    max-h-0 transition-all duration-300 ease-in-out">
+
+            <div class="flex flex-col gap-3 text-[#2E7D32] text-lg py-4">
+                <a href="index.html" class="hover:text-black text-center transition">Home</a>
+                <a href="map.html" class="hover:text-black text-center transition">Map</a>
+                <a href="report.html" class="hover:text-black text-center transition">Report</a>
+                <a href="guide.html" class="py-2 bg-[#2E7D32] text-white hover:text-black text-center transition">Guide</a>
+                <a href="faqs.html" class="hover:text-black text-center transition">FAQs</a>
+                <a href="privacy.html" class="hover:text-black text-center transition">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-black text-center transition">Terms of Service</a>
+            </div>
+        </div>
+    </nav>
+    <!-- End of Navigation Bar -->
+
+    <!-- Guide Static Design -->
+    <main class="min-h-screen flex flex-col">
+
+        <!-- Top banner -->
+        <section class="guide-hero-bg border-b-4 border-[#2D4B30]">
+            <div class="container mx-auto px-4 py-10 sm:py-14 md:py-16 text-center text-white">
+
+                <h1 class="text-3xl sm:text-4xl md:text-6xl leading-tight mb-3 md:mb-4">
+                    <span>JeepLink</span>
+                    <span class="text-[#E9CD2D]"> Guide</span>
+                </h1>
+
+                <p class="mt-4 text-lg sm:text-xl md:text-2xl tracking-wide">
+                    A simple guide to navigating jeepney routes in Dasmariñas City
+                </p>
+            </div>
+        </section>
+
+        <!-- Steps Section -->
+        <section class="report-grid-bg flex-1 py-10 sm:py-14 md:py-16">
+            <div class="container mx-auto px-4 max-w-4xl">
+
+                <!-- Steps list -->
+                <div class="flex flex-col gap-6 sm:gap-8">
+
+                    <!-- Step 1 -->
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">1</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Set Your Starting Point
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                You may search for a landmark within Dasmariñas City, place down a pin on your desired starting point, or even better, your own location so that JeepLink may also help you navigate through your chosen suggested route.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">2</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Enter Your Desired Destination
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                You may search for a landmark within Dasmariñas City, place down a pin on your desired starting point, or even your own location. Once you've filled both fields, you may now click on the <span class="font-semibold text-[#2E7D32]">Calculate Route</span> button, and JeepLink will begin calculating best possible routes!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">3</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Compare Your Options
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Review the list of available routes. For every journey, the route, fare, and jeepneys will be displayed — so you'll know which jeepney routes to take and can estimate how much it will cost or how long it will take for you to arrive.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex gap-5 sm:gap-6 items-start rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#004F11] bg-white shadow-sm py-6 sm:py-8 px-6 sm:px-8">
+                        <div class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#004F11] leading-none shrink-0">4</div>
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#004F11]">
+                                Choose and Travel
+                            </h2>
+                            <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                                Select the path that fits your needs and follow the step-by-step directions displayed based on what matters most to you:
+                            </p>
+                            <ul class="mt-1 flex flex-col gap-1 text-sm sm:text-base md:text-lg text-gray-700">
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Fastest</span> — the fastest way to arrive</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Cheapest</span> — the most budget-friendly fare</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1 w-2 h-2 rounded-full bg-[#004F11] shrink-0"></span>
+                                    <span><span class="font-semibold text-[#004F11]">Easiest</span> — the route with the fewest jeepney transfers</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commuter Tip -->
+                <div class="mt-8 sm:mt-10 rounded-2xl md:rounded-3xl border-[2px] md:border-[3px] border-[#E9CD2D] bg-[#FFFDE7] shadow-sm py-6 sm:py-8 px-6 sm:px-8 flex gap-4 sm:gap-5 items-start">
+                    <div class="text-3xl sm:text-4xl text-[#E9CD2D] shrink-0 mt-1">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-[#7B6000]">
+                            Commuter Tip
+                        </h2>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                            <span class="font-bold text-[#004F11]">STAY ALERT:</span> Always make sure to check the <span class="font-semibold">"Sign Board"</span> on the front and  side of the jeepney to make sure that it matches the route name displayed in the app!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Terms & Privacy Popup -->
+    <div id="termsModal" class="fixed inset-0 z-[9999] hidden">
+
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <!-- Modal -->
+        <div class="relative min-h-screen flex items-center justify-center px-8">
+
+            <div class="w-full max-w-lg rounded-2xl bg-white/90 backdrop-blur-xl shadow-2xl border border-white/40 p-7 md:p-8 space-y-6">
+
+                <!-- Icon -->
+                <div class="flex justify-center">
+                    <div class="w-16 h-16 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-lock text-[#2E7D32] text-3xl"></i>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-center text-2xl md:text-3xl font-bold text-gray-800 leading-snug">
+                    Privacy & Terms Agreement
+                </h2>
+
+                <!-- Description -->
+                <p class="text-center text-gray-700 text-base md:text-lg leading-relaxed">
+                    Before using <span class="font-semibold text-[#2E7D32]">JeepLink</span>, please review and accept our
+                    Terms of Service and Privacy Policy.
+                </p>
+
+                <!-- Links -->
+                <div class="flex justify-center gap-5 text-base">
+                    <a href="terms.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Terms
+                    </a>
+                    <span class="text-gray-300">•</span>
+                    <a href="privacy.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Privacy
+                    </a>
+                </div>
+
+                <!-- Buttons -->
+                <div class="space-y-3 pt-2">
+
+                    <button id="acceptTermsBtn"
+                        class="w-full bg-[#2E7D32] hover:bg-green-800 text-white py-3.5 rounded-xl text-base font-semibold transition shadow-md cursor-pointer">
+                        I Agree & Continue
+                    </button>
+
+                </div>
+
+                <!-- Footer note -->
+                <p class="text-xs md:text-sm text-gray-500 text-center leading-relaxed">
+                    By continuing, you agree to data processing required for navigation features and route optimization.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Commuter Front End Script -->
+    <script src="scripts/ui/commuterStylingScript.js" type="module"></script>
+
+</body>
+</html>

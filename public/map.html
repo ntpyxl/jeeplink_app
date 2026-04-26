@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeepLink - Map</title>
+
+    <!-- JeepLink Tab Logo -->
+    <link rel="icon" type="image/png" href="images/tab-logo.png">
+
+    <!-- Tailwind CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- JQuery CDN-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/toastNotificationStyles.css">
+    <style>
+        html, body {     
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+    </style>
+</head>
+<body class="overflow-y-hidden">
+    <!-- Start of Navigation Bar -->
+    <nav class="bg-white shadow relative z-[1000] border-b-[2px] border-[#004F11]">
+        <div class="container mx-auto flex justify-between items-center px-4 ">
+
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center">
+                <img src="images/JeepLink-Logo.png" 
+                    alt="JeepLink Logo" 
+                    class="h-20 sm:h-16 md:h-24 lg:h-28 transition-all">
+            </a>
+
+            <!-- Desktop links -->
+            <div class="hidden md:flex text-lg lg:text-xl gap-16 text-[#2E7D32]">
+                <a href="index.html" class="hover:text-black transition">Home</a>
+                <a href="map.html" class="hover:text-black transition">Map</a>
+                <a href="report.html" class="hover:text-black transition">Report</a>      
+
+                <!-- Help -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
+                        Help
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="guide.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Guide
+                            </a>
+
+                            <a href="faqs.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            FAQs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal -->
+                <div class="relative group">
+                    <button class="hover:text-black transition flex items-center gap-1 cursor-pointer">
+                        Legal
+                        <span class="transition group-hover:rotate-180"><i class="fa fa-caret-down"></i></span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 top-full w-52 pt-2
+                                opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                transition duration-200">
+
+                        <div class="bg-white shadow-lg rounded-lg border border-gray-200">
+                            <a href="privacy.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            Privacy Policy
+                            </a>
+
+                            <a href="terms.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Terms of Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hamburger Button -->
+            <button id="menuBtn" class="md:hidden p-2 rounded-lg">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="11" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                    <rect x="3" y="17" width="18" height="2" rx="1" fill="#0B5A2B"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" 
+            class="md:hidden absolute left-0 top-full w-full 
+                    bg-white rounded-b-2xl shadow-lg overflow-hidden
+                    max-h-0 transition-all duration-300 ease-in-out ">
+
+            <div class="flex flex-col gap-3 text-[#2E7D32] text-lg py-4">
+                <a href="index.html" class="hover:text-black text-center transition">Home</a>
+                <a href="map.html" class="py-2 hover:text-black text-center bg-[#2E7D32] text-white transition">Map</a>
+                <a href="report.html" class="hover:text-black text-center transition">Report</a>
+                <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
+                <a href="faqs.html" class="hover:text-black text-center transition">FAQs</a>
+                <a href="privacy.html" class="hover:text-black text-center transition">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-black text-center transition">Terms of Service</a>
+            </div>
+        </div>
+    </nav>
+    <!-- End of Navigation Bar -->
+    
+    <!-- ── Map Section ── -->
+    <section class="map-section w-full h-full">
+        <div class="flex">
+            <div class="flex flex-col w-full">
+                <div class="relative w-full">
+                    <!-- Map -->
+                    <div id="map" class="w-full h-[100dvh] fixed top-0 left-0 z-0 border-t-[3px] border-[#004F11] shadow-lg"></div>
+
+                    <!-- Bottom-Right Map Controls -->
+                    <div id="mapControls" 
+                        class="fixed right-4 z-[500] flex flex-col items-center gap-2 md:gap-3
+                            bottom-4 md:bottom-10">
+
+                        <!-- Route Changed Button -->
+                        <button id="openReportModalBtn"
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border-3 border-red-500
+                                flex items-center justify-center
+                                hover:bg-red-50 active:scale-95 transition-all cursor-pointer">
+                            
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg md:text-xl lg:text-2xl"></i>
+                        </button>
+
+                        <!-- Locate Button -->
+                        <button id="locateBtn"
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border border-gray-200
+                                flex items-center justify-center
+                                hover:bg-gray-50 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-location-crosshairs text-base md:text-lg lg:text-xl"></i>
+                        </button>
+
+                        <!-- Zoom in and out -->
+                        <div class="flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+
+                            <button id="zoomInBtn"
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-xl md:text-2xl lg:text-3xl font-medium border-b border-gray-200">
+                                +
+                            </button>
+
+                            <button id="zoomOutBtn"
+                                class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                    flex items-center justify-center
+                                    hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer
+                                    text-xl md:text-2xl lg:text-3xl font-medium">
+                                −
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Overlay Absolute -->
+                    <div class="absolute top-8 left-5 flex flex-col gap-4 z-[500]">
+
+                        <!-- Overlay Panel -->
+                        <div class="w-[90vw] p-0 m-0 max-w-sm bg-white rounded-3xl shadow-2xl overflow-visible border border-[#004F11]/20">
+
+                            <!-- HEADER -->
+                            <div id="toggleCommute"
+                                class="flex items-center justify-between p-4 cursor-pointer rounded-2xl
+                                    bg-white/80 backdrop-blur-md border border-white/40 shadow-lg">
+
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#004F11] shadow-sm">
+                                        <i class="fa-solid fa-location-dot text-sm"></i>
+                                    </div>
+
+                                    <div class="flex flex-col leading-tight">
+                                        <h2 class="text-gray-900 font-bold text-base">Suggested Routes</h2>
+                                        <span class="text-gray-500 text-xs">Find the best jeepney path</span>
+                                    </div>
+                                </div>
+
+                                <span id="arrow" class="text-gray-500 transition-transform duration-300">
+                                    ▼
+                                </span>
+                            </div>
+
+                            <!-- CONTENT -->
+                            <div id="commuteContent"
+                                class="px-5 py-4 space-y-4">
+
+                                <!-- START -->
+                                <div class="relative">
+                                    <label class="text-xs font-semibold text-[#004F11]">Starting Point</label>
+
+                                    <input type="text" id="startingPointField"
+                                        placeholder="Enter starting location"
+                                        autocomplete="off"
+                                        class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200
+                                            focus:outline-none focus:ring-2 focus:ring-[#004F11]/40">
+
+                                    <div id="startingSuggestions"
+                                    class="absolute left-0 top-full w-full bg-white shadow-xl mt-1 hidden z-[9999]
+                                        rounded-xl max-h-[40vh] overflow-y-auto overflow-x-hidden
+                                        md:max-h-none md:overflow-visible">
+                                    </div>
+                                </div>
+
+                                <!-- DESTINATION -->
+                                <div class="relative">
+                                    <label class="text-xs font-semibold text-[#004F11]">Destination</label>
+
+                                    <input type="text" id="destinationPointField"
+                                        placeholder="Where are you going?"
+                                        autocomplete="off"
+                                        class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200
+                                            focus:outline-none focus:ring-2 focus:ring-[#004F11]/40">
+
+                                    <div id="destinationSuggestions"
+                                    class="absolute left-0 top-full w-full bg-white shadow-xl mt-1 hidden z-[9999]
+                                        rounded-xl max-h-[40vh] overflow-y-auto overflow-x-hidden
+                                        md:max-h-none md:overflow-visible">
+                                    </div>
+                                </div>
+
+                                <!-- BUTTONS -->
+                                <div class="space-y-2 pt-2">
+
+                                    <button id="calculateRouteButton"
+                                        class="w-full py-2 rounded-xl font-semibold text-white
+                                            bg-[#2E7D32] hover:bg-[#004F11]
+                                            transition-all shadow-md cursor-pointer">
+                                        Calculate Route
+                                    </button>
+
+                                    <button id="toggleJeepRoutes"
+                                        class="w-full py-2 rounded-xl font-semibold
+                                            border border-[#004F11]/30 text-[#004F11]
+                                            hover:bg-[#004F11]/5 transition-all cursor-pointer">
+                                        Toggle Jeepney Routes
+                                    </button>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Route Details Container -->
+                        <div id="routePanel"
+                            class="hidden fixed bottom-0 left-0 ms-0 md:ms-2 w-full z-[450] flex justify-center
+                                md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md
+                                lg:left-6 lg:translate-x-0 lg:w-auto lg:max-w-lg lg:justify-start">
+
+                            <!-- Wrapper -->
+                            <div class="w-full max-w-full
+                                        md:max-w-md lg:max-w-lg
+                                        mx-auto lg:mx-0
+                                        bg-white/80 md:bg-white/90 backdrop-blur-xl
+                                        rounded-t-3xl md:rounded-3xl
+                                        shadow-[0_-8px_30px_rgba(0,0,0,0.15)] md:shadow-2xl
+                                        border border-white/30 md:border-[#004F11]/10
+                                        p-2 sm:p-3 md:p-4 flex flex-col gap-2">
+
+                                <!-- Drag Handle (mobile only) -->
+                                <div id="dragToggle"
+                                    class="w-10 h-1.5 bg-[#004F11]/20 rounded-full mx-auto mb-1 md:hidden">
+                                </div>
+
+                                <!-- Header -->
+                                <div class="flex items-center justify-between gap-2">
+                                    <h3 id="routeTitle" class="ps-2 text-sm sm:text-base md:text-lg font-semibold text-[#004F11] truncate">
+                                        Suggested Routes
+                                    </h3>
+                                    <a href="#" id="goNow"
+                                    class="inline-flex items-center justify-center me-2 px-4 py-2 text-sm sm:text-base
+                                            bg-gradient-to-br from-[#004F11] to-[#1f7a3a] 
+                                            text-white font-semibold
+                                            rounded-lg shadow-md
+                                            hover:bg-[#006b1c]
+                                            active:bg-[#00380c]
+                                            transition">
+                                        <i class="fa fa-location-arrow pe-2"></i>
+                                        <span> Go now!</span>
+                                    </a>
+                                </div>
+
+                                <!-- Slider -->
+                                <div class="w-full overflow-hidden rounded-xl sm:rounded-2xl">
+                                    <div id="routeSlider"
+                                        class="flex transition-transform duration-300 w-full">
+                                        <!-- JS inject -->
+
+                                        <div id="routeLoading" 
+                                            class="w-full flex flex-col items-center justify-center py-10 gap-3 animate-pulse">
+
+                                            <div class="w-10 h-10 border-4 border-[#004F11]/20 border-t-[#004F11] rounded-full animate-spin"></div>
+
+                                            <p class="text-sm text-gray-600 font-medium">
+                                                Calculating optimal jeepney routes...
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div id="routeNav" class="flex justify-between items-center mt-1">
+
+                                    <button id="prevRoute"
+                                        class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
+                                            rounded-xl bg-gray-100 hover:bg-gray-200 shadow-sm cursor-pointer">
+                                        <i class="fa fa-chevron-left text-gray-700 text-sm"></i>
+                                    </button>
+
+                                    <span id="routeIndicator"
+                                        class="text-xs sm:text-sm font-semibold text-[#004F11]
+                                            bg-white/70 px-3 py-1 rounded-full shadow-sm">
+                                        1 / 3
+                                    </span>
+
+                                    <button id="nextRoute"
+                                        class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
+                                            rounded-xl bg-gray-100 hover:bg-gray-200 shadow-sm cursor-pointer">
+                                        <i class="fa fa-chevron-right text-sm"></i>
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- End of Map Section -->
+
+    <!-- REPORT MODAL -->
+    <div id="reportModal"
+        class="fixed inset-0 flex items-start justify-center pt-50 md:pt-36
+                z-[9999] hidden">
+
+        <!-- Prevent close when clicking inside -->
+        <div class="animate-[drop_0.25s_ease-out]" onclick="event.stopPropagation()">
+
+            <div class="w-[90vw] max-w-md bg-white shadow-2xl border border-gray-200 rounded-2xl p-5
+                        flex flex-col gap-4">
+
+                <!-- Header -->
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-exclamation-circle text-[#2E7D32] text-xl"></i>
+                    </div>
+
+                    <h2 class="text-sm md:text-base font-semibold text-gray-800">
+                        Report an Issue
+                    </h2>
+                </div>
+
+                <!-- Issue Type -->
+                <div class="flex gap-2">
+                    <button id="issueJeep"
+                        aria-pressed="true"
+                        data-category="jeep_diverted"
+                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-white
+                            bg-[#2E7D32] shadow-md cursor-pointer hover:bg-[#004F11] transition-all">
+                        Jeep Diverted
+                    </button>
+
+                    <button id="issueOther"
+                        aria-pressed="false"
+                        data-category="other_issues"
+                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
+                            border border-[#004F11] cursor-pointer hover:bg-[#004F11]/5 transition-all">
+                        Other Issues
+                    </button>
+                </div>
+
+                <!-- Title -->
+                <div id="titleField" class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600">Title</label>
+                    <input id="reportTitle" type="text" placeholder="Enter issue title"
+                        class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]">
+                </div>
+
+                <!-- Description -->
+                <div class="flex flex-col gap-1">
+                    <label id="descLabel" class="text-xs text-gray-600">Description</label>
+                    <textarea id="reportDesc" rows="3" placeholder="Describe the issue..."
+                        class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"></textarea>
+                </div>
+
+                <!-- Email -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600">Email (Optional)</label>
+                    <input id="reportEmail" type="email" placeholder="juan.delacruz@gmail.com"
+                        class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2E7D32]">
+                </div>
+
+                <!-- Submit -->
+                <button id="submitReport"
+                    class="w-full py-2 rounded-xl font-semibold text-white
+                        bg-[#2E7D32] hover:bg-[#004F11] transition shadow-md cursor-pointer">
+                    Submit
+                </button>
+
+                <!-- Cancel -->
+                <button id="cancelBtn"
+                    class="w-full py-2 rounded-xl font-medium text-gray-600
+                        hover:bg-gray-100 transition border border-gray-300 cursor-pointer">
+                    Cancel
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Privacy Popup -->
+    <div id="termsModal" class="fixed inset-0 z-[9999] hidden">
+
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <!-- Modal -->
+        <div class="relative min-h-screen flex items-center justify-center px-8">
+
+            <div class="w-full max-w-lg rounded-2xl bg-white/90 backdrop-blur-xl shadow-2xl border border-white/40 p-7 md:p-8 space-y-6">
+
+                <!-- Icon -->
+                <div class="flex justify-center">
+                    <div class="w-16 h-16 rounded-full bg-[#2E7D32]/10 flex items-center justify-center">
+                        <i class="fas fa-lock text-[#2E7D32] text-3xl"></i>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-center text-2xl md:text-3xl font-bold text-gray-800 leading-snug">
+                    Privacy & Terms Agreement
+                </h2>
+
+                <!-- Description -->
+                <p class="text-center text-gray-700 text-base md:text-lg leading-relaxed">
+                    Before using <span class="font-semibold text-[#2E7D32]">JeepLink</span>, please review and accept our
+                    Terms of Service and Privacy Policy.
+                </p>
+
+                <!-- Links -->
+                <div class="flex justify-center gap-5 text-base">
+                    <a href="terms.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Terms
+                    </a>
+                    <span class="text-gray-300">•</span>
+                    <a href="privacy.html" class="text-[#2E7D32] hover:underline font-semibold">
+                        View Privacy
+                    </a>
+                </div>
+
+                <!-- Buttons -->
+                <div class="space-y-3 pt-2">
+
+                    <button id="acceptTermsBtn"
+                        class="w-full bg-[#2E7D32] hover:bg-green-800 text-white py-3.5 rounded-xl text-base font-semibold transition shadow-md cursor-pointer">
+                        I Agree & Continue
+                    </button>
+
+                </div>
+
+                <!-- Footer note -->
+                <p class="text-xs md:text-sm text-gray-500 text-center leading-relaxed">
+                    By continuing, you agree to data processing required for navigation features and route optimization.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rotate Device Overlay -->
+    <div id="rotateOverlay" 
+        class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
+            flex flex-col items-center justify-center text-center 
+            z-[9999] hidden">
+
+        <div class="mb-4">
+            <img src="images/phone-rotate.png" 
+                alt="rotate device" 
+                class="w-16 h-16 animate-bounce">
+        </div>
+
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">
+            Rotate Your Device
+        </h2>
+
+        <p class="text-sm sm:text-base max-w-xs px-4">
+            For a better experience, please rotate your device to portrait mode.
+        </p>
+    </div>
+
+
+    <!-- Commuter Front End Script -->
+    <script src="scripts/ui/commuterStylingScript.js" type="module"></script>
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="scripts/ui/customSwal.js"></script>
+
+    <!-- Core Scripts -->
+    <script src="scripts/core/jeeplinkApiFetcher.js" type="module"></script>
+    <script src="scripts/core/graphHelper.js" type="module"></script>
+    
+    <!-- Commuter Script -->
+    <script src="scripts/commuterScript.js" type="module"></script>
+    <script src="scripts/commuterFollowRouteScript.js" type="module"></script>
+
+    <script src="scripts/reportScript.js" type="module"></script>
+
+    <!-- Dropdown Animation Script -->
+    <script src="scripts/ui/dropdownAnimation.js"></script>
+
+</body>
+
+</html>
