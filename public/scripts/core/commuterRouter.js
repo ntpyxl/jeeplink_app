@@ -402,7 +402,7 @@ function buildRouteInstructions(edges) {
 
 function buildRouteInformation(routeInformation, steps, fareMatrix) {
     const routeDistance = `${(routeInformation.totalDistanceMeters / 1000).toFixed(2)} km`;
-    const jeepRidesCount = `${routeInformation.jeepRidesCount} jeep rides`;
+    const jeepRidesCount = `${routeInformation.jeepRidesCount} jeep ride(s)`;
     const tripDurationSeconds = routeInformation.routeDurationSeconds;
 
     const hours = Math.floor(tripDurationSeconds / 3600);
