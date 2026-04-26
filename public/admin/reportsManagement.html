@@ -30,14 +30,13 @@
 
 
     <style>
-        body { display: none; }
+        body { visibility: hidden; }
     </style>
 
     <script type="module">
         import { checkAuth } from "../scripts/core/accountHandler.js";
 
         checkAuth();
-        document.body.style.display = "block";
     </script>
 </head>
 <body>
@@ -243,9 +242,9 @@
         </aside>
 
     <!-- Main Content -->
-    <main class="lg:ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-4 flex-1">
             <!-- Header -->
-            <header class="w-full flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+            <header class="w-full flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
                 <!-- Left Side -->
                 <div class="flex items-center">
@@ -359,17 +358,17 @@
                 <!-- Table -->
                 <div class="bg-white mt-6 p-6 rounded-xl shadow overflow-x-auto">
 
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse table-fixed">
 
                         <thead>
                             <tr class="text-gray-500 text-sm border-b">
-                                <th class="py-3">Report ID</th>
-                                <th class="py-3">Report Type</th>
-                                <th class="py-3">Title</th>
-                                <th class="py-3">Description</th>
-                                <th class="py-3">Reporter Email</th>
-                                <th class="py-3">Date Reported</th>
-                                <th class="py-3 text-center">Status</th>
+                                <th class="py-3 w-16">Report ID</th>
+                                <th class="py-3 w-32">Report Type</th>
+                                <th class="py-3 w-32">Title</th>
+                                <th class="py-3 w-1/3">Description</th>
+                                <th class="py-3 w-40">Reporter Email</th>
+                                <th class="py-3 w-28">Date Reported</th>
+                                <th class="py-3 w-24 text-center">Status</th>
                             </tr>
                         </thead>
 

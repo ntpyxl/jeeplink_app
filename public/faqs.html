@@ -30,7 +30,7 @@
 </head>
 <body>
     <!-- Start of Navigation Bar -->
-    <nav class="bg-white shadow relative z-50">
+    <nav class="bg-white shadow relative z-50 overflow-visible">
         <div class="container mx-auto flex justify-between items-center px-4 ">
 
             <!-- Logo -->
@@ -54,13 +54,13 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full w-52 pt-2
+                    <div class="absolute right-0 top-full w-auto min-w-[120px] pt-2
                                 opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                 transition duration-200">
 
                         <div class="bg-white shadow-lg rounded-lg border border-gray-200">
                             <a href="guide.html" 
-                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            class="block px-3 py-2 hover:bg-gray-100 rounded-t-lg whitespace-nowrap">
                             Guide
                             </a>
 
@@ -80,7 +80,7 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full w-52 pt-2
+                    <div class="absolute right-0 top-full w-52 pt-2
                                 opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                 transition duration-200">
 
@@ -162,7 +162,7 @@
                     <div class="dropdown-content overflow-hidden">
                         <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
                             <p class="text-base sm:text-lg leading-relaxed">
-                                Jeeplink is a web-based platform designed to help users manage and access transportation routes within Dasmariñas City, Cavite. Users can search for routes, view maps, and get directions to their desired destinations using Jeeplink.
+                                Jeeplink is a web-based platform designed to help users access transportation routes within Dasmariñas City, Cavite. Users can look for routes, view maps, and get directions to their desired destinations using Jeeplink.
                             </p>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
                     <div class="dropdown-content overflow-hidden">
                         <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
                             <p class="text-base sm:text-lg leading-relaxed">
-                                Yes, Jeeplink provides multiple route options based on different criteria such as shortest distance, fastest time, or minimal transfers.
+                                Yes, Jeeplink provides multiple route options based on different criteria such as fastest time, cheapest journey, and minimal jeepney transfers.
                             </p>
                         </div>
                     </div>
@@ -316,7 +316,7 @@
                     <div class="dropdown-content overflow-hidden">
                         <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
                             <p class="text-base sm:text-lg leading-relaxed">
-                                It will still generate a route, but jeepney route information will only be available within the Dasmariñas city. Outside the city boundary, the route will switch to a walking or directional segment, and no jeepney details will be provided for that portion of the route.
+                                It will still generate a route, but jeepney route information will only be available within the Dasmariñas city. Outside the city boundary, there is no road or jeepney route data available, so no route segment or directions will be displayed for that portion.
                             </p>
                         </div>
                     </div>

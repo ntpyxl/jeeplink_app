@@ -27,7 +27,7 @@
 
 
     <style>
-        body { display: none; }
+        body { visibility: hidden; }
     </style>
 
     <script type="module">
@@ -36,7 +36,7 @@
         if(isLoggedIn()) {
             window.location.replace("./dashboard.html");
         } else {
-            document.body.style.display = "block";
+            $("body").css("visibility", "visible");
         }
     </script>
 </head>

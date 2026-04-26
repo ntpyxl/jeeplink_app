@@ -16,6 +16,7 @@ export async function checkAuth() {
             }
         });
 
+        $("body").css("visibility", "visible");
         return {"loggedInUsername": response.username};
     } catch (error) {
         localStorage.removeItem("token");

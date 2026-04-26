@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
+    <!-- SweetAlert 2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Alpine -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -37,14 +40,13 @@
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
     <style>
-        body { display: none; }
+        body { visibility: hidden; }
     </style>
 
     <script type="module">
         import { checkAuth } from "../scripts/core/accountHandler.js";
 
         checkAuth();
-        document.body.style.display = "block";
     </script>
 
 </head>
@@ -255,9 +257,9 @@
         <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
 
     <!-- Main Content -->
-    <main class="lg:ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-4 flex-1">
             <!-- Header -->
-            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
                 <!-- Left Side -->
                 <div class="flex items-center">
@@ -333,7 +335,6 @@
                         <div class="fare-matrix-card-header">
                             <h3 class="fare-matrix-card-title"
                                 x-text="$store.fareMatrix?.matricesById?.['1']?.title || 'PUJ GENERAL FARE GUIDE'">
-                                PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -344,14 +345,14 @@
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Regular</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '13.00'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '1.80'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.regularPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '10.40'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-1" x-text="$store.fareMatrix?.matricesById?.['1']?.discountPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
@@ -387,7 +388,6 @@
                         <div class="fare-matrix-card-header">
                             <h3 class="fare-matrix-card-title"
                                 x-text="$store.fareMatrix?.matricesById?.['2']?.title || 'NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE'">
-                                NON-AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -398,14 +398,14 @@
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Regular</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '13.00'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '1.80'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.regularPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '10.40'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-2" x-text="$store.fareMatrix?.matricesById?.['2']?.discountPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
@@ -441,7 +441,6 @@
                         <div class="fare-matrix-card-header">
                             <h3 class="fare-matrix-card-title"
                                 x-text="$store.fareMatrix?.matricesById?.['3']?.title || 'AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE'">
-                                AIRCON MODERN AND ELECTRIC PUJ GENERAL FARE GUIDE
                             </h3>
                         </div>
 
@@ -452,14 +451,14 @@
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Regular</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '13.00'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '1.80'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="regular-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="regular-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.regularPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <div class="fare-matrix-card-section">
                                 <p class="fare-matrix-card-section-title">Student / Elderly / Disabled (20% Discount)</p>
-                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '10.40'"></span></p>
-                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '1.44'"></span> per kilometer</p>
+                                <p class="fare-matrix-card-section-line">First Four (4) kilometers = P <span id="discount-base-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountBaseFare || '0.00'"></span></p>
+                                <p class="fare-matrix-card-section-line">Succeeding kilometers = Additional P <span id="discount-perkm-3" x-text="$store.fareMatrix?.matricesById?.['3']?.discountPerKm || '0.00'"></span> per kilometer</p>
                             </div>
 
                             <p class="fare-matrix-card-note">NOTE: Fares are rounded off to the nearest 25 centavos</p>
@@ -562,5 +561,8 @@
     <!-- Core Scripts -->
     <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
     <script src="../scripts/fareMatrixScript.js" type="module"></script>
+
+    <!-- Custom Swal Script -->
+    <script src="../scripts/ui/customSwal.js"></script>
 </body>
 </html>
