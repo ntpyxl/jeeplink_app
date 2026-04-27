@@ -12,7 +12,7 @@ import { invokeLoadingState } from "./ui/commuterStylingScript.js"
 showPageLoader([
     "Loading map data...",
     "Checking jeepney routes...",
-    "Optimizing your commute...",
+    "Mapping out terminal locations...",
     "Starting your journey..."
 ]);
 
