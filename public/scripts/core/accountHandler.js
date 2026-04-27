@@ -1,9 +1,17 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
+import { adminShowLoader, adminHideLoader } from "../ui/adminStylingScript.js";
 
 export async function checkAuth() {
     let token = localStorage.getItem("token");
 
+    adminShowLoader([
+        "Loading...",
+        "Checking authentication...",
+        "Almost there..."
+    ]);
+
     if (!token) {
+        adminHideLoader();
         window.location.replace("./login.html");
         return;
     }
@@ -16,7 +24,8 @@ export async function checkAuth() {
             }
         });
 
-        $("body").css("visibility", "visible");
+        adminHideLoader();
+        if(response?.new_token) localStorage.setItem("token", response.new_token);
         return {"loggedInUsername": response.username};
     } catch (error) {
         localStorage.removeItem("token");

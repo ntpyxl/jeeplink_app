@@ -65,15 +65,46 @@ $(document).ready(function () {
         }
     });
 
-    // Search Bar
-    $("#routeSearch").on("keyup", function () {
-        let value = $(this).val().toLowerCase();
-
-        $("#routesTableBody tr").not("#tableLoading").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-        });
-
-    });
-
     $("#logoutBtn").click(function () { logout(); });
 });
+
+// ---------- ADMIN LOADER ----------
+export function adminShowLoader(message) {
+    const navbarHeight = $("#mainNavbar").outerHeight() || 64;
+    if ($("#pageLoader").length === 0) {
+        $("body").append(`
+            <div id="pageLoader"
+                class="fixed inset-0 bg-[#004F11] flex flex-col items-center justify-center backdrop-blur-sm bg-[#004F11]/60 z-[999]">
+
+                <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+
+                <p id="pageLoaderMessage" class="text-white mt-4 font-semibold text-lg drop-shadow-lg">
+                    ${message[0]}
+                </p>
+            </div>
+        `);
+    }
+
+    $("body").addClass("overflow-hidden");
+
+    clearInterval(window.__loaderInterval);
+
+    let i = 0;
+
+    window.__loaderInterval = setInterval(() => {
+        i = (i + 1) % message.length;
+        $("#pageLoaderMessage").text(message[i]);
+    }, 1000);
+}
+
+// HIDE LOADER
+export function adminHideLoader() {
+    clearInterval(window.__loaderInterval);
+    window.__loaderInterval = null;
+
+    $("#pageLoader").fadeOut(200, function () {
+        $(this).remove();
+    });
+
+    $("body").removeClass("overflow-hidden");
+}

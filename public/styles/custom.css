@@ -11,6 +11,7 @@ html, body {
     padding: 0;
     width: 100vw;
     height: 100dvh;
+    overflow-x: hidden;
 }
 
 .btn-active {

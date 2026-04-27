@@ -56,7 +56,7 @@ $("#calculateRouteButton").on("click", async () => {
     await Promise.all(tasks);
     sessionStorage.setItem("start", JSON.stringify(startingPoint));
     sessionStorage.setItem("destination", JSON.stringify(destinationPoint));
-    window.location.href = "/map.html";
+    window.location.href = "./map.html";
 });
 
 // Close autocomplete suggested location when clicked out

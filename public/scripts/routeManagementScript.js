@@ -364,16 +364,28 @@ confirmDeleteBtn.on("click", async () => {
     }
 });
 
+let jeepRouteDataSearchQuery = null;
+let searchTimeout = null;
+
+$("#routeSearch").on("input", function () {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+        jeepRouteDataSearchQuery = $(this).val().trim() || null;
+        reloadJeepRouteData(1, jeepRouteDataSearchQuery);
+    }, 500);
+});
+
 // PAGINATION CONTROLS
 $("#prevBtn").on("click", () => {
     if (currentPage > 1) {
-        reloadJeepRouteData(currentPage - 1);
+        reloadJeepRouteData(currentPage - 1, jeepRouteDataSearchQuery);
     }
 });
 
 $("#nextBtn").on("click", () => {
     if (currentPage < totalPages) {
-        reloadJeepRouteData(currentPage + 1);
+        reloadJeepRouteData(currentPage + 1, jeepRouteDataSearchQuery);
     }
 });
 
@@ -386,11 +398,19 @@ function clearDrawnJeepRoute() {
     $("#startNodeText, #endNodeText").text("");
 }
 
-async function reloadJeepRouteData(pageNumber = 1) {
+async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        const { route_data, row_count, total_pages } = await apiFetch(`/getJeepRoutes/${pageNumber}`, {
+        let url = `/getJeepRoutes/${pageNumber}`;
+
+        if (searchQuery) {
+            url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
+        } else {
+            $("#routeSearch").val("");
+        }
+
+        const { route_data, row_count, total_pages } = await apiFetch(url, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
@@ -437,7 +457,7 @@ function renderPagination() {
             </button>
         `);
 
-        btn.on("click", () => reloadJeepRouteData(i));
+        btn.on("click", () => reloadJeepRouteData(i, jeepRouteDataSearchQuery));
 
         pageContainer.append(btn);
     }

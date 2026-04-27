@@ -41,7 +41,7 @@
 </head>
 <body class="overflow-y-hidden">
     <!-- Start of Navigation Bar -->
-    <nav class="bg-white shadow relative z-[1000] border-b-[2px] border-[#004F11]">
+    <nav class="bg-white shadow relative z-[1000] border-b-[2px] border-[#004F11] overflow-visible">
         <div class="container mx-auto flex justify-between items-center px-4 ">
 
             <!-- Logo -->
@@ -65,13 +65,13 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full w-52 pt-2
+                    <div class="absolute right-0 top-full w-auto min-w-[120px] pt-2
                                 opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                 transition duration-200">
 
                         <div class="bg-white shadow-lg rounded-lg border border-gray-200">
                             <a href="guide.html" 
-                            class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg">
+                            class="block px-3 py-2 hover:bg-gray-100 rounded-t-lg whitespace-nowrap">
                             Guide
                             </a>
 
@@ -91,7 +91,7 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full w-52 pt-2
+                    <div class="absolute right-0 top-full w-52 pt-2
                                 opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                 transition duration-200">
 
@@ -257,24 +257,49 @@
                                     </div>
                                 </div>
 
-                                <!-- BUTTONS -->
-                                <div class="space-y-2 pt-2">
+<!-- BUTTONS -->
+<div class="space-y-3 pt-2">
 
-                                    <button id="calculateRouteButton"
-                                        class="w-full py-2 rounded-xl font-semibold text-white
-                                            bg-[#2E7D32] hover:bg-[#004F11]
-                                            transition-all shadow-md cursor-pointer">
-                                        Calculate Route
-                                    </button>
+    <!-- Primary -->
+    <button id="calculateRouteButton"
+        class="w-full py-2 rounded-xl font-semibold text-white
+               bg-[#2E7D32] hover:bg-[#004F11]
+               transition-all shadow-md cursor-pointer">
+        Find Jeepney Route
+    </button>
 
-                                    <button id="toggleJeepRoutes"
-                                        class="w-full py-2 rounded-xl font-semibold
-                                            border border-[#004F11]/30 text-[#004F11]
-                                            hover:bg-[#004F11]/5 transition-all cursor-pointer">
-                                        Toggle Jeepney Routes
-                                    </button>
-                                    
-                                </div>
+    <!-- Map Controls -->
+    <div class="space-y-2">
+
+        <!-- Label -->
+        <p class="text-xs text-gray-500 font-medium text-center">
+            -- Show on map --
+        </p>
+
+        <!-- Toggles -->
+        <div class="flex gap-2">
+
+            <!-- Routes -->
+            <button id="toggleJeepRoutes"
+                class="flex-1 py-2 rounded-xl text-xs font-semibold
+                       border border-[#004F11]/30 text-[#004F11]
+                       hover:bg-[#004F11]/5 transition-all cursor-pointer">
+                Routes
+            </button>
+
+            <!-- Terminals -->
+            <button id="toggleJeepTerminals"
+                class="flex-1 py-2 rounded-xl text-xs font-semibold
+                       border border-[#004F11]/30 text-[#004F11]
+                       hover:bg-[#004F11]/5 transition-all cursor-pointer">
+                Terminals
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
                             </div>
                         </div>

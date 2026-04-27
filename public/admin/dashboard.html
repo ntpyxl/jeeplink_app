@@ -30,8 +30,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <style>
-        body { visibility: hidden; }
-        
         #map {
             width: 100%;
             height: 300px; 
@@ -122,6 +120,34 @@
                                 pointer-events-none">
 
                         Add, edit, and manage routes
+
+                        <!-- Arrow -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                            <div class="w-2 h-2 bg-black rotate-45"></div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="terminalsManagement.html"
+                    class="relative group w-4/5 flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[#2f7a33] transition">
+
+                    <!-- Icon -->
+                    <div class="w-8 h-8 flex items-center justify-center border-1 border-white rounded-full">
+                        <i class="fas fa-warehouse text-white"></i>
+                    </div>
+
+                    <!-- Label -->
+                    <span class="nav-label">Terminals Management</span>
+
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                opacity-0 translate-y-2 scale-95
+                                group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100
+                                transition-all duration-200 ease-out
+                                bg-black text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap
+                                pointer-events-none">
+
+                        Add, edit, and manage jeepney terminals
 
                         <!-- Arrow -->
                         <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
@@ -268,9 +294,9 @@
         <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
 
     <!-- Main Content -->
-    <main class="lg:ml-92 p-6 flex-1">
+    <main class="lg:ml-92 p-4 flex-1">
             <!-- Header -->
-            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+            <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
                 <!-- Left Side -->
                 <div class="flex items-center">
