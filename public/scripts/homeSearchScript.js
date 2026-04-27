@@ -1,4 +1,4 @@
-import { setupLocationSearch, setupNamedLocations } from "./core/search/locationSearchAutocomplete.js";
+import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 
 window.addEventListener("pageshow", () => {
     $("#startingPointField").val();
@@ -37,6 +37,13 @@ const destinationPointSearch = setupLocationSearch({
 });
 
 $("#calculateRouteButton").on("click", async () => {
+    if(!destinationPoint) return;
+    if(!startingPoint) {
+        startingPoint = await getCurrentLocation();
+        $("#startingPointField").val(startingPoint.name);
+        isStartingPointSelectedLocation = true;
+    }
+
     const tasks = [];
 
     if (!isStartingPointSelectedLocation) {
