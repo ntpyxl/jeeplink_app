@@ -49,10 +49,6 @@ function renderReports(reports) {
                 <td colspan="7" class="py-3 text-center text-gray-400">No reports found.</td>
             </tr>
         `);
-        // Fill remaining 9 rows
-        for (let i = 0; i < rowsPerPage - 1; i++) {
-            $tbody.append(`<tr class="border-b"><td colspan="7" class="py-3">&nbsp;</td></tr>`);
-        }
         return;
     }
 
@@ -79,11 +75,6 @@ function renderReports(reports) {
 
     applyStatusColors();
 
-    // Padding for empty rows up to rowsPerPage
-    const fillerCount = rowsPerPage - reports.length;
-    for (let i = 0; i < fillerCount; i++) {
-        $tbody.append(`<tr class="border-b"><td colspan="7" class="py-3">&nbsp;</td></tr>`);
-    }
 }
 
 // Helper functions
