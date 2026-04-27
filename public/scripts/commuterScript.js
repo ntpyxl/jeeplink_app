@@ -5,9 +5,16 @@ import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow } from "./ui/routeInformationElements.js"
-import { updateControlsPosition, closeRoutesPanel } from "./ui/commuterStylingScript.js"
+import { updateControlsPosition, closeRoutesPanel, showPageLoader, hidePageLoader } from "./ui/commuterStylingScript.js"
 import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 import { invokeLoadingState } from "./ui/commuterStylingScript.js"
+
+showPageLoader([
+    "Loading map data...",
+    "Checking jeepney routes...",
+    "Optimizing your commute...",
+    "Starting your journey..."
+]);
 
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
@@ -224,6 +231,10 @@ if (destination) {
     addRouteNode(destinationPoint, "destination");
 }
 
+if (!(start && destination)) {
+    hidePageLoader();
+}
+
 if (start && destination) {
     $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
 
@@ -241,6 +252,8 @@ if (start && destination) {
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
+
+    hidePageLoader();
 }
 
 const startingPointSearch = setupLocationSearch({
