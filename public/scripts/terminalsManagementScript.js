@@ -19,18 +19,6 @@ const rowsPerPage = 10;
 
 reloadTerminalsTableData(1);
 
-map.on("zoomend", () => {
-    const zoom = map.getZoom();
-    let weight;
-
-    if (zoom <= 13) weight = 1;
-    else if (zoom <= 15) weight = 2;
-    else if (zoom <= 17) weight = 3;
-    else weight = 4;
-
-    //roadsLayer.setStyle({ weight });
-});
-
 const terminalRenderer = new TerminalRenderer({ map });
 await terminalRenderer.displayTerminals();
 
@@ -45,6 +33,41 @@ const deleteTerminalIdInput = $("#deleteTerminalId");
 const deleteTerminalNameLabel = $("#deleteTerminalName");
 const cancelDeleteBtn = $("#cancelDelete");
 const confirmDeleteBtn = $("#confirmDelete");
+
+async function enterEditMode(terminal) {
+    editingTerminalId = terminal.id;
+    const terminalData = terminalRenderer.terminals.find(terminal => terminal.id === editingTerminalId);
+
+    terminalNameInput.val(terminal.name);
+    editTerminalFields.removeClass("hidden");
+    $("#cancelEditTerminal").removeClass("hidden");
+
+    $("#saveDrawnTerminal")
+        .removeClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .addClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .html('<i class="fas fa-save"></i><span> Save Terminal</span>');
+
+    terminalEditor.clear();
+    terminalRenderer.hide();
+    terminalRenderer.displayTerminals({exceptTerminalId: editingTerminalId});
+
+    terminalEditor.createNode(terminalData.latitude, terminalData.longitude)
+}
+
+function exitEditMode() {
+    editingTerminalId = null;
+    terminalNameInput.val("");
+    editTerminalFields.addClass("hidden");
+    $("#cancelEditTerminal").addClass("hidden");
+
+    terminalRenderer.reload();
+    clearDrawnTerminal();
+
+    $("#saveDrawnTerminal")
+        .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
+        .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
+        .text("+ Add Terminal");
+}
 
 $("#clearDrawnTerminal").on("click", () => {
     clearDrawnTerminal();
@@ -63,23 +86,22 @@ $("#saveDrawnTerminal").on("click", async () => {
         return;
     }
 
+    const terminalNode = terminalEditor.node
     try {       
-        
         if (editingTerminalId) {
             await apiFetch("/updateTerminal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    route_id: editingRouteId,
-                    route_name: routeName || "Unnamed Jeep Route",
-                    route_status: routeStatusSelect.val(),
-                    route_type: validParentRoute ? "temporary" : "main",
-                    parent_route_id: validParentRoute?.id || null,
-                    nodes: nodes
+                    terminal_id: editingTerminalId,
+                    terminal_name: terminalName || "Unnamed Terminal",
+                    coordinates: {
+                        latitude: terminalNode.coordinates[1],
+                        longitude: terminalNode.coordinates[0]
+                    }
                 })
             });
         } else {
-            const terminalNode = terminalEditor.node
             await apiFetch("/insertTerminal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -94,6 +116,7 @@ $("#saveDrawnTerminal").on("click", async () => {
         }
 
         clearDrawnTerminal();
+        terminalRenderer.reload();
         reloadTerminalsTableData(1)
 
         if (editingTerminalId) {
@@ -104,6 +127,55 @@ $("#saveDrawnTerminal").on("click", async () => {
     } catch (err) {
         console.error(err);
         showError("Failed to save Terminal.");
+    }
+});
+
+$("#cancelEditTerminal").on("click", () => {
+    exitEditMode();
+});
+
+$("#terminalsTableBody").on("click", ".edit-terminal-btn", function() {
+    const terminalId = parseInt($(this).data("terminal-id"));
+    const terminalData = terminalRenderer.terminals.find(terminal => terminal.id === terminalId);
+    if (!terminalData) return;
+
+    enterEditMode(terminalData);
+});
+
+$("#terminalsTableBody").on("click", ".delete-terminal-btn", function() {
+    const terminalId = $(this).data("terminal-id");
+    const terminalData = terminalRenderer.terminals.find(terminal => terminal.id === terminalId);
+    if (!terminalData) return;
+
+    deleteTerminalIdInput.val(terminalId);
+    deleteTerminalNameLabel.text(terminalData.name);
+    deleteModal.removeClass("hidden").addClass("flex");
+});
+
+cancelDeleteBtn.on("click", () => {
+    deleteModal.removeClass("flex").addClass("hidden");
+});
+
+confirmDeleteBtn.on("click", async () => {
+    const terminalId = deleteTerminalIdInput.val();
+
+    try {
+        await apiFetch("/deleteTerminal", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                terminal_id: terminalId
+            })
+        });
+
+        deleteModal.removeClass("flex").addClass("hidden");
+        clearDrawnTerminal();
+        terminalRenderer.reload();
+        reloadTerminalsTableData(1)
+        showSuccess("Successfully deleted Terminal!");
+    } catch (err) {
+        console.error(err);
+        showError("Failed to delete Terminal.");
     }
 });
 

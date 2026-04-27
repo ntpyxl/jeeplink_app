@@ -18,12 +18,13 @@ export class TerminalRenderer {
         this.terminals = terminals_data || [];
     }
 
-    async displayTerminals() {
+    async displayTerminals({ exceptTerminalId = null } = {}) {
         if (!this.terminals) {
             await this.loadTerminals();
         }
 
         this.terminals.forEach((terminal) => {
+            if(exceptTerminalId === terminal.id) return;
             const marker = L.circleMarker(
                 [terminal.latitude, terminal.longitude],
                 {

@@ -271,230 +271,279 @@
             </nav> -->
         </aside>
 
-    <!-- Main Content -->
-    <main class="lg:ml-92 p-6 flex-1">
-            <!-- Header -->
-            <header class="w-full flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
+        <!-- Main Content -->
+        <main class="lg:ml-92 p-6 flex-1">
+                <!-- Header -->
+                <header class="w-full flex items-center justify-between border-gray-300 border-b-1 px-6 py-12 ">
 
-                <!-- Left Side -->
-                <div class="flex items-center">
-                    <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 lg:hidden">
-                        <i class="fas fa-bars text-gray-600 text-xl"></i>
-                    </button>
-                    <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
-                        Welcome back, Admin!
-                    </h1>
-                </div>
+                    <!-- Left Side -->
+                    <div class="flex items-center">
+                        <button id="menuBtn" class="mr-4 flex items-center justify-center w-10 h-10 lg:hidden">
+                            <i class="fas fa-bars text-gray-600 text-xl"></i>
+                        </button>
+                        <h1 class="text-2xl md:text-4xl font-extralight text-gray-800">
+                            Welcome back, Admin!
+                        </h1>
+                    </div>
 
-                <!-- Right Side -->
-                <div class="flex items-center gap-6">
+                    <!-- Right Side -->
+                    <div class="flex items-center gap-6">
 
-                    <!-- Notification Icon -->
-                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
-                        <i class="fas fa-bell text-gray-600"></i>
-                    </button>
+                        <!-- Notification Icon -->
+                        <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                            <i class="fas fa-bell text-gray-600"></i>
+                        </button>
 
-                    <!-- Divider  -->
-                    <div class="w-px h-12 bg-gray-300"></div>
+                        <!-- Divider  -->
+                        <div class="w-px h-12 bg-gray-300"></div>
 
-                    <div class="relative">
-                        <!-- Profile -->
-                        <div id="profileBtn" class="flex items-center gap-3 cursor-pointer">
-                            <img src="../images/hero1.jpg"
-                                alt="Admin avatar"
-                                onerror="this.style.display='none'"
-                                class="w-10 h-10 rounded-full object-cover border border-gray-200">
-                            <span class="text-gray-700 font-medium">Admin</span>
-                        </div>
-
-                        <!-- Dropdown -->
-                        <div id="profileDropdown"
-                            class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md 
-                                    border border-gray-200 rounded-2xl shadow-xl overflow-hidden
-
-                                    opacity-0 scale-95 translate-y-2 pointer-events-none
-                                    transition-all duration-200 ease-out">
-
-                            <!-- User Info -->
-                            <div class="px-4 py-3 border-b border-gray-100">
-                                <p class="text-sm font-semibold text-gray-800">Admin</p>
-                                <p class="text-xs text-gray-500">admin@email.com</p>
+                        <div class="relative">
+                            <!-- Profile -->
+                            <div id="profileBtn" class="flex items-center gap-3 cursor-pointer">
+                                <img src="../images/hero1.jpg"
+                                    alt="Admin avatar"
+                                    onerror="this.style.display='none'"
+                                    class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                <span class="text-gray-700 font-medium">Admin</span>
                             </div>
 
-                            <!-- Logout -->
-                            <button id="logoutBtn"
-                                    class="w-full flex items-center gap-3 px-4 py-3 
-                                        text-gray-700 hover:bg-red-50 hover:text-red-500 
-                                        transition-all duration-200">
-                                <i class="fas fa-sign-out-alt text-sm"></i>
-                                <span class="font-medium">Logout</span>
-                            </button>
-                        </div>
-                    </div>
+                            <!-- Dropdown -->
+                            <div id="profileDropdown"
+                                class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md 
+                                        border border-gray-200 rounded-2xl shadow-xl overflow-hidden
 
-                </div>
-            </header>
+                                        opacity-0 scale-95 translate-y-2 pointer-events-none
+                                        transition-all duration-200 ease-out">
 
-            <!-- Terminals Management Content -->
-            <div class="w-full p-6">
-                <div class="border-b-1 border-gray-200">
-                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Terminals Management</h2>
-                </div>
-
-                <!-- Search + Table Container -->
-                <div class="bg-white mt-6 p-6 rounded-xl shadow">
-
-                    <!-- Top Bar -->
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-
-                        <!-- Search Bar -->
-                        <div class="relative w-full md:w-1/3">
-                            <input id="terminalSearch" type="text" placeholder="Search terminals..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        </div>
-                    </div>
-
-                    <!-- Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="text-gray-500 text-sm border-b">
-                                    <th class="py-3">Terminal ID</th>
-                                    <th class="py-3">Terminal Name</th>
-                                    <th class="py-3 text-center">Actions</th>
-                                </tr>
-                            </thead>
-
-                            <!-- Render Terminals Table -->
-                            <tbody id="terminalsTableBody" class="text-gray-700 text-sm">
-
-                                <!-- Loading Spinner Row -->
-                                <tr id="tableLoading" class="hidden">
-                                    <td colspan="6" class="py-6">
-                                        <!-- Loading Spinner -->
-                                        <div class="flex justify-center items-center">
-                                            <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
-
-                        <!-- Info -->
-                        <span id="paginationInfo" class="text-sm text-gray-500">
-                            Showing 0 to 0 of 0 entries
-                        </span>
-
-                        <!-- Controls -->
-                        <div class="flex items-center gap-2">
-
-                            <button id="prevBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
-                                Prev
-                            </button>
-
-                            <div id="pageNumbers" class="flex gap-2 cursor-pointer">
-                                <!-- Pages will be generated here -->
-                            </div>
-
-                            <button id="nextBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
-                                Next
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Add Terminals Content -->
-            <div class="w-full p-6">
-                <div class="border-b-1 border-gray-200">
-                    <h2 class="text-3xl font-medium text-gray-800 mb-4">Add Terminals</h2>
-                </div>
-
-                <!-- Add Coordinates -->
-                <div class="bg-white p-4 rounded-xl mt-4">
-
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-
-                        <!-- LEFT SIDE -->
-                        <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
-
-                            <!-- Added Terminal Name -->
-                            <div class="relative w-full sm:w-64 min-w-0">
-                                <input type="text" id="drawnJeepTerminalName" placeholder="Terminal Name"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                            </div>
-
-                            <!-- Edit-only fields -->
-                            <div id="editTerminalFields" class="hidden flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                                
-
-                                <div class="relative w-full sm:w-40">
-                                    <select id="drawnJeepTerminalStatus"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
-                                        <option value="enabled">Enabled</option>
-                                        <option value="disabled">Disabled</option>
-                                    </select>
+                                <!-- User Info -->
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <p class="text-sm font-semibold text-gray-800">Admin</p>
+                                    <p class="text-xs text-gray-500">admin@email.com</p>
                                 </div>
 
-                                <div class="relative w-full sm:w-40">
-                                
-                                    <!-- Parent Terminal Suggestions -->
-                                    <div id="parentTerminalSuggestions"
-                                        class="absolute left-0 top-full w-full mt-2 hidden z-999
-                                            bg-white/95 backdrop-blur-md
-                                            rounded-lg shadow-lg border border-gray-300
-                                            max-h-48 overflow-y-auto">
+                                <!-- Logout -->
+                                <button id="logoutBtn"
+                                        class="w-full flex items-center gap-3 px-4 py-3 
+                                            text-gray-700 hover:bg-red-50 hover:text-red-500 
+                                            transition-all duration-200">
+                                    <i class="fas fa-sign-out-alt text-sm"></i>
+                                    <span class="font-medium">Logout</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </header>
+
+                <!-- Terminals Management Content -->
+                <div class="w-full p-6">
+                    <div class="border-b-1 border-gray-200">
+                        <h2 class="text-3xl font-medium text-gray-800 mb-4">Terminals Management</h2>
+                    </div>
+
+                    <!-- Search + Table Container -->
+                    <div class="bg-white mt-6 p-6 rounded-xl shadow">
+
+                        <!-- Top Bar -->
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+                            <!-- Search Bar -->
+                            <div class="relative w-full md:w-1/3">
+                                <input id="terminalSearch" type="text" placeholder="Search terminals..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-gray-500 text-sm border-b">
+                                        <th class="py-3">Terminal ID</th>
+                                        <th class="py-3">Terminal Name</th>
+                                        <th class="py-3 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <!-- Render Terminals Table -->
+                                <tbody id="terminalsTableBody" class="text-gray-700 text-sm">
+
+                                    <!-- Loading Spinner Row -->
+                                    <tr id="tableLoading" class="hidden">
+                                        <td colspan="6" class="py-6">
+                                            <!-- Loading Spinner -->
+                                            <div class="flex justify-center items-center">
+                                                <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
+
+                            <!-- Info -->
+                            <span id="paginationInfo" class="text-sm text-gray-500">
+                                Showing 0 to 0 of 0 entries
+                            </span>
+
+                            <!-- Controls -->
+                            <div class="flex items-center gap-2">
+
+                                <button id="prevBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                                    Prev
+                                </button>
+
+                                <div id="pageNumbers" class="flex gap-2 cursor-pointer">
+                                    <!-- Pages will be generated here -->
+                                </div>
+
+                                <button id="nextBtn" class="cursor-pointer px-3 py-1 border rounded-lg text-gray-500 hover:bg-gray-100">
+                                    Next
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Add Terminals Content -->
+                <div class="w-full p-6">
+                    <div class="border-b-1 border-gray-200">
+                        <h2 class="text-3xl font-medium text-gray-800 mb-4">Add Terminals</h2>
+                    </div>
+
+                    <!-- Add Coordinates -->
+                    <div class="bg-white p-4 rounded-xl mt-4">
+
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+                            <!-- LEFT SIDE -->
+                            <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
+
+                                <!-- Added Terminal Name -->
+                                <div class="relative w-full sm:w-64 min-w-0">
+                                    <input type="text" id="drawnJeepTerminalName" placeholder="Terminal Name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                </div>
+
+                                <!-- Edit-only fields -->
+                                <div id="editTerminalFields" class="hidden flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                                    
+
+                                    <div class="relative w-full sm:w-40">
+                                        <select id="drawnJeepTerminalStatus"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#84C177]">
+                                            <option value="enabled">Enabled</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="relative w-full sm:w-40">
+                                    
+                                        <!-- Parent Terminal Suggestions -->
+                                        <div id="parentTerminalSuggestions"
+                                            class="absolute left-0 top-full w-full mt-2 hidden z-999
+                                                bg-white/95 backdrop-blur-md
+                                                rounded-lg shadow-lg border border-gray-300
+                                                max-h-48 overflow-y-auto">
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Cancel + Save Button Group -->
+                                <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto min-w-full sm:min-w-max">
+                                    <button id="cancelEditTerminal" class="cursor-pointer w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-black hover:bg-gray-300 transition text-sm shadow-sm hidden">
+                                        Cancel
+                                    </button>
+
+                                    <button id="saveDrawnTerminal" class="cursor-pointer w-full sm:w-auto bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap flex items-center justify-center gap-2">
+                                        <i class="fas fa-plus fa-xs"></i>
+                                        <span>Add Terminal</span>
+                                    </button>
+                                </div>
                             </div>
 
-                            <!-- Cancel + Save Button Group -->
-                            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto min-w-full sm:min-w-max">
-                                <button id="cancelEditTerminal" class="cursor-pointer w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-black hover:bg-gray-300 transition text-sm shadow-sm hidden">
-                                    Cancel
-                                </button>
+                            <!-- RIGHT SIDE -->
+                            <div class="flex flex-wrap gap-2 justify-start md:justify-end">
 
-                                <button id="saveDrawnTerminal" class="cursor-pointer w-full sm:w-auto bg-[#35903A] text-white px-4 py-2 rounded-lg hover:bg-[#2f7a33] transition whitespace-nowrap flex items-center justify-center gap-2">
-                                    <i class="fas fa-plus fa-xs"></i>
-                                    <span>Add Terminal</span>
+                                <!-- Clear -->
+                                <button id="clearDrawnTerminal"
+                                    class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm">
+                                    <i class="fas fa-trash-alt text-gray-600"></i>
+                                    Clear
                                 </button>
                             </div>
-                        </div>
 
-                        <!-- RIGHT SIDE -->
-                        <div class="flex flex-wrap gap-2 justify-start md:justify-end">
-
-                            <!-- Clear -->
-                            <button id="clearDrawnTerminal"
-                                class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition text-sm">
-                                <i class="fas fa-trash-alt text-gray-600"></i>
-                                Clear
-                            </button>
                         </div>
 
                     </div>
 
+                    <!-- Map Container -->
+                    <div class="flex flex-col w-full mb-4 gap-4">
+                        <div class="">
+                            <div id="map" class="border border-gray-300 rounded-lg  " style="height: 900px; width: 100%;"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Map Container -->
-                <div class="flex flex-col w-full mb-4 gap-4">
-                    <div class="">
-                        <div id="map" class="border border-gray-300 rounded-lg  " style="height: 900px; width: 100%;"></div>
-                    </div>
+        </main>
+
+    <!-- Delete Terminal Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-9999 backdrop-blur-sm">
+
+        <div class="relative bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden">
+
+            <!-- Header Bar -->
+            <div class="bg-gradient-to-r from-red-400 to-red-600 px-6 py-4">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    Delete Terminal
+                </h2>
+            </div>
+
+            <div class="p-6 text-center">
+                <input type="hidden" id="deleteTerminalId">
+
+                <!-- Message -->
+                <p class="text-gray-700 text-sm mb-2">
+                    Are you sure you want to delete this terminal?
+                    
+                </p>
+
+                <div class="mb-4 flex flex-col items-center justify-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-4xl"></i>
+                    <span id="deleteRouteName" class="font-bold text-red-600 underline text-center"></span>
+                </div>
+                
+                <p class="text-xs text-red-500 mb-5">
+                    This action cannot be undone.
+                </p>
+
+                <!-- Buttons -->
+                <div class="flex justify-center gap-3">
+                    <button id="cancelDelete"
+                        class="cursor-pointer px-4 py-2 rounded-lg bg-gray-200 text-black 
+                            hover:bg-gray-300 transition text-sm shadow-sm">
+                        Cancel
+                    </button>
+
+                    <button id="confirmDelete"
+                        class="cursor-pointer px-4 py-2 rounded-lg 
+                        bg-red-500 text-white 
+                        hover:bg-red-600 transition text-sm shadow-md">
+                        Delete
+                    </button>
                 </div>
             </div>
-            
 
-    </main>
+        </div>
+    </div>
     
 
     <!-- Rotate Device Overlay -->
