@@ -25,6 +25,7 @@ export async function checkAuth() {
         });
 
         adminHideLoader();
+        if(response?.new_token) localStorage.setItem("token", response.new_token);
         return {"loggedInUsername": response.username};
     } catch (error) {
         localStorage.removeItem("token");
