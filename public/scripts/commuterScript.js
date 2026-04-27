@@ -1,6 +1,7 @@
 import { GraphHelper } from "./core/graphHelper.js";
 import { CommuterRouter } from "./core/commuterRouter.js";
 import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
+import { TerminalRenderer } from "./core/terminalRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
@@ -132,6 +133,7 @@ const savedRouteRenderer = new SavedRouteRenderer({
     roadsGeoJSON: roadsGeoJSON,
     graphHelper: graphHelper
 });
+const terminalRenderer = new TerminalRenderer({ map: map })
 const routeGenerated = new CommuterRouter({
     map: map,
     roadsGeoJSON: roadsGeoJSON,
@@ -142,6 +144,10 @@ const routeGenerated = new CommuterRouter({
 
 $("#toggleJeepRoutes").on("click", async () => {
     savedRouteRenderer.toggle();
+})
+
+$("#toggleJeepTerminals").on("click", async () => {
+    terminalRenderer.toggle();
 })
 
 function addRouteNode(data, type = null) {
