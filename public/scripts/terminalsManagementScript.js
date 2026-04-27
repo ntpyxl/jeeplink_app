@@ -178,11 +178,31 @@ confirmDeleteBtn.on("click", async () => {
     }
 });
 
-async function reloadTerminalsTableData(pageNumber = 1) {
+let terminalDataSearchQuery = null;
+let searchTimeout = null;
+
+$("#terminalSearch").on("input", function () {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+        terminalDataSearchQuery = $(this).val().trim() || null;
+        reloadTerminalsTableData(1, terminalDataSearchQuery);
+    }, 500);
+});
+
+async function reloadTerminalsTableData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        const { terminals_data, row_count, total_pages } = await apiFetch(`/getTerminals/${pageNumber}`, {
+        let url = `/getTerminals/${pageNumber}`;
+
+        if (searchQuery) {
+            url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
+        } else {
+            $("#routeSearch").val("");
+        }
+
+        const { terminals_data, row_count, total_pages } = await apiFetch(url, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
@@ -235,7 +255,7 @@ function renderPagination() {
             </button>
         `);
 
-        btn.on("click", () => reloadTerminalsTableData(i));
+        btn.on("click", () => reloadTerminalsTableData(i, terminalDataSearchQuery));
 
         pageContainer.append(btn);
     }

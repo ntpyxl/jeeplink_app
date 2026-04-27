@@ -65,16 +65,6 @@ $(document).ready(function () {
         }
     });
 
-    // Search Bar
-    $("#routeSearch").on("keyup", function () {
-        let value = $(this).val().toLowerCase();
-
-        $("#routesTableBody tr").not("#tableLoading").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-        });
-
-    });
-
     $("#logoutBtn").click(function () { logout(); });
 });
 
