@@ -27,7 +27,6 @@ const terminalEditor = new TerminalEditor({ map });
 let editingTerminalId = null;
 const terminalNameInput = $("#drawnJeepTerminalName");
 const editTerminalFields = $("#editTerminalFields");
-const parentTerminalSuggestions = $("#parentTerminalSuggestions");
 const deleteModal = $("#deleteModal");
 const deleteTerminalIdInput = $("#deleteTerminalId");
 const deleteTerminalNameLabel = $("#deleteTerminalName");
@@ -38,7 +37,7 @@ async function enterEditMode(terminal) {
     editingTerminalId = terminal.id;
     const terminalData = terminalRenderer.terminals.find(terminal => terminal.id === editingTerminalId);
 
-    terminalNameInput.val(terminal.name);
+    terminalNameInput.val(terminal.terminal_name);
     editTerminalFields.removeClass("hidden");
     $("#cancelEditTerminal").removeClass("hidden");
 
