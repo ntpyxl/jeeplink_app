@@ -422,7 +422,6 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
-            console.log(step)
             const rideDistanceKm = Math.round(step.distance / 1000);
 
             const traditionalFares = fareCalculator(rideDistanceKm, fareMatrix[0]);
@@ -456,7 +455,6 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
                 }
             });
         }
-        console.log(totals)
 
         return totals;
     }, {
