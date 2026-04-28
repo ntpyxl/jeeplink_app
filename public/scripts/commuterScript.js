@@ -640,7 +640,7 @@ async function followRoute() {
             isUserNotifiedBeingNearStop = true;
         }
 
-        if (distance < 5) {
+        if (distance < 20) {
             console.log("Reached step:", stepCoordIndex);
             stepCoordIndex++;
             isUserNotifiedBeingNearStop = false;
@@ -672,8 +672,8 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
 
 function stopAllTracking() {
