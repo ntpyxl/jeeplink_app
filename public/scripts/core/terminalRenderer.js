@@ -7,6 +7,14 @@ export class TerminalRenderer {
         this.terminals = null;
         this.markers = [];
         this.markerLayer = new L.LayerGroup().addTo(this.map);
+
+        // Custom Icon for jeepney terminal
+        this.jeepneyIcon = L.icon({
+            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconSize: [52, 52],
+            iconAnchor: [26, 52],
+            popupAnchor: [0, -30]
+        });
     }
 
     async loadTerminals() {
@@ -25,15 +33,20 @@ export class TerminalRenderer {
 
         this.terminals.forEach((terminal) => {
             if(exceptTerminalId === terminal.id) return;
-            const marker = L.circleMarker(
+            // const marker = L.circleMarker(
+            //     [terminal.latitude, terminal.longitude],
+            //     {
+            //         radius: 6,
+            //         color: "#0000FF",
+            //         fillColor: "#babaff",
+            //         fillOpacity: 1,
+            //         weight: 2
+            //     }
+            // ).addTo(this.markerLayer);
+
+            const marker = L.marker(
                 [terminal.latitude, terminal.longitude],
-                {
-                    radius: 6,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                    fillOpacity: 1,
-                    weight: 2
-                }
+                { icon: this.jeepneyIcon }
             ).addTo(this.markerLayer);
 
             marker.bindPopup(`
