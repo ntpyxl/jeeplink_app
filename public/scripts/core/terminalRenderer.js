@@ -15,6 +15,14 @@ export class TerminalRenderer {
             iconAnchor: [26, 52],
             popupAnchor: [0, -30]
         });
+
+        // Hover
+        this.jeepneyIconHover = L.icon({
+            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconSize: [60, 60], 
+            iconAnchor: [30, 60],
+            popupAnchor: [0, -30]
+        });
     }
 
     async loadTerminals() {
@@ -55,19 +63,11 @@ export class TerminalRenderer {
             `);
 
             marker.on("mouseover", () => {
-                marker.setStyle({
-                    radius: 8,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                });
+                marker.setIcon(this.jeepneyIconHover);
             });
 
             marker.on("mouseout", () => {
-                marker.setStyle({
-                    radius: 6,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                });
+                marker.setIcon(this.jeepneyIcon);
             });
 
             this.markers.push(marker);
