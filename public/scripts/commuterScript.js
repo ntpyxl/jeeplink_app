@@ -640,7 +640,7 @@ async function followRoute() {
             isUserNotifiedBeingNearStop = true;
         }
 
-        if (distance < 5) {
+        if (distance < 20) {
             console.log("Reached step:", stepCoordIndex);
             stepCoordIndex++;
             isUserNotifiedBeingNearStop = false;
