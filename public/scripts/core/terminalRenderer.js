@@ -7,6 +7,22 @@ export class TerminalRenderer {
         this.terminals = null;
         this.markers = [];
         this.markerLayer = new L.LayerGroup().addTo(this.map);
+
+        // Custom Icon for jeepney terminal
+        this.jeepneyIcon = L.icon({
+            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconSize: [52, 52],
+            iconAnchor: [26, 52],
+            popupAnchor: [0, -30]
+        });
+
+        // Hover
+        this.jeepneyIconHover = L.icon({
+            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconSize: [60, 60], 
+            iconAnchor: [30, 60],
+            popupAnchor: [0, -30]
+        });
     }
 
     async loadTerminals() {
@@ -25,15 +41,20 @@ export class TerminalRenderer {
 
         this.terminals.forEach((terminal) => {
             if(exceptTerminalId === terminal.id) return;
-            const marker = L.circleMarker(
+            // const marker = L.circleMarker(
+            //     [terminal.latitude, terminal.longitude],
+            //     {
+            //         radius: 6,
+            //         color: "#0000FF",
+            //         fillColor: "#babaff",
+            //         fillOpacity: 1,
+            //         weight: 2
+            //     }
+            // ).addTo(this.markerLayer);
+
+            const marker = L.marker(
                 [terminal.latitude, terminal.longitude],
-                {
-                    radius: 6,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                    fillOpacity: 1,
-                    weight: 2
-                }
+                { icon: this.jeepneyIcon }
             ).addTo(this.markerLayer);
 
             marker.bindPopup(`
@@ -42,19 +63,11 @@ export class TerminalRenderer {
             `);
 
             marker.on("mouseover", () => {
-                marker.setStyle({
-                    radius: 8,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                });
+                marker.setIcon(this.jeepneyIconHover);
             });
 
             marker.on("mouseout", () => {
-                marker.setStyle({
-                    radius: 6,
-                    color: "#0000FF",
-                    fillColor: "#babaff",
-                });
+                marker.setIcon(this.jeepneyIcon);
             });
 
             this.markers.push(marker);
