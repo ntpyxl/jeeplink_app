@@ -422,6 +422,7 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
 
     const routeCost = steps.reduce((totals, step) => {
         if (step.mode === "jeep") {
+            console.log(step)
             const rideDistanceKm = Math.round(step.distance / 1000);
 
             const traditionalFares = fareCalculator(rideDistanceKm, fareMatrix[0]);
@@ -455,19 +456,12 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
                 }
             });
         }
+        console.log(totals)
 
         return totals;
     }, {
-        regular: {
-            traditional: 0,
-            nonAcModern: 0,
-            acModern: 0
-        },
-        discounted: {
-            traditional: 0,
-            nonAcModern: 0,
-            acModern: 0
-        },
+        regular: {traditional: 0, nonAcModern: 0, acModern: 0},
+        discounted: {traditional: 0, nonAcModern: 0, acModern: 0},
         individualRides: []
     });
 
@@ -483,8 +477,8 @@ function buildRouteInformation(routeInformation, steps, fareMatrix) {
 }
 
 function formatInstructions(steps, individualRidesCost, keyToName) {
+    let rideIndex = 0;
     const routeinstructions = steps.map(step => {
-        let rideIndex = 0;
         const stepDistance = step.distance.toFixed(0);
         if (step.mode === "walk") {
             return `Walk ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;
@@ -496,7 +490,9 @@ function formatInstructions(steps, individualRidesCost, keyToName) {
             const discountedNonAcModernFee = individualRidesCost[rideIndex].discounted.nonAcModern;
             const regularAcModernFee = individualRidesCost[rideIndex].regular.acModern;
             const discountedAcModernFee = individualRidesCost[rideIndex].discounted.acModern;
+
             rideIndex++;
+
             return `
                 Ride jeep (${step.route_name}) for ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}. <br>
                 <span class="step-fare-text block text-xs text-gray-500 leading-relaxed">
