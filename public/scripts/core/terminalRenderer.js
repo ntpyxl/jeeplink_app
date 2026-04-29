@@ -35,22 +35,13 @@ export class TerminalRenderer {
     }
 
     async displayTerminals({ exceptTerminalId = null } = {}) {
+        $("#toggleJeepTerminals_loadingSpinner").removeClass("hidden");
         if (!this.terminals) {
             await this.loadTerminals();
         }
 
         this.terminals.forEach((terminal) => {
             if(exceptTerminalId === terminal.id) return;
-            // const marker = L.circleMarker(
-            //     [terminal.latitude, terminal.longitude],
-            //     {
-            //         radius: 6,
-            //         color: "#0000FF",
-            //         fillColor: "#babaff",
-            //         fillOpacity: 1,
-            //         weight: 2
-            //     }
-            // ).addTo(this.markerLayer);
 
             const marker = L.marker(
                 [terminal.latitude, terminal.longitude],
@@ -72,6 +63,7 @@ export class TerminalRenderer {
 
             this.markers.push(marker);
         });
+        $("#toggleJeepTerminals_loadingSpinner").addClass("hidden");
     }
 
     hide() {

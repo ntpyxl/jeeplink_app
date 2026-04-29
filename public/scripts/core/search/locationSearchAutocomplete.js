@@ -248,10 +248,19 @@ export function getCurrentLocation() {
             }),
             err => {
                 console.error(err);
-                showError("Failed to get location.");
+
+                if (err.code === 1)
+                    showError("Location permission denied. Double check your browser's location settings and allow JeepLink to access your location.");
+                else if (err.code === 2)
+                    console.log("Location unavailable. GPS signal may be weak.");
+                else if (err.code === 3)
+                    console.log("Location request timed out. Please try again.");
+                else
+                    console.log("Failed to get location. Unknown specific error.");
+
                 reject(err);
             },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 15000 }
+            { enableHighAccuracy: true, maximumAge: 15000 }
         );
     });
 }

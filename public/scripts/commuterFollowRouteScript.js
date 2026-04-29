@@ -12,11 +12,21 @@ export function watchUserPosition(onUpdate, onError) {
         },
         err => {
             console.error(err);
-            if (onError) onError(err);
+            
+            if (err.code === 1)
+                showError("Location permission denied. Double check your browser's location settings and allow JeepLink to access your location.");
+            else if (err.code === 2)
+                showError("Location unavailable. GPS signal may be weak.");
+            else if (err.code === 3)
+                showError("Location request timed out. Please try again.");
+            else
+                showError("Failed to get location. Unknown specific error.");
+
+            reject(err);
         },
         {
             enableHighAccuracy: true,
-            maximumAge: 15000
+            maximumAge: 5000
         }
     );
 
