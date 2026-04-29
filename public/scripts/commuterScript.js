@@ -325,7 +325,6 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
-    console.log(completeRouteInformation); // TODO: Remove later
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
@@ -439,10 +438,22 @@ function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
     Object.entries(routeGenerated.routeLayers).forEach(([key, layerGroup]) => {
         if (!layerGroup) return;
 
+        const isActive = key === activeKey;
         layerGroup.eachLayer(layer => {
             const mode = layer.options.mode;
+            const isMarker = layer instanceof L.CircleMarker;
 
-            if (key === activeKey) {
+            if (isMarker) {
+                layer.setStyle({
+                    opacity: isActive ? 1 : 0,
+                    fillOpacity: isActive ? 1 : 0
+                });
+
+                if (isActive) layer.bringToFront();
+                return;
+            }
+
+            if (isActive) {
                 if (mode === "jeep") {
                     layer.setStyle({ color: "#1E90FF", opacity: 1 });
                 } else {
@@ -451,11 +462,8 @@ function setActiveRoute(currentRouteIndex, hideInactiveRoute = false) {
 
                 layer.bringToFront();
             } else {
-                if (mode === "jeep") {
-                    layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
-                } else {
-                    layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1 });
-                }
+                layer.setStyle({ color: "#888", opacity: hideInactiveRoute ? 0 : 1
+                });
             }
         });
     });
@@ -677,8 +685,8 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
 
 function stopAllTracking() {

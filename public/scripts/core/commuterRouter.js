@@ -164,19 +164,28 @@ export class CommuterRouter {
                 edge.mode !== prevMode ||
                 edge.route_name !== prevRoute;
 
+            const style = edge.mode === "jeep"
+                ? { color: jeep_color, weight: weight }
+                : { color: "#666", weight: 4, dashArray: "6 6" };
+
             if (modeChanged && i > 0) {
                 nextStepCoordArray.push({
                     "coord": from,
                     "mode": prevMode
                 });
+
+                L.circleMarker(from, {
+                    radius: 5,
+                    color: style.color,
+                    fillColor: style.color,
+                    fillOpacity: 1,
+                    weight: style.weight,
+                    pane: "nodePane"
+                }).addTo(layerGroup);
             }
 
             prevMode = edge.mode;
             prevRoute = edge.route_name;
-
-            const style = edge.mode === "jeep"
-                ? { color: jeep_color, weight: weight }
-                : { color: "#666", weight: 4, dashArray: "6 6" };
 
             const segment = L.polyline([from, to], {
                 color: style.color,
@@ -195,6 +204,15 @@ export class CommuterRouter {
             "coord": lastTo,
             "mode": prevMode
         });
+
+        L.circleMarker(lastTo, {
+            radius: 5,
+            color: "#004F11",
+            fillColor: "#E9CD2D",
+            fillOpacity: 1,
+            weight: 2,
+            pane: "nodePane"
+        }).addTo(layerGroup);
 
         this.routeLayers[type] = layerGroup;
 
