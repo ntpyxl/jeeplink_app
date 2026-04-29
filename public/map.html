@@ -257,49 +257,59 @@
                                     </div>
                                 </div>
 
-<!-- BUTTONS -->
-<div class="space-y-3 pt-2">
+                                <!-- BUTTONS -->
+                                <div class="space-y-3 pt-2">
 
-    <!-- Primary -->
-    <button id="calculateRouteButton"
-        class="w-full py-2 rounded-xl font-semibold text-white
-               bg-[#2E7D32] hover:bg-[#004F11]
-               transition-all shadow-md cursor-pointer">
-        Find Jeepney Route
-    </button>
+                                    <!-- Primary -->
+                                    <button id="calculateRouteButton"
+                                        class="w-full py-2 rounded-xl font-semibold text-white
+                                            bg-[#2E7D32] hover:bg-[#004F11]
+                                            transition-all shadow-md cursor-pointer">
+                                        Find Jeepney Route
+                                    </button>
 
-    <!-- Map Controls -->
-    <div class="space-y-2">
+                                    <!-- Map Controls -->
+                                    <div class="space-y-2">
 
-        <!-- Label -->
-        <p class="text-xs text-gray-500 font-medium text-center">
-            -- Show on map --
-        </p>
+                                        <!-- Label -->
+                                        <p class="text-xs text-gray-500 font-medium text-center">
+                                            -- Show on map --
+                                        </p>
 
-        <!-- Toggles -->
-        <div class="flex gap-2">
+                                        <!-- Toggles -->
+                                        <div class="flex gap-2">
 
-            <!-- Routes -->
-            <button id="toggleJeepRoutes"
-                class="flex-1 py-2 rounded-xl text-xs font-semibold
-                       border border-[#004F11]/30 text-[#004F11]
-                       hover:bg-[#004F11]/5 transition-all cursor-pointer">
-                Routes
-            </button>
+                                            <!-- Routes -->
+                                            <button id="toggleJeepRoutes"
+                                                class="flex-1 py-2 rounded-xl text-xs font-semibold
+                                                    border border-[#004F11]/30 text-[#004F11]
+                                                    hover:bg-[#004F11]/5 transition-all cursor-pointer
+                                                    flex items-center justify-center gap-2">
+                                                Routes
+                                                <div
+                                                    id="toggleJeepRoutes_loadingSpinner"
+                                                    class="hidden w-3 h-3 border-2 border-gray-300 border-t-[#35903A] rounded-full animate-spin">
+                                                </div>
+                                            </button> 
 
-            <!-- Terminals -->
-            <button id="toggleJeepTerminals"
-                class="flex-1 py-2 rounded-xl text-xs font-semibold
-                       border border-[#004F11]/30 text-[#004F11]
-                       hover:bg-[#004F11]/5 transition-all cursor-pointer">
-                Terminals
-            </button>
+                                            <!-- Terminals -->
+                                            <button id="toggleJeepTerminals"
+                                                class="flex-1 py-2 rounded-xl text-xs font-semibold
+                                                    border border-[#004F11]/30 text-[#004F11]
+                                                    hover:bg-[#004F11]/5 transition-all cursor-pointer
+                                                    flex items-center justify-center gap-2">
+                                                Terminals
+                                                <div
+                                                    id="toggleJeepTerminals_loadingSpinner"
+                                                    class="hidden w-3 h-3 border-2 border-gray-300 border-t-[#35903A] rounded-full animate-spin">
+                                                </div>
+                                            </button>
 
-        </div>
+                                        </div>
 
-    </div>
+                                    </div>
 
-</div>
+                                </div>
 
                             </div>
                         </div>

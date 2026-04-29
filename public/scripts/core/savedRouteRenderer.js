@@ -12,6 +12,7 @@ export class SavedRouteRenderer {
     async display() {
         if (this.isLoading) return;
         this.isLoading = true;
+        $("#toggleJeepRoutes_loadingSpinner").removeClass("hidden");
 
         try {
             if (!this.calculatedRoutes) {
@@ -36,6 +37,7 @@ export class SavedRouteRenderer {
 
         } finally {
             this.isLoading = false;
+            $("#toggleJeepRoutes_loadingSpinner").addClass("hidden");
         }
     }
 
