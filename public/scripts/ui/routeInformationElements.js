@@ -1,6 +1,6 @@
 export function createRouteStepRow(step, i) {
     return $(`
-        <div class="flex gap-3 md:gap-4 items-start">
+        <div class="flex mt-2 gap-3 md:gap-4 items-start">
             <div class="flex-shrink-0 w-6 h-6 md:w-7 md:h-7
                         rounded-full bg-[#004F11]
                         text-[#E9CD2D] font-bold
@@ -10,8 +10,10 @@ export function createRouteStepRow(step, i) {
                 ${i + 1}
             </div>
             
-            <p class="text-sm md:text-base leading-relaxed text-gray-800
-                    pt-[2px] md:pt-0">
+            <p 
+                class="routeStepInstructionRowText text-sm md:text-base leading-relaxed text-gray-800 pt-[2px] md:pt-0"
+                data-step-num=${i}
+            >
 
                 ${step}
             </p>
@@ -111,4 +113,12 @@ export function createRouteInformationCard(routeTitle, routeInformation, routeSt
             </div>
         </div>
         `;
+}
+
+export function updateHighlightedRouteStepRow(stepNum = null) {
+    const highlightclassList = `px-3 rounded-xl transition-all duration-200 bg-[#004F11]/10 ring-2 ring-[#35903A] shadow-md scale-[1.01]`;
+    $(".routeStepInstructionRowText").removeClass(highlightclassList)
+    if(stepNum) {
+        $(`.routeStepInstructionRowText[data-step-num="${stepNum}"]`).addClass(highlightclassList)
+    }
 }

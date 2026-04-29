@@ -5,7 +5,7 @@ import { TerminalRenderer } from "./core/terminalRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
-import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow } from "./ui/routeInformationElements.js"
+import { createRouteInformationCard, createRouteTotalPrices, createRouteStepRow, updateHighlightedRouteStepRow } from "./ui/routeInformationElements.js"
 import { updateControlsPosition, closeRoutesPanel, showPageLoader, hidePageLoader } from "./ui/commuterStylingScript.js"
 import { watchUserPosition, simulateUserPosition } from "./commuterFollowRouteScript.js"
 import { invokeLoadingState } from "./ui/commuterStylingScript.js"
@@ -325,6 +325,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    console.log(completeRouteInformation); // TODO: Remove later
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
@@ -542,21 +543,6 @@ if(localStorage.getItem("activeRoute")) {
 }
 
 async function followRoute() {
-    showNotification({title: "Navigation started!", icon: "info"});
-
-    map.flyTo(currentUserMarkerPosition, 16);
-    setActiveRoute(currentRoute, true)
-    $("#routeTitle").text("Following Route");
-    $("#goNow")
-        .html('<i class="fa fa-stop-circle pe-2"></i><span> End Navigation</span>')
-        .removeClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]")
-        .addClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]");      
-    $("#commuteContent").stop(true, true).slideUp(250);
-    $("#toggleCommute").hide();
-    $("#arrow").addClass("rotate-180");
-
-    updateControlsPosition();
-
     const routeNames = [
         "fastestStepCoords",
         "cheapestStepCoords",
@@ -584,6 +570,23 @@ async function followRoute() {
 
     const deviationThreshold = 80;
     const confirmationMs = 10000;
+
+    showNotification({title: "Navigation started!", icon: "info"});
+
+    updateHighlightedRouteStepRow(stepCoordIndex + 1);
+
+    map.flyTo(currentUserMarkerPosition, 16);
+    setActiveRoute(currentRoute, true)
+    $("#routeTitle").text("Following Route");
+    $("#goNow")
+        .html('<i class="fa fa-stop-circle pe-2"></i><span> End Navigation</span>')
+        .removeClass("from-[#004F11] to-[#1f7a3a] hover:from-[#006b1c] hover:to-[#2e8b4a] active:from-[#00380c] active:to-[#145a2a]")
+        .addClass("from-[#dc2626] to-[#ef4444] hover:from-[#e11d48] hover:to-[#f43f5e] active:from-[#b91c1c] active:to-[#dc2626]");      
+    $("#commuteContent").stop(true, true).slideUp(250);
+    $("#toggleCommute").hide();
+    $("#arrow").addClass("rotate-180");
+
+    updateControlsPosition();
 
     deviationChecker = setInterval(() => {
         if (latestDistanceFromRoute > deviationThreshold && latestIsCurrentRouteInJeepney && !isUserNotifiedDeviatingFromRoute) {
@@ -644,6 +647,7 @@ async function followRoute() {
             console.log("Reached step:", stepCoordIndex);
             stepCoordIndex++;
             isUserNotifiedBeingNearStop = false;
+            updateHighlightedRouteStepRow(stepCoordIndex + 1);
             localStorage.setItem("activeRoute_currentStep", JSON.stringify({
                 stepCoordIndex: stepCoordIndex,
                 currentJeepRouteId: jeepRidesIdList[stepCoordIndex]
@@ -652,6 +656,7 @@ async function followRoute() {
 
         if (stepCoordIndex >= finalStepCoordIndex) {
             console.log("User has reached destination");
+            updateHighlightedRouteStepRow();
             playArrivedNotification();
             showNotification({
                 title: "You have arrived at your destination!",
@@ -672,8 +677,8 @@ async function followRoute() {
     // Uncomment followRoute_watchLocation for actual user position tracking
     // Uncomment followRoute_stopSimulationFunction to simulate user position tracking. The cursor position on the map will then be used to simulate the user's position.
     
-    followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
-    //followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
+    //followRoute_watchLocation = watchUserPosition(handleNavigationUpdate);
+    followRoute_stopSimulationFunction = simulateUserPosition(map, handleNavigationUpdate);
 }
 
 function stopAllTracking() {
