@@ -105,7 +105,7 @@ async function saveGraphJson() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            filename: "Dasma_RoadGraph-AllRoads.json",
+            filename: "Dasma_RoadGraph-AllRoads-TestWalkingRoadName.json", // TODO: Remove -TestWalkingRoadName before pushing to main!
             fileData: Object.fromEntries(graphHelper.graph)
         })
     });

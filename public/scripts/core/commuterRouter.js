@@ -369,6 +369,9 @@ function buildRouteInstructions(edges) {
     let currentMode = null;
     let currentRouteId = null;
     let currentRoute = null;
+    let currentRoadName = null;
+    let lastRoadName = null;
+
     let start = null;
     let distance = 0;
 
@@ -377,11 +380,12 @@ function buildRouteInstructions(edges) {
             currentMode = edge.mode;
             currentRouteId = edge.route_id || null;
             currentRoute = edge.route_name || null;
+            currentRoadName = edge.road_name || null;
+            lastRoadName = edge.road_name || null;
             start = edge.from;
         }
 
         const modeChanged = edge.mode !== currentMode;
-        const routeIdChanged = edge.route_id !== currentRouteId;
         const routeChanged = edge.route_name !== currentRoute;
 
         if (modeChanged || routeChanged) {
@@ -389,6 +393,7 @@ function buildRouteInstructions(edges) {
                 mode: currentMode,
                 route_id: currentRouteId,
                 route_name: currentRoute,
+                road_name: lastRoadName,
                 start,
                 end: edge.from,
                 distance
@@ -397,10 +402,14 @@ function buildRouteInstructions(edges) {
             currentMode = edge.mode;
             currentRouteId = edge.route_id || null;
             currentRoute = edge.route_name || null;
+            currentRoadName = edge.road_name || null;
+            lastRoadName = edge.road_name || null;
+
             start = edge.from;
             distance = 0;
         }
 
+        if (edge.road_name) lastRoadName = edge.road_name;
         distance += edge.distance;
     }
 
@@ -409,6 +418,7 @@ function buildRouteInstructions(edges) {
             mode: currentMode,
             route_id: currentRouteId,
             route_name: currentRoute,
+            road_name: lastRoadName,
             start,
             end: edges[edges.length - 1].to,
             distance
@@ -497,7 +507,11 @@ function formatInstructions(steps, individualRidesCost, keyToName) {
     const routeinstructions = steps.map(step => {
         const stepDistance = step.distance.toFixed(0);
         if (step.mode === "walk") {
-            return `Walk ${stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"}`;
+            return `Walk ${
+                stepDistance >= 1000 ? stepDistance / 1000 : stepDistance} ${stepDistance >= 1000 ? "kilometers" : "meters"
+            } ${
+                step.road_name ? ` towards ${step.road_name}` : ""
+            }`;
         }
         if (step.mode === "jeep") {
             const regularTraditionalFee = individualRidesCost[rideIndex].regular.traditional;
