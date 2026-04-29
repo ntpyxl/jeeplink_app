@@ -41,8 +41,22 @@ export class GraphHelper {
                 if (!graph.has(aKey)) graph.set(aKey, []);
                 if (!graph.has(bKey)) graph.set(bKey, []);
 
-                graph.get(aKey).push({ to: bKey, weight: dist, mode: "walk" });
-                graph.get(bKey).push({ to: aKey, weight: dist, mode: "walk" });
+                const edgeAB = {
+                    to: bKey,
+                    weight: dist,
+                    mode: "walk",
+                    ...(feature.properties?.name && { road_name: feature.properties.name })
+                };
+
+                const edgeBA = {
+                    to: aKey,
+                    weight: dist,
+                    mode: "walk",
+                    ...(feature.properties?.name && { road_name: feature.properties.name })
+                };
+
+                graph.get(aKey).push(edgeAB);
+                graph.get(bKey).push(edgeBA);
             }
         });
 
