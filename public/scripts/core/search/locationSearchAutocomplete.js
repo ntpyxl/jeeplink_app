@@ -250,7 +250,7 @@ export function getCurrentLocation() {
                 console.error(err);
 
                 if (err.code === 1)
-                    showError("Location permission denied. Double check your browser's location settings.");
+                    showError("Location permission denied. Double check your browser's location settings and allow JeepLink to access your location.");
                 else if (err.code === 2)
                     console.log("Location unavailable. GPS signal may be weak.");
                 else if (err.code === 3)
