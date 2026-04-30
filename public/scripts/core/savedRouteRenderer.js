@@ -1,73 +1,44 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
-import { snapToRoad } from "../helper/snapToRoadFunction.js";
 
 export class SavedRouteRenderer {
-    constructor({ map, roadsGeoJSON, graphHelper }) {
+    constructor({ map }) {
         this.map = map;
-        this.roadsGeoJSON = roadsGeoJSON;
-        this.graphHelper = graphHelper;
 
-        this.routes = null;
         this.routeLines = [];
         this.calculatedRoutes = null;
-    }
-
-    async loadRoutes() {
-        const queryData = await apiFetch("/getJeepRoutesWithNodes", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        this.routes = [];
-        this.tempNodes = [];
-
-        queryData.queryData.forEach(route => {
-            const routeGraphKeys = [];
-
-            route.nodes.forEach(node => {
-                const snapped = snapToRoad({lat: node.latitude, lng: node.longitude}, this.roadsGeoJSON);
-
-                if (!snapped) return;
-                const graphKey = this.graphHelper.insertTemporaryNode(
-                    snapped.coordinates,
-                    snapped.segmentA,
-                    snapped.segmentB
-                );
-
-                routeGraphKeys.push(graphKey);
-                this.tempNodes.push({
-                    id: graphKey,
-                    neighbors: this.graphHelper.graph.get(graphKey) || []
-                });
-            });
-            
-            this.routes.push(routeGraphKeys);
-        });
+        this.isLoading = false;
     }
 
     async display() {
-        if (!this.calculatedRoutes) {
-            if (!this.routes) await this.loadRoutes();
-            this.calculatedRoutes = await apiFetch("/calculateRoute_Unweighted", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    nodes: this.routes,
-                    tempNodes: this.tempNodes
-                })
-            });
+        if (this.isLoading) return;
+        this.isLoading = true;
+        $("#toggleJeepRoutes_loadingSpinner").removeClass("hidden");
+
+        try {
+            if (!this.calculatedRoutes) {
+                this.calculatedRoutes = await apiFetch("/getSavedRouteRendered", {
+                    method: "GET",
+                    headers: {"Content-Type": "application/json"}
+                });
+            }
+
+            const paths = this.calculatedRoutes.paths;
+
+            for (const path of paths) {
+                const routePath = path.map(k => k.split(",").map(Number).reverse());
+
+                const line = L.polyline(routePath, {
+                    color: "blue",
+                    weight: 5
+                }).addTo(this.map);
+
+                this.routeLines.push(line);
+            }
+
+        } finally {
+            this.isLoading = false;
+            $("#toggleJeepRoutes_loadingSpinner").addClass("hidden");
         }
-
-        this.calculatedRoutes.paths.forEach(path => {
-            const routePath = path.map(k => k.split(",").map(Number).reverse());
-
-            const line = L.polyline(routePath, {
-                color: "blue",
-                weight: 5
-            }).addTo(this.map);
-
-            this.routeLines.push(line);
-        });
     }
 
     hide() {
