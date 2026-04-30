@@ -6,7 +6,7 @@ To split up a geojson file into LineStrings, Points, and Polygons, just cd to th
 2. Dasma_Points.geojson
 3. Dasma_Polygons.geojson
 
-## Existing Files
+## Relevant Files
 
 1. **Dasma_LineStrings-AllRoads.geojson**
     - Originally Dasma_LineStrings.geojson output from the script file. Roads outside Dasmarinas were deleted.

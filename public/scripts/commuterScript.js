@@ -80,10 +80,10 @@ $("#locateBtn").on("click", () => {
 });
 
 // Fetch and setup required JSON files
-const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads.geojson")
+const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoads_LightWeight.geojson")
     .then(r => r.json());
 
-const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points_LightWeight.geojson")
     .then(r => r.json());
 
 const fareMatrixPromise = apiFetch("/getFareMatrix", {
