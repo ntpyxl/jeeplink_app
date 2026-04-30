@@ -184,18 +184,6 @@ function renderPagination() {
 }
 
 // Helper functions
-function formatType(type) {
-    const types = {
-        jeep_diverted: "Jeep Diverted",
-        other_issues: "Other Issues",
-        missing_jeepney: "Missing Jeepney",
-        incorrect_fares: "Incorrect Fares",
-        wrong_route: "Wrong Route"
-    };
-
-    return types[type] || type;
-}
-
 function applyStatusColors() {
     $(".status-dropdown").each(function () {
         const val = $(this).val();

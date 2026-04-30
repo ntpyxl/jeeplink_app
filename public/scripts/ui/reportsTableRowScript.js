@@ -5,7 +5,7 @@ export function renderReportsTable(reports, tableBody) {
         const row = $(`
             <tr class="border-b hover:bg-gray-50">
                 <td class="py-3">${report.id}</td>
-                <td class="py-3">${report.report_type}</td>
+                <td class="py-3">${formatType(report.report_type)}</td>
                 <td class="py-3">${report.title}</td>
                 <td class="py-3">${report.description}</td>
                 <td class="py-3">${report.reporter_email}</td>
@@ -17,6 +17,18 @@ export function renderReportsTable(reports, tableBody) {
         `);
         tableBody.append(row);
     });
+}
+
+function formatType(type) {
+    const types = {
+        jeep_diverted: "Jeep Diverted",
+        other_issues: "Other Issues",
+        missing_jeepney: "Missing Jeepney",
+        incorrect_fares: "Incorrect Fares",
+        wrong_route: "Wrong Route"
+    };
+
+    return types[type] || type;
 }
 
 function formatDate(date) {
