@@ -1,135 +1,20 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
+import { renderReportsTable } from "./ui/reportsTableRowScript.js";
 
-async function getReportsData({page_number = null, report_type = null, report_status = null} = {}) {
-    try {
-        const params = new URLSearchParams();
-
-        if (report_type !== null) {
-            params.append("report_type", report_type);
-        }
-        if (report_status !== null) {
-            params.append("report_status", report_status);
-        }
-
-        let url = "/getReports";
-        if (page_number !== null) {
-            url += `/${page_number}`;
-        }
-        if (params.toString()) {
-            url += `?${params.toString()}`;
-        }
-
-        const response = await apiFetch(url, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        return response;
-    } catch (err) {
-        console.error("Error:", err);
-    }
-}
-
-const rowsPerPage = 10;
 let currentPage = 1;
-let currentFilter = null;
-let currentStatusFilter = null;
-let currentSearch = "";
-let allReports = [];
-let filteredReports = [];
+let totalPages = 1;
+let totalRows = 0;
+const rowsPerPage = 10;
 
-// Render reports in the table
-function renderReports(reports) {
-    const $tbody = $("#reportsTableBody");
-    $tbody.find("tr:not(#tableLoading)").remove();
+let reportsSearchQuery = null;
+let reportsTypeFilter = null;
+let reportsStatusFilter = null;
+let searchTimeout = null;
 
-    if (!reports.length) {
-        $tbody.append(`
-            <tr class="border-b">
-                <td colspan="7" class="py-3 text-center text-gray-400">No reports found.</td>
-            </tr>
-        `);
-        return;
-    }
+const disabledFilterClassList = "bg-gray-100 hover:bg-gray-200";
+const enabledFilterClassList = "bg-[#84C177] text-black font-medium";
 
-    $.each(reports, function (index, report) {
-        const reportType = formatType(report.report_type);
-        const title = report.title;
-        const description = report.description;
-        const reporterEmail = report.reporter_email;
-        const date = formatDate(report.submitted_at);
-        const status = formatStatusDropdown(report.report_status, report.id);
-
-        $tbody.append(`
-            <tr class="border-b hover:bg-gray-50">
-                <td class="py-3">${report.id}</td>
-                <td class="py-3">${reportType}</td>
-                <td class="py-3">${title}</td>
-                <td class="py-3">${description}</td>
-                <td class="py-3">${reporterEmail}</td>
-                <td class="py-3">${date}</td>
-                <td class="py-3 text-center">${status}</td>
-            </tr>
-        `);
-    });
-
-    applyStatusColors();
-
-}
-
-// Helper functions
-function formatType(type) {
-    const types = {
-        jeep_diverted: "Jeep Diverted",
-        other_issues: "Other Issues",
-        missing_jeepney: "Missing Jeepney",
-        incorrect_fares: "Incorrect Fares",
-        wrong_route: "Wrong Route"
-    };
-
-    return types[type] || type;
-}
-
-function formatStatusDropdown(status, reportId) {
-    return `
-        <select
-            class="status-dropdown px-2 py-1 rounded-full text-xs border"
-            data-id="${reportId}"
-            data-original-value="${status}"
-        >
-            <option value="ongoing" ${status === "ongoing" ? "selected" : ""}>Ongoing</option>
-            <option value="resolved" ${status === "resolved" ? "selected" : ""}>Resolved</option>
-        </select>
-    `;
-}
-
-function formatDate(date) {
-    if (!date) return "N/A";
-
-    return new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-    });
-}
-
-function applyStatusColors() {
-    $(".status-dropdown").each(function () {
-        const val = $(this).val();
-
-        $(this).removeClass(
-            "bg-green-100 text-green-600 bg-yellow-100 text-yellow-600 bg-red-100 text-red-600"
-        );
-
-        if (val === "resolved") {
-            $(this).addClass("bg-green-100 text-green-600");
-        } else if (val === "ongoing") {
-            $(this).addClass("bg-yellow-100 text-yellow-600");
-        } else {
-            $(this).addClass("bg-red-100 text-red-600");
-        }
-    });
-}
+reloadReportsData(1);
 
 // Event listener for status change
 $(document).on("change", ".status-dropdown", async function () {
@@ -172,144 +57,159 @@ $(document).on("change", ".status-dropdown", async function () {
     
 });
 
-function normalizeText(value) {
-    if (value === null || value === undefined) return "";
-    return String(value).toLowerCase();
-}
+$("#reportSearch").on("input", function () {
+    clearTimeout(searchTimeout);
 
-function getFilteredReports() {
-    const query = normalizeText(currentSearch).trim();
+    searchTimeout = setTimeout(() => {
+        reportsSearchQuery = $(this).val().trim() || null;
+        reloadReportsData(1, reportsSearchQuery, reportsTypeFilter, reportsStatusFilter);
+    }, 500);
+});
 
-    return allReports.filter((report) => {
-        const typeMatches = !currentFilter || report.report_type === currentFilter;
-        const statusMatches = !currentStatusFilter || report.report_status === currentStatusFilter;
-
-        if (!query) return typeMatches && statusMatches;
-
-        const searchable = [
-            report.id,
-            formatType(report.report_type),
-            report.title,
-            report.description,
-            report.reporter_email,
-            formatDate(report.submitted_at),
-            report.report_status
-        ].map(normalizeText).join(" ");
-
-        return typeMatches && statusMatches && searchable.includes(query);
-    });
-}
-
-function renderPagination() {
-    const totalRows = filteredReports.length;
-    const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
-    currentPage = Math.min(currentPage, totalPages);
-
-    const start = totalRows ? (currentPage - 1) * rowsPerPage + 1 : 0;
-    const end = totalRows ? Math.min(currentPage * rowsPerPage, totalRows) : 0;
-
-    $("#paginationInfo").text(`Showing ${start} to ${end} of ${totalRows} entries`);
-
-    $("#prevBtn").prop("disabled", currentPage === 1)
-        .toggleClass("opacity-50 cursor-not-allowed", currentPage === 1);
-    $("#nextBtn").prop("disabled", currentPage === totalPages || totalRows === 0)
-        .toggleClass("opacity-50 cursor-not-allowed", currentPage === totalPages || totalRows === 0);
-
-    const $pageNumbers = $("#pageNumbers");
-    $pageNumbers.empty();
-
-    for (let i = 1; i <= totalPages; i += 1) {
-        const isActive = i === currentPage;
-        const button = $(`
-            <button class="cursor-pointer px-3 py-1 border rounded-lg ${isActive ? "bg-[#35903A] text-white border-[#35903A]" : "hover:bg-gray-100"}">
-                ${i}
-            </button>
-        `);
-
-        button.on("click", () => {
-            currentPage = i;
-            refreshTable();
-        });
-
-        $pageNumbers.append(button);
+$("#prevBtn").on("click", () => {
+    if (currentPage > 1) {
+        reloadReportsData(currentPage - 1, reportsSearchQuery, reportsTypeFilter, reportsStatusFilter);
     }
-}
+});
 
-function refreshTable() {
-    filteredReports = getFilteredReports();
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const pageRows = filteredReports.slice(startIndex, startIndex + rowsPerPage);
-
-    renderReports(pageRows);
-    renderPagination();
-}
-
-async function loadReportsData() {
-    showLoading();
-    try {
-        const data = await getReportsData();
-        allReports = data?.reports || [];
-        refreshTable();
-    } catch (error) {
-        console.error("Error loading reports:", error);
-        allReports = [];
-        refreshTable();
-    } finally {
-        hideLoading();
+$("#nextBtn").on("click", () => {
+    if (currentPage < totalPages) {
+        reloadReportsData(currentPage + 1, reportsSearchQuery, reportsTypeFilter, reportsStatusFilter);
     }
-}
+});
 
 // Report type filter
 $(document).on("click", ".filter-btn", async function () {
-    $(".filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100 hover:bg-gray-200");
-    $(this).removeClass("bg-gray-100 hover:bg-gray-200").addClass("bg-[#84C177] text-black font-medium");
+    $(".filter-btn")
+        .removeClass(enabledFilterClassList)
+        .addClass(disabledFilterClassList);
+    $(this)
+        .removeClass(disabledFilterClassList)
+        .addClass(enabledFilterClassList);
 
-    currentFilter = $(this).data("type") || null;
+    reportsTypeFilter = $(this).data("type") || null;
     currentPage = 1;
-    refreshTable();
+
+    reloadReportsData(1, reportsSearchQuery, reportsTypeFilter, reportsStatusFilter);
 });
 
 // Status filter
 $(document).on("click", ".status-filter-btn", async function () {
-    $(".status-filter-btn").removeClass("bg-[#84C177] text-black font-medium").addClass("bg-gray-100 hover:bg-gray-200");
-    $(this).removeClass("bg-gray-100 hover:bg-gray-200").addClass("bg-[#84C177] text-black font-medium");
+    $(".status-filter-btn")
+        .removeClass(enabledFilterClassList)
+        .addClass(disabledFilterClassList);
+    $(this)
+        .removeClass(disabledFilterClassList)
+        .addClass(enabledFilterClassList);
 
-    currentStatusFilter = $(this).data("status") || null;
+    reportsStatusFilter = $(this).data("status") || null;
     currentPage = 1;
-    refreshTable();
+
+    reloadReportsData(1, reportsSearchQuery, reportsTypeFilter, reportsStatusFilter);
 });
 
-// Initial load
-$(document).ready(async function () {
-    $("#reportsSearch").on("input", function () {
-        currentSearch = $(this).val();
-        currentPage = 1;
-        refreshTable();
-    });
-
-    $("#prevBtn").on("click", function () {
-        if (currentPage > 1) {
-            currentPage -= 1;
-            refreshTable();
-        }
-    });
-
-    $("#nextBtn").on("click", function () {
-        const totalPages = Math.max(1, Math.ceil(filteredReports.length / rowsPerPage));
-        if (currentPage < totalPages) {
-            currentPage += 1;
-            refreshTable();
-        }
-    });
-
-    await loadReportsData();
-});
-
-// Loading Spinner Script
-function showLoading() {
+async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType = null, reportStatus = null) {
     $("#tableLoading").removeClass("hidden");
+
+    try {
+        let url = `/getReports/${pageNumber}`;
+        const params = new URLSearchParams();
+
+        if (searchQuery) {
+            params.append("search_query", searchQuery.trim());
+        } else {
+            $("#routeSearch").val("");
+        }
+
+        if (reportType !== null) {
+            params.append("report_type", reportType.trim());
+        }
+
+        if (reportStatus !== null) {
+            params.append("report_status", reportStatus.trim());
+        }
+
+        if (params.toString()) {
+            url += `?${params.toString()}`;
+        }
+
+        const { reports, row_count, total_pages } = await apiFetch(url, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        currentPage = pageNumber;
+        totalPages = total_pages;
+        totalRows = row_count;
+
+        renderReportsTable(reports, $("#reportsTableBody"));
+        applyStatusColors();
+        renderPagination();
+    } catch (err) {
+        console.error(err);
+        // TODO: showError() is not defined
+        showError("Failed to load Jeep Routes.");
+    } finally {
+        $("#tableLoading").addClass("hidden");
+    }
 }
 
-function hideLoading() {
-    $("#tableLoading").addClass("hidden");
+function renderPagination() {
+    const start = totalRows ? (currentPage - 1) * rowsPerPage + 1 : 0;
+    const end = totalRows ? Math.min(currentPage * rowsPerPage, totalRows) : 0;
+
+    $("#paginationInfo").text(
+        `Showing ${start} to ${end} of ${totalRows} entries`
+    );
+
+    $("#prevBtn").prop("disabled", currentPage === 1)
+    $("#nextBtn").prop("disabled", currentPage === totalPages)
+
+    const pageContainer = $("#pageNumbers");
+    pageContainer.empty();
+
+    for (let i = 1; i <= totalPages; i += 1) {
+        const btn = $(`
+            <button class="px-3 py-1 border rounded-lg cursor-pointer ${
+                i === currentPage ? "bg-[#35903A] text-white " : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+            }">
+                ${i}
+            </button>
+        `);
+
+        btn.on("click", () => reloadReportsData(i, jeepRouteDataSearchQuery));
+
+        pageContainer.append(btn);
+    }
+}
+
+// Helper functions
+function formatType(type) {
+    const types = {
+        jeep_diverted: "Jeep Diverted",
+        other_issues: "Other Issues",
+        missing_jeepney: "Missing Jeepney",
+        incorrect_fares: "Incorrect Fares",
+        wrong_route: "Wrong Route"
+    };
+
+    return types[type] || type;
+}
+
+function applyStatusColors() {
+    $(".status-dropdown").each(function () {
+        const val = $(this).val();
+
+        $(this).removeClass(
+            "bg-green-100 text-green-600 bg-yellow-100 text-yellow-600 bg-red-100 text-red-600"
+        );
+
+        if (val === "resolved") {
+            $(this).addClass("bg-green-100 text-green-600");
+        } else if (val === "ongoing") {
+            $(this).addClass("bg-yellow-100 text-yellow-600");
+        } else {
+            $(this).addClass("bg-red-100 text-red-600");
+        }
+    });
 }
