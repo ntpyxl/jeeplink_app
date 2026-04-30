@@ -30,10 +30,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <style>
-        #map {
-            width: 100%;
-            height: 300px; 
-        }
 
         @media (min-width: 1024px) {
             #map {
@@ -51,14 +47,14 @@
 <body>
     <div class="flex">
 
-      <!-- Overlay -->
+        <!-- Overlay -->
         <div id="sidebarOverlay" 
             class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
             onclick="closeSidebar()">
         </div>
         
-      <!-- Sidebar -->
-      <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
                 bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
                 z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
@@ -67,7 +63,7 @@
                 <hr class="text-[#90B67A]">
             </div>
 
-        <!-- Main Navigation -->
+            <!-- Main Navigation -->
             <nav class="mt-8 w-full flex flex-col text-xl items-center gap-4">
 
                 <!-- ACTIVE -->
@@ -290,8 +286,8 @@
         <!-- Aside overlay (for mobile) -->
         <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
 
-    <!-- Main Content -->
-    <main class="lg:ml-92 p-4 flex-1">
+        <!-- Main Content -->
+        <main class="lg:ml-92 p-4 flex-1">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
@@ -355,167 +351,102 @@
 
             <!-- Dashboard Content -->
             <div class="w-full p-6">
-                <div class="border-b-1 border-gray-200">
+                <div class="border-b border-gray-200">
                     <h2 class="text-3xl font-medium text-gray-800 mb-4">Dashboard</h2>
                 </div>
 
-                <!-- Cards Section -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mt-6">
+                <!-- MAIN GRID -->
+                <div class="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 mt-6">
 
-                    <!-- Card 1 -->
-                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Total Routes</p>
-                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                    <!-- LEFT CONTENT (75%) -->
+                    <div>
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                            <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total Route</p>
+                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
+                                    <i class="fas fa-route text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total Terminal</p>
+                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
+                                    <i class="fas fa-warehouse text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total Reports</p>
+                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 rounded-full">
+                                    <i class="fas fa-exclamation text-yellow-600 text-xl"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
-                            <i class="fas fa-route text-green-600 text-xl"></i>
-                        </div>
-                    </div>
 
-                    <!-- Card 2 -->
-                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Total Reports</p>
-                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
-                        </div>
-                        <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 rounded-full">
-                            <i class="fas fa-exclamation text-yellow-600 text-xl"></i>
-                        </div>
-                    </div>
+                        <!-- Table -->
+                        <div class="bg-white mt-6 p-6 rounded-xl shadow overflow-x-auto">
 
-                    <!-- Card 3 -->
-                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Something</p>
-                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
-                        </div>
-                        <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
-                            <i class="fas fa-users text-blue-600 text-xl"></i>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Something</p>
-                            <h2 class="text-2xl font-bold text-gray-800">67</h2>
-                        </div>
-                        <div class="w-12 h-12 flex items-center justify-center bg-purple-100 rounded-full">
-                            <i class="fas fa-check text-purple-600 text-xl"></i>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Activity and Map Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 ">
-
-                    <!-- LEFT: Activity Logs -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow">
-
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            Activity Logs
-                        </h3>
-
-                        <div class="overflow-y-auto flex-1 max-h-[500px]">
                             <table class="w-full text-left border-collapse">
 
                                 <thead>
                                     <tr class="text-gray-500 text-sm border-b">
-                                        <th class="py-2">User</th>
-                                        <th class="py-2">Action</th>
-                                        <th class="py-2">Date</th>
+                                        <th class="py-3 px-4">Report ID</th>
+                                        <th class="py-3 px-4">Report Type</th>
+                                        <th class="py-3 px-4">Title</th>
+                                        <th class="py-3 px-4">Date Reported</th>
+                                        <th class="py-3 px-4 text-center">Status</th>
                                     </tr>
                                 </thead>
 
-                                <tbody class="text-gray-700 text-sm">
+                                <tbody id="reportsTableBody" class="text-gray-700 text-sm">
 
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Juan Dela Cruz</td>
-                                        <td class="py-2">Added new route</td>
-                                        <td class="py-2">Mar 21, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Maria Santos</td>
-                                        <td class="py-2">Submitted report</td>
-                                        <td class="py-2">Mar 20, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Admin</td>
-                                        <td class="py-2">Updated route</td>
-                                        <td class="py-2">Mar 19, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Juan Dela Cruz</td>
-                                        <td class="py-2">Added new route</td>
-                                        <td class="py-2">Mar 21, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Maria Santos</td>
-                                        <td class="py-2">Submitted report</td>
-                                        <td class="py-2">Mar 20, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Admin</td>
-                                        <td class="py-2">Updated route</td>
-                                        <td class="py-2">Mar 19, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Admin</td>
-                                        <td class="py-2">Updated route</td>
-                                        <td class="py-2">Mar 19, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Juan Dela Cruz</td>
-                                        <td class="py-2">Added new route</td>
-                                        <td class="py-2">Mar 21, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Maria Santos</td>
-                                        <td class="py-2">Submitted report</td>
-                                        <td class="py-2">Mar 20, 2026</td>
-                                    </tr>
-
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2">Admin</td>
-                                        <td class="py-2">Updated route</td>
-                                        <td class="py-2">Mar 19, 2026</td>
+                                    <!-- Loading Spinner Row -->
+                                    <tr id="tableLoading" class="hidden">
+                                        <td colspan="5" class="py-6">
+                                            <div class="flex justify-center items-center">
+                                                <div class="w-8 h-8 border-4 border-gray-300 border-t-[#35903A] rounded-full animate-spin"></div>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
 
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5" class="py-3 text-center">
+                                            <a href="reportsManagement.html" class="text-blue-600 hover:underline font-medium">
+                                                View More Reports
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>
-
-                            <a href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">
-                                View All Activities
-                            </a>
                         </div>
-
                     </div>
 
-                    <!-- RIGHT: Map -->
-                    <div class="bg-white p-6 rounded-xl shadow flex flex-col h-[400px] lg:h-auto">
+
+                    <!-- RIGHT: MAP (25%) -->
+                    <div class="bg-white p-6 rounded-xl shadow flex flex-col h-[800px]">
 
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">
                             Route Map
                         </h3>
 
-                        <!-- Map Container -->
-                        <div class="w-full lg:h-full">
-                            <div id="map" ></div>
+                        <div class="flex-1">
+                            <div style="height: 700px;" id="map" class="w-full h-[600px]"></div>
                         </div>
-
                     </div>
                 </div>
-        
             </div>
 
         </main>
