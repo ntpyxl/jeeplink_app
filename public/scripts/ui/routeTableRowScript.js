@@ -19,6 +19,7 @@ export function renderRoutesTable(routes, tableBody) {
                 <td class="py-3 text-center space-x-2">
                     <button class="text-blue-500 hover:underline cursor-pointer edit-route-btn" data-route-id="${route.id}">Edit</button>
                     <button class="text-red-500 hover:underline cursor-pointer delete-route-btn" data-route-id="${route.id}">Delete</button>
+                    <button class="text-orange-500 hover:underline cursor-pointer add-temporary-route-btn" data-route-id="${route.id}">Add Temporary Route</button>
                 </td>
             </tr>
         `);
