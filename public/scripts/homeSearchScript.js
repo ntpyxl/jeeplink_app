@@ -7,7 +7,7 @@ window.addEventListener("pageshow", () => {
     sessionStorage.removeItem("destination");
 });
 
-fetch("../api/getBlobFile?filename=Dasma_Points.geojson")
+fetch("../api/getBlobFile?filename=Dasma_Points_LightWeight.geojson")
     .then(r => r.json())
     .then(setupNamedLocations);
 
