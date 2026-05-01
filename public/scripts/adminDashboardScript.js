@@ -19,7 +19,7 @@ try {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         }),
-        apiFetch("/getReports", {
+        apiFetch("/getReports?report_status=ongoing", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         })
