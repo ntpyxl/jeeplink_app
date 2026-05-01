@@ -93,8 +93,8 @@ export class CommuterRouter {
         this.allNodes = [];
 
         const fastestStepCoords = this.drawSingleRoute(paths.fastestRoute.routePath, "fastest", "#1E90Ff", 6);
-        const cheapestStepCoords = this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#303030", 6);
-        const minimalTransferStepCoords = this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#303030", 6);
+        const cheapestStepCoords = this.drawSingleRoute(paths.cheapestRoute.routePath, "cheapest", "#1E90Ff", 6);
+        const minimalTransferStepCoords = this.drawSingleRoute(paths.minimalTransferRoute.routePath, "minimalTransfers", "#1E90Ff", 6);
 
         const isMobile = window.innerWidth <= 768;
         this.map.fitBounds(L.latLngBounds(this.allNodes), {
@@ -152,6 +152,12 @@ export class CommuterRouter {
         let prevMode = null;
         let prevRoute = null;
         let nextStepCoordArray = []
+        
+        nextStepCoordArray.push({
+            coord: keyToLatLng(edges[0].from),
+            mode: edges[0].mode
+        });
+
         for (let i = 0; i < edges.length; i++) {
             const edge = edges[i];
 

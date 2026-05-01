@@ -94,7 +94,7 @@ export function adminShowLoader(message) {
     window.__loaderInterval = setInterval(() => {
         i = (i + 1) % message.length;
         $("#pageLoaderMessage").text(message[i]);
-    }, 1000);
+    }, 2000);
 }
 
 // HIDE LOADER

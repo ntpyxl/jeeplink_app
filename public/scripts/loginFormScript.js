@@ -52,7 +52,16 @@ $(document).ready(function () {
 
             if (response.access_token) {
                 localStorage.setItem("token", response.access_token);
-                window.location.href = "./dashboard.html";
+                let directTo = null;
+
+                const hashParam = new URLSearchParams(window.location.hash.substring(1));
+                if(hashParam.get("returnTo")) {
+                    directTo = hashParam.get("returnTo");
+                } else {
+                    directTo = "/admin/dashboard";
+                }
+
+                window.location.href = directTo;
             } else {
                 errorBox.removeClass("hidden").text("Invalid username or password.");
             }
