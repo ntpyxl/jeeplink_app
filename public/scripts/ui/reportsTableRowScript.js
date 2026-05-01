@@ -19,6 +19,22 @@ export function renderReportsTable(reports, tableBody) {
     });
 }
 
+export function renderDashboardReportsTable(reports, tableBody) {
+    tableBody.empty();
+
+    reports.forEach(report => {
+        const row = $(`
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-3">${report.id}</td>
+                <td class="py-3">${formatType(report.report_type)}</td>
+                <td class="py-3">${report.title}</td>
+                <td class="py-3">${formatDate(report.submitted_at)}</td>
+            </tr>
+        `);
+        tableBody.append(row);
+    });
+}
+
 function formatType(type) {
     const types = {
         jeep_diverted: "Jeep Diverted",

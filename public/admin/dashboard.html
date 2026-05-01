@@ -366,7 +366,7 @@
                             <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
                                 <div>
                                     <p class="text-gray-500 text-sm">Total Route</p>
-                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                    <h2 id="totalRouteText" class="text-2xl font-bold text-gray-800">0</h2>
                                 </div>
                                 <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
                                     <i class="fas fa-route text-green-600 text-xl"></i>
@@ -376,7 +376,7 @@
                             <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
                                 <div>
                                     <p class="text-gray-500 text-sm">Total Terminal</p>
-                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                    <h2 id="totalTerminalText" class="text-2xl font-bold text-gray-800">0</h2>
                                 </div>
                                 <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
                                     <i class="fas fa-warehouse text-blue-600 text-xl"></i>
@@ -386,7 +386,7 @@
                             <div class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
                                 <div>
                                     <p class="text-gray-500 text-sm">Total Reports</p>
-                                    <h2 class="text-2xl font-bold text-gray-800">67</h2>
+                                    <h2 id="totalReportsText" class="text-2xl font-bold text-gray-800">0</h2>
                                 </div>
                                 <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 rounded-full">
                                     <i class="fas fa-exclamation text-yellow-600 text-xl"></i>
@@ -396,6 +396,7 @@
 
                         <!-- Table -->
                         <div class="bg-white mt-6 p-6 rounded-xl shadow overflow-x-auto">
+                            ongoing reported issues
 
                             <table class="w-full text-left border-collapse">
 
@@ -482,8 +483,8 @@
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
     <!-- Core Scripts -->
+    <script src="../scripts/adminDashboardScript.js" type="module"></script>
     <script src="../scripts/core/jeeplinkApiFetcher.js" type="module"></script>
     <script src="../scripts/core/graphHelper.js" type="module"></script>
-    <script src="../scripts/routeManagementScript.js" type="module"></script>
 </body>
 </html>
