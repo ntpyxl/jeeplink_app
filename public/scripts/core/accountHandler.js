@@ -12,7 +12,7 @@ export async function checkAuth() {
 
     if (!token) {
         adminHideLoader();
-        window.location.replace("./login.html");
+        promptUserLogin();
         return;
     }
 
@@ -29,8 +29,13 @@ export async function checkAuth() {
         return {"loggedInUsername": response.username};
     } catch (error) {
         localStorage.removeItem("token");
-        window.location.replace("./login.html");
+        promptUserLogin();
     }
+}
+
+function promptUserLogin() {
+    const currentPage = window.location.pathname;
+    window.location.replace(`./login.html#returnTo=${encodeURIComponent(currentPage)}`);
 }
 
 export function logout() {
