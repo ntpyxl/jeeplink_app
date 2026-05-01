@@ -152,6 +152,12 @@ export class CommuterRouter {
         let prevMode = null;
         let prevRoute = null;
         let nextStepCoordArray = []
+        
+        nextStepCoordArray.push({
+            coord: keyToLatLng(edges[0].from),
+            mode: edges[0].mode
+        });
+
         for (let i = 0; i < edges.length; i++) {
             const edge = edges[i];
 
