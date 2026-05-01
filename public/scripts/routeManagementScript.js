@@ -4,6 +4,7 @@ import { RouteEditor } from "./core/routeEditor.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
 import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { renderRoutesTable } from "./ui/routeTableRowScript.js";
+import { adminShowLoader, adminHideLoader } from "./ui/adminStylingScript.js";
 
 const map = L.map("map", {
     renderer: L.canvas()
@@ -71,55 +72,14 @@ const savedRouteRenderer = new SavedRouteRenderer({
 
 let editingRouteId = null;
 const routeNameInput = $("#drawnJeepRouteName");
-const routeParentInput = $("#drawnJeepRouteParentId");
 const routeStatusSelect = $("#drawnJeepRouteStatus");
 const routeTypeSelect = $("#drawnJeepRouteType");
 const editRouteFields = $("#editRouteFields");
-const parentRouteSuggestions = $("#parentRouteSuggestions");
 const deleteModal = $("#deleteModal");
 const deleteRouteIdInput = $("#deleteRouteId");
 const deleteRouteNameLabel = $("#deleteRouteName");
 const cancelDeleteBtn = $("#cancelDelete");
 const confirmDeleteBtn = $("#confirmDelete");
-
-function setupParentRouteAutocomplete() {
-    routeParentInput.off("input").on("input", function() {
-        const input = $(this).val().toLowerCase();
-        const suggestions = parentRouteSuggestions;
-        suggestions.empty();
-
-        if (!input) {
-            suggestions.addClass("hidden");
-            return;
-        }
-
-        const filtered = jeepRoutes.filter(r => {
-            return r.id !== editingRouteId && r.name.toLowerCase().includes(input);
-        });
-
-        if (filtered.length === 0) {
-            suggestions.addClass("hidden");
-            return;
-        }
-
-        filtered.forEach(route => {
-            const item = $(`<div class="px-4 py-2 cursor-pointer hover:bg-[#84C177]/20 transition"><span class="text-gray-700">${route.name}</span></div>`);
-            item.on("click", function() {
-                routeParentInput.val(route.name);
-                suggestions.addClass("hidden");
-            });
-            suggestions.append(item);
-        });
-
-        suggestions.removeClass("hidden");
-    });
-
-    $(document).off("click.parentRoute").on("click.parentRoute", function(e) {
-        if (!$(e.target).closest("#drawnJeepRouteParentId, #parentRouteSuggestions").length) {
-            parentRouteSuggestions.addClass("hidden");
-        }
-    });
-}
 
 async function enterEditMode(route) {
     editingRouteId = route.id;
@@ -131,9 +91,6 @@ async function enterEditMode(route) {
 
     routeNameInput.val(route.name);
     routeStatusSelect.val((route.status).toLowerCase());
-    const parentRoute = jeepRoutes.find(r => r.id === route.parent_route_id);
-    routeParentInput.val(parentRoute ? parentRoute.name : "");
-    setupParentRouteAutocomplete();
     editRouteFields.removeClass("hidden");
     $("#cancelEditRoute").removeClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").addClass("hidden");
@@ -170,10 +127,7 @@ async function enterEditMode(route) {
 
 function exitEditMode() {
     editingRouteId = null;
-    routeNameInput.val("");
-    routeParentInput.val("");
     routeStatusSelect.val("enabled");
-    parentRouteSuggestions.addClass("hidden");
     editRouteFields.addClass("hidden");
     $("#cancelEditRoute").addClass("hidden");
     $("#rebuildPublicRoadsGraph, #clearDrawnJeepRoute").removeClass("hidden");
@@ -243,6 +197,10 @@ $("#toggleJeepRoutes").on("click", async () => {
     savedRouteRenderer.toggle();
 });
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 $("#saveDrawnJeepRoute").on("click", async () => {
     const routeName = routeNameInput.val().trim();
     if (!routeName) {
@@ -255,12 +213,11 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         return;
     }
 
-    // Validate parent route input
-    const parentRouteName = routeParentInput.val().trim();
-    const validParentRoute = parentRouteName ? jeepRoutes.find(r => r.name === parentRouteName) : null;
-    if (parentRouteName && !validParentRoute) {
-        routeParentInput.val("");
-    }
+    const MIN_LOADER_TIME = 800;
+
+    adminShowLoader(["Saving Jeep Route...", "Please wait...", "This may take a few seconds..."]);
+
+    const start = Date.now();
 
     try {       
         if (editingRouteId) {
@@ -278,8 +235,8 @@ $("#saveDrawnJeepRoute").on("click", async () => {
                     route_id: editingRouteId,
                     route_name: routeName || "Unnamed Jeep Route",
                     route_status: routeStatusSelect.val(),
-                    route_type: validParentRoute ? "temporary" : "main",
-                    parent_route_id: validParentRoute?.id || null,
+                    route_type: "main",
+                    parent_route_id: null,
                     nodes: nodes
                 })
             });
@@ -302,15 +259,22 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         }
 
         clearDrawnJeepRoute();
-        reloadJeepRouteData()
+        await reloadJeepRouteData();
+        
+        const elapsed = Date.now() - start;
+        if (elapsed < MIN_LOADER_TIME) {
+            await delay(MIN_LOADER_TIME - elapsed);
+        }
 
         if (editingRouteId) {
             exitEditMode();
         }
 
+        adminHideLoader();
         showSuccess("Successfully saved Jeepney Route!");
     } catch (err) {
         console.error(err);
+        adminHideLoader();
         showError("Failed to save Jeepney Route.");
     }
 });
@@ -344,6 +308,10 @@ cancelDeleteBtn.on("click", () => {
 confirmDeleteBtn.on("click", async () => {
     const routeId = deleteRouteIdInput.val();
 
+    const MIN_LOADER_TIME = 800;
+    adminShowLoader(["Deleting Jeep Route...", "Please wait...", "This may take a few seconds..."]);
+    const start = Date.now();
+
     try {
         await apiFetch("/deleteJeepRoute", {
             method: "POST",
@@ -356,10 +324,18 @@ confirmDeleteBtn.on("click", async () => {
         deleteModal.removeClass("flex").addClass("hidden");
         clearDrawnJeepRoute();
         exitEditMode();
-        reloadJeepRouteData();
+        await reloadJeepRouteData();
+
+        const elapsed = Date.now() - start;
+        if (elapsed < MIN_LOADER_TIME) {
+            await delay(MIN_LOADER_TIME - elapsed);
+        }
+
+        adminHideLoader();
         showSuccess("Successfully deleted Jeepney Route!");
     } catch (err) {
         console.error(err);
+        adminHideLoader();
         showError("Failed to delete Jeepney Route.");
     }
 });
@@ -392,7 +368,6 @@ $("#nextBtn").on("click", () => {
 function clearDrawnJeepRoute() {
     routeEditor.clear();
     routeNameInput.val("");
-    routeParentInput.val("");
     routeStatusSelect.val("enabled");
     routeTypeSelect.val("main");
     $("#startNodeText, #endNodeText").text("");
@@ -422,10 +397,13 @@ async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
 
         renderRoutesTable(jeepRoutes, $("#routesTableBody"));
         renderPagination();
+
+        return true;
     } catch (err) {
         console.error(err);
         // TODO: showError() is not defined
         showError("Failed to load Jeep Routes.");
+        return false;
     } finally {
         $("#tableLoading").addClass("hidden");
     }
