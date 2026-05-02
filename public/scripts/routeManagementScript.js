@@ -320,7 +320,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         
         const elapsed = Date.now() - start;
         if (elapsed < MIN_LOADER_TIME) await delay(MIN_LOADER_TIME - elapsed);
-        if (editingRouteId) resetEditMode();
+        if (editingRouteId || tempRouteParentId) resetEditMode();
         
         adminHideLoader();
         showSuccess("Successfully saved Jeepney Route!");

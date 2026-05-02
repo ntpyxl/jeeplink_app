@@ -4,6 +4,8 @@ export function renderRoutesTable(routes, tableBody) {
     routes.forEach(route => {
         const statusStyle = getStatusStyle(route.status);
         const routeTypeStyle = getRouteTypeStyle(route.type);
+        const isTemporary = route.type === "temporary";
+        const hasChildRoute = route.temp_route_id ? true : false;
 
         const row = $(`
             <tr class="border-b hover:bg-gray-50">
@@ -18,8 +20,30 @@ export function renderRoutesTable(routes, tableBody) {
                 </td>
                 <td class="py-3 text-center space-x-2">
                     <button class="text-blue-500 hover:underline cursor-pointer edit-route-btn" data-route-id="${route.id}">Edit</button>
-                    <button class="text-red-500 hover:underline cursor-pointer delete-route-btn" data-route-id="${route.id}">Delete</button>
-                    <button class="text-orange-500 hover:underline cursor-pointer add-temporary-route-btn" data-route-id="${route.id}">Add Temporary Route</button>
+                    
+                    <button 
+                        class="text-red-500 hover:underline cursor-pointer delete-route-btn" 
+                        data-route-id="${route.id}"
+                        ${hasChildRoute ? `data-child-route-id="${route.temp_route_id}"` : ""}
+                    ">
+                        Delete
+                    </button>
+                    
+                    ${
+                        !isTemporary && !hasChildRoute
+                            ? `<button class="text-orange-500 hover:underline cursor-pointer add-temporary-route-btn" data-route-id="${route.id}">Add Temporary Route</button>`
+                            : ""
+                    }
+                    
+                    ${
+                        hasChildRoute
+                            ? `
+                                <button class="text-blue-500 hover:underline cursor-pointer edit-route-btn" data-route-id="${route.temp_route_id}">Edit Temporary Route</button>
+                                <button class="text-orange-500 hover:underline cursor-pointer disable-temp-route-btn" data-route-id="${route.temp_route_id}">Disable Temporary Route</button>
+                                <button class="text-red-500 hover:underline cursor-pointer delete-temp-route-btn" data-route-id="${route.temp_route_id}">Delete Temporary Route</button>
+                            `
+                            : ""
+                    }
                 </td>
             </tr>
         `);
