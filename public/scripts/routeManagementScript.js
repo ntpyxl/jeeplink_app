@@ -80,10 +80,6 @@ let editingRouteParentRouteId = null;
 const routeNameInput = $("#drawnJeepRouteName");
 const editRouteFields = $("#editRouteFields");
 const deleteModal = $("#deleteModal");
-const deleteRouteIdInput = $("#deleteRouteId");
-const deleteRouteNameLabel = $("#deleteRouteName");
-const cancelDeleteBtn = $("#cancelDelete");
-const confirmDeleteBtn = $("#confirmDelete");
 
 async function enterEditMode(route) {
     editingRouteId = route.id;
@@ -367,17 +363,17 @@ $("#routesTableBody").on("click", ".delete-route-btn", function() {
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
-    deleteRouteIdInput.val(routeId);
-    deleteRouteNameLabel.text(routeData.name);
+    $("#deleteRouteId").val(routeId);
+    $("#deleteRouteName").text(routeData.name);
     deleteModal.removeClass("hidden").addClass("flex");
 });
 
-cancelDeleteBtn.on("click", () => {
+$("#cancelDelete").on("click", () => {
     deleteModal.removeClass("flex").addClass("hidden");
 });
 
-confirmDeleteBtn.on("click", async () => {
-    const routeId = deleteRouteIdInput.val();
+$("#confirmDelete").on("click", async () => {
+    const routeId = $("#deleteRouteId").val();
 
     const MIN_LOADER_TIME = 800;
     adminShowLoader(["Deleting Jeep Route...", "Please wait...", "This may take a few seconds..."]);
