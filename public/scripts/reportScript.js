@@ -28,6 +28,7 @@ $("#submitReport").on("click", async () => {
         if (!$("#reportDesc").val().trim()) {
             throw new Error("A description of the issue is required.")
         }
+
         const response = await apiFetch("/submitReport", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
