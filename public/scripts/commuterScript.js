@@ -215,8 +215,8 @@ let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
-let isStartPointOutBoundary = false;
-let isDestinationPointOutBoundary = false;
+let isStartPointWithinBoundary = false;
+let isDestinationPointWithinBoundary = false;
 
 let completeRouteInformation = null;
 let routesStepCoords = null;
@@ -263,15 +263,15 @@ if (start && destination) {
     addRouteNode(destinationPoint, "destination");
 
     if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointOutBoundary = true;
+        isStartPointWithinBoundary = true;
     } else {
-        isStartPointOutBoundary = false;
+        isStartPointWithinBoundary = false;
     }
 
     if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointOutBoundary = true;
+        isDestinationPointWithinBoundary = true;
     } else {
-        isDestinationPointOutBoundary = false;
+        isDestinationPointWithinBoundary = false;
     }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
@@ -314,10 +314,6 @@ $("#destinationPointField").on("input", () => {
 $("#calculateRouteButton").on("click", async () => {
     if(!destinationPoint) return;
 
-    if ($("#startingPointField").val() !== "Your Location") {
-        await showGpsRequiredPopup();
-    }
-
     if(!startingPoint) {
         startingPoint = await getCurrentLocation();
         $("#startingPointField").val(startingPoint.name);
@@ -349,18 +345,27 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointOutBoundary = true;
+        isStartPointWithinBoundary = true;
     } else {
-        isStartPointOutBoundary = false;
+        isStartPointWithinBoundary = false;
     }
 
     if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointOutBoundary = true;
+        isDestinationPointWithinBoundary = true;
     } else {
-        isDestinationPointOutBoundary = false;
+        isDestinationPointWithinBoundary = false;
     }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+
+    if ($("#startingPointField").val() !== "Your Location") {
+        await showGpsRequiredPopup();
+    }
+
+    if (!(isStartPointWithinBoundary && isDestinationPointWithinBoundary)) {
+        await showOutsideBoundaryPopup();
+    }
+
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })

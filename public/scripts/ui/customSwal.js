@@ -69,9 +69,9 @@ function showGpsRequiredPopup() {
     }).then(result => result.isConfirmed);
 }
 
-function showOutsideCoveragePopup() {
+function showOutsideBoundaryPopup() {
     return jeeplinkSwal.fire({
-        title: "Location outside coverage area",
+        title: "Outside City Boundary",
         html: `
             <p class="text-md text-gray-700 leading-relaxed">
                 Jeepney route details are limited to Dasmariñas City. Areas outside the city will not show route segments or directions.
