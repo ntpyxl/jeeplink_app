@@ -124,6 +124,23 @@ async function enterEditMode(route) {
 
         routeEditor.addNode({node: formattedNode});
     }
+
+    const latLngs = routeEditor.nodes.map(n => {
+        const [lng, lat] = n.coordinates;
+        return [lat, lng];
+    });
+    
+    if (latLngs.length) {
+        const isMobile = window.innerWidth <= 768;
+        map.fitBounds(L.latLngBounds(latLngs), {
+            paddingTopLeft: isMobile ? [60, 100] : [200, 120],
+            paddingBottomRight: isMobile ? [60, 180] : [50, 120],
+            animate: true,
+            duration: 0.6,
+            maxZoom: isMobile ? 14 : 17,
+            max: isMobile ? 14 : 17
+        });
+    }
     await routeEditor.drawRoute();
 }
 
@@ -173,7 +190,7 @@ async function enterAddTempRouteMode(route) {
     await routeEditor.drawRoute();
 }
 
-function resetEditMode() {
+function resetEditMode(returnToTop = false) {
     editingRouteId = null;
     tempRouteParentId = null;
     editingRouteStatus = null;
@@ -189,6 +206,8 @@ function resetEditMode() {
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .text("+ Add Route");
+
+    if(returnToTop) $("html, body").animate({ scrollTop: 0 }, 500);
 }
 
 roadsLayer.on("click", async e => {
@@ -320,7 +339,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
         
         const elapsed = Date.now() - start;
         if (elapsed < MIN_LOADER_TIME) await delay(MIN_LOADER_TIME - elapsed);
-        if (editingRouteId || tempRouteParentId) resetEditMode();
+        if (editingRouteId || tempRouteParentId) resetEditMode(true);
         
         adminHideLoader();
         showSuccess("Successfully saved Jeepney Route!");
@@ -332,7 +351,7 @@ $("#saveDrawnJeepRoute").on("click", async () => {
 });
 
 $("#cancelEditRoute").on("click", () => {
-    resetEditMode();
+    resetEditMode(true);
 });
 
 $("#routesTableBody").on("click", ".edit-route-btn", function() {
@@ -342,6 +361,8 @@ $("#routesTableBody").on("click", ".edit-route-btn", function() {
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
+    const offset = 175;
+    $("html, body").animate({ scrollTop: Math.max(0, $("#map").offset().top - offset) }, 500);
     enterEditMode(routeData);
 });
 
@@ -350,11 +371,8 @@ $("#routesTableBody").on("click", ".add-temporary-route-btn", function() {
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
-    // TODO: Fix map height size too
-    //$("html, body").animate({
-    //    scrollTop: $("#map").offset().top
-    //}, 500);
-
+    const offset = 175;
+    $("html, body").animate({ scrollTop: Math.max(0, $("#map").offset().top - offset) }, 500);
     enterAddTempRouteMode(routeData);
 });
 
@@ -410,7 +428,7 @@ $("#confirmDelete").on("click", async () => {
 
         deleteModal.removeClass("flex").addClass("hidden");
         clearDrawnJeepRoute();
-        resetEditMode();
+        resetEditMode(true);
         await reloadJeepRouteData();
 
         const elapsed = Date.now() - start;
