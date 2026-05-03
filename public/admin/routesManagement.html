@@ -498,11 +498,12 @@
 
             <div class="p-6 text-center">
                 <input type="hidden" id="deleteRouteId">
+                <input type="hidden" id="deleteRouteParentId">
+                <input type="hidden" id="deleteRouteChildId">
 
                 <!-- Message -->
-                <p class="text-gray-700 text-sm mb-2">
-                    Are you sure you want to delete this route and its temporary routes?
-                    
+                <p id="deleteModalText" class="text-gray-700 text-sm mb-2">
+                    Are you sure you want to delete this route?
                 </p>
 
                 <div class="mb-4 flex flex-col items-center justify-center gap-2">
