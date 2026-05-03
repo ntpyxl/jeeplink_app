@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JeepLink - Admin Fare Matrix Management</title>
 
     <!-- JeepLink Tab Logo -->
@@ -39,6 +39,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
+    <style>
+        body {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
 
     <script type="module">
         import { checkAuth } from "../scripts/core/accountHandler.js";
@@ -556,7 +563,7 @@
     </div>
 
     <!-- Rotate Device Overlay -->
-    <div id="rotateOverlay" 
+    <!-- <div id="rotateOverlay" 
         class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
             flex flex-col items-center justify-center text-center 
             z-[99999] hidden">
@@ -574,7 +581,7 @@
         <p class="text-sm sm:text-base max-w-xs px-4">
             For a better experience, please rotate your device to landscape mode.
         </p>
-    </div>
+    </div> -->
 
     <!-- Admin Front End Script -->
     <script src="../scripts/ui/adminStylingScript.js" type="module"></script>
