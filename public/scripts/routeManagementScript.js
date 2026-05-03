@@ -363,17 +363,35 @@ $("#routesTableBody").on("click", ".delete-route-btn", function() {
     const routeData = jeepRoutes.find(route => route.id === routeId);
     if (!routeData) return;
 
+    let modalText = null;
+    if(routeData.temp_route_id) {
+        modalText = "Are you sure you want to delete this route and its temporary route?";
+    } else if(routeData.parent_route_id) {
+        modalText = "Are you sure you want to delete this temporary route? Its parent route will be re-renabled.";
+    } else {
+        modalText = "Are you sure you want to delete this route?";
+    }
+
     $("#deleteRouteId").val(routeId);
+    $("#deleteRouteParentId").val(routeData.parent_route_id);
+    $("#deleteRouteChildId").val(routeData.temp_route_id);
+
+    $("#deleteModalText").text(modalText);
     $("#deleteRouteName").text(routeData.name);
     deleteModal.removeClass("hidden").addClass("flex");
 });
 
 $("#cancelDelete").on("click", () => {
+    $("#deleteRouteId").val(null);
+    $("#deleteRouteParentId").val(null);
+    $("#deleteRouteChildId").val(null);
     deleteModal.removeClass("flex").addClass("hidden");
 });
 
 $("#confirmDelete").on("click", async () => {
     const routeId = $("#deleteRouteId").val();
+    const routeParentId = $("#deleteRouteParentId").val();
+    const routeChildId = $("#deleteRouteChildId").val();
 
     const MIN_LOADER_TIME = 800;
     adminShowLoader(["Deleting Jeep Route...", "Please wait...", "This may take a few seconds..."]);
@@ -384,7 +402,9 @@ $("#confirmDelete").on("click", async () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                route_id: routeId
+                route_id: routeId,
+                route_parent_id: routeParentId,
+                route_child_id: routeChildId
             })
         });
 
@@ -397,6 +417,10 @@ $("#confirmDelete").on("click", async () => {
         if (elapsed < MIN_LOADER_TIME) {
             await delay(MIN_LOADER_TIME - elapsed);
         }
+
+        $("#deleteRouteId").val(null);
+        $("#deleteRouteParentId").val(null);
+        $("#deleteRouteChildId").val(null);
 
         adminHideLoader();
         showSuccess("Successfully deleted Jeepney Route!");

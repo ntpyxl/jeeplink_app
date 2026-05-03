@@ -90,7 +90,7 @@ export function renderRoutesTable(routes, tableBody) {
                             hasChildRoute
                                 ? `
                                     <button class="w-full px-3 py-2 text-blue-500 hover:bg-gray-100 cursor-pointer edit-route-btn" data-route-id="${route.temp_route_id}">Edit Temporary Route</button>
-                                    <button class="w-full px-3 py-2 text-red-500 hover:bg-gray-100 cursor-pointer delete-temp-route-btn" data-route-id="${route.temp_route_id}">Delete Temporary Route</button>
+                                    <button class="w-full px-3 py-2 text-red-500 hover:bg-gray-100 cursor-pointer delete-route-btn" data-route-id="${route.temp_route_id}">Delete Temporary Route</button>
                                 `
                                 : ""
                         }
