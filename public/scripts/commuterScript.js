@@ -86,14 +86,18 @@ const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoa
 const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points_LightWeight.geojson")
     .then(r => r.json());
 
+const boundaryPolygonPromise = fetch("../api/getBlobFile?filename=Dasma_Polygons-Boundary.geojson")
+    .then(r => r.json());
+
 const fareMatrixPromise = apiFetch("/getFareMatrix", {
     method: "GET",
     headers: { "Content-Type": "application/json" }
 });
 
-const [roadsGeoJSON, pointsGeoJSON, fareMatrix] = await Promise.all([
+const [roadsGeoJSON, pointsGeoJSON, boundaryGeoJson, fareMatrix] = await Promise.all([
     roadsPromise,
     pointsPromise,
+    boundaryPolygonPromise,
     fareMatrixPromise
 ]);
 setupNamedLocations(pointsGeoJSON);
@@ -211,6 +215,9 @@ let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
+let isStartPointOutBoundary = false;
+let isDestinationPointOutBoundary = false;
+
 let completeRouteInformation = null;
 let routesStepCoords = null;
 let currentRoute = 0;
@@ -254,6 +261,18 @@ if (start && destination) {
 
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
+
+    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
+        isStartPointOutBoundary = true;
+    } else {
+        isStartPointOutBoundary = false;
+    }
+
+    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
+        isDestinationPointOutBoundary = true;
+    } else {
+        isDestinationPointOutBoundary = false;
+    }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
@@ -323,6 +342,18 @@ $("#calculateRouteButton").on("click", async () => {
 
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
+
+    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
+        isStartPointOutBoundary = true;
+    } else {
+        isStartPointOutBoundary = false;
+    }
+
+    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
+        isDestinationPointOutBoundary = true;
+    } else {
+        isDestinationPointOutBoundary = false;
+    }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
