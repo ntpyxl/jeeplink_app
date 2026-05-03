@@ -56,26 +56,10 @@ function showFareInfo() {
     }).then(result => result.isConfirmed);
 }
 
-function showGpsRequiredPopup() {
+function showNavigationPopup(title, message) {
     return jeeplinkSwal.fire({
-        title: "Your location is required",
-        html: `
-            <p class="text-md text-gray-700 leading-relaxed">
-                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button 
-                if your starting point is not your current GPS location. Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
-            </p>`,
-        confirmButtonText: "I understand",
-        allowOutsideClick: false
-    }).then(result => result.isConfirmed);
-}
-
-function showOutsideBoundaryPopup() {
-    return jeeplinkSwal.fire({
-        title: "Outside City Boundary",
-        html: `
-            <p class="text-md text-gray-700 leading-relaxed">
-                Jeepney route details are limited to Dasmariñas City. Areas outside the city will not show route segments or directions.
-            </p>`,
+        title: title,
+        html: message,
         confirmButtonText: "I understand",
         allowOutsideClick: false
     }).then(result => result.isConfirmed);
