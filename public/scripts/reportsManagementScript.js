@@ -201,3 +201,18 @@ function applyStatusColors() {
         }
     });
 }
+
+$(document).on("click", ".view-more-btn", function () {
+    const description = decodeURIComponent($(this).data("description"));
+
+    jeeplinkSwal.fire({
+        title: "Report Description",
+        html: `
+            <div class="text-left text-gray-700 whitespace-pre-wrap">
+                ${description || "No description provided."}
+            </div>
+        `,
+        confirmButtonColor: "#004F11",
+        
+    });
+});

@@ -4,11 +4,26 @@ export function renderReportsTable(reports, tableBody) {
     reports.forEach(report => {
         const row = $(`
             <tr class="border-b hover:bg-gray-50">
-                <td class="py-3">${report.id}</td>
-                <td class="py-3">${formatType(report.report_type)}</td>
-                <td class="py-3">${report.title}</td>
-                <td class="py-3">${report.description}</td>
-                <td class="py-3">${report.reporter_email}</td>
+                <td class="py-3 pe-6">${report.id}</td>
+                <td class="py-3 pe-6">${formatType(report.report_type)}</td>
+                <td class="py-3 pe-6">${report.title}</td>
+                <td class="py-3 pe-12">
+                    <div>
+                        <p class="truncate-2-lines">
+                            ${report.description || ""}
+                        </p>
+
+                        ${
+                            report.description && report.description.length > 80
+                                ? `<button class="text-xs text-blue-600 hover:underline view-more-btn mt-1"
+                                        data-description="${encodeURIComponent(report.description)}">
+                                        View full description
+                                </button>`
+                                : ""
+                        }
+                    </div>
+                </td>
+                <td class="py-3 pe-6">${report.reporter_email}</td>
                 <td class="py-3">${formatDate(report.submitted_at)}</td>
                 <td class="py-3 text-center">
                     ${formatStatusDropdown(report.report_status, report.id)}
