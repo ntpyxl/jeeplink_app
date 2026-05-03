@@ -10,12 +10,16 @@ $(document).ready(function () {
 
         if (isMobile && isPortrait) {
             $overlay.removeClass("hidden");
-            $("body").css("height", "100vh");
-            $("html").css("overflow", "hidden");
+            $("html, body").css({
+                overflow: "hidden",
+                height: "100%"
+            });
         } else {
             $overlay.addClass("hidden");
-            $("body").css({ overflow: "", height: "" });
-            $("html").css("overflow", "");
+            $("html, body").css({
+                overflow: "",
+                height: ""
+            });
         }
     }
 
@@ -74,7 +78,7 @@ export function adminShowLoader(message) {
     if ($("#pageLoader").length === 0) {
         $("body").append(`
             <div id="pageLoader"
-                class="fixed inset-0 bg-[#004F11] flex flex-col items-center justify-center backdrop-blur-sm bg-[#004F11]/60 z-[999]">
+                class="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-sm bg-[#004F11]/60 z-[999]">
 
                 <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
 

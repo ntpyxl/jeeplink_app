@@ -40,17 +40,17 @@
     </script>
 </head>
 <body>
-    <div class="flex">
+    <div class="flex min-h-screen overflow-hidden">
         <!-- Overlay -->
         <div id="sidebarOverlay" 
-            class="fixed inset-0 bg-black/50 z-9999 hidden lg:hidden"
-            onclick="closeSidebar()">
+            class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+            >
         </div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+        <aside id="sidebar" class="w-[23rem] min-h-screen h-full overflow-y-auto fixed left-0 top-0 
                 bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
-                z-9999 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+                z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
                 <img src="../images/JeepLink-Logo.png" alt="JeepLink Logo" class="h-24 mx-auto bg-[#F0F0F0] rounded-2xl px-2 my-12">
 
@@ -265,7 +265,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="lg:ml-92 p-4 flex-1">
+        <main class="flex-1 lg:ml-[23rem] p-4 overflow-hidden">
                 <!-- Header -->
                 <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
@@ -349,8 +349,8 @@
                         </div>
 
                         <!-- Table -->
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse table-fixed">
+                        <div class="w-full overflow-x-auto max-w-full">
+                            <table class="w-full min-w-[700px] text-left border-collapse table-fixed">
                                 <thead>
                                     <tr class="text-gray-500 text-sm border-b">
                                         <th class="py-3 w-24">Terminal ID</th>
@@ -465,7 +465,7 @@
         </main>
 
     <!-- Delete Terminal Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-9999 backdrop-blur-sm">
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[9999] backdrop-blur-sm">
 
         <div class="relative bg-white w-[420px] rounded-2xl shadow-2xl overflow-hidden">
 
@@ -519,7 +519,7 @@
     <div id="rotateOverlay" 
         class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
             flex flex-col items-center justify-center text-center 
-            z-[9999] hidden">
+            z-[99999] hidden">
 
         <div class="mb-4">
             <img src="../images/phone-rotate.png" 
