@@ -294,6 +294,11 @@ $("#destinationPointField").on("input", () => {
 
 $("#calculateRouteButton").on("click", async () => {
     if(!destinationPoint) return;
+
+    if ($("#startingPointField").val() !== "Your Location") {
+        await showGpsRequiredPopup();
+    }
+
     if(!startingPoint) {
         startingPoint = await getCurrentLocation();
         $("#startingPointField").val(startingPoint.name);
