@@ -39,23 +39,17 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="/styles/leafletMapStyles.css"/>
 
-    <style>
-        body {
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-    </style>
 
     <script type="module">
         import { checkAuth } from "../scripts/core/accountHandler.js";
 
         checkAuth();
+        $("body").removeClass("overflow-hidden");
     </script>
 
 </head>
 <body>
-    <div class="flex min-h-screen overflow-hidden">
+    <div class="flex min-h-screen">
 
       <!-- Overlay -->
         <div id="sidebarOverlay" 

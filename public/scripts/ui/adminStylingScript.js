@@ -10,10 +10,6 @@ $(document).ready(function () {
 
         if (isMobile && isPortrait) {
             $overlay.removeClass("hidden");
-            $("html, body").css({
-                overflow: "hidden",
-                height: "100%"
-            });
         } else {
             $overlay.addClass("hidden");
             $("html, body").css({
