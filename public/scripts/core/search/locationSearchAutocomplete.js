@@ -164,6 +164,13 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
                 return;
             }
 
+            if (window.innerWidth < 768) {
+                setTimeout(() => {
+                    $("#commuteContent").stop(true, true).slideUp(250);
+                    $("#arrow").removeClass("rotate-180");
+                }, 350);
+            }
+
             field.val("Place a pin on the map");
             
             const result = await new Promise(resolve => {
@@ -171,6 +178,14 @@ export function setupLocationSearch({ field, map, suggestionBox, onSelect }) {
 
                 map.once("click", (e) => {
                     map.getContainer().style.cursor = "";
+                    
+                    if (window.innerWidth < 768) {
+                        setTimeout(() => {
+                            $("#commuteContent").stop(true, true).slideDown(250);
+                            $("#arrow").addClass("rotate-180");
+                        }, 150);
+                    }
+                        
                     resolve({
                         name: `Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`,
                         searchName: "Pinned Location",

@@ -278,17 +278,6 @@ $("#startingPointField").on("input", () => {
     updateGoNowButton();
 })
 
-// close suggestion tab when clicking on pin a location and on mobile
-$(document).on("click", "#startingSuggestions *, #destinationSuggestions *", function () {
-    const text = ($(this).text() + $(this).closest("*").text()).toLowerCase();
-    if (text.includes("pin a location") && window.innerWidth < 768) {
-        setTimeout(() => {
-            $("#commuteContent").stop(true, true).slideUp(250);
-            $("#arrow").removeClass("rotate-180");
-        }, 100);
-    }
-});
-
 const destinationPointSearch = setupLocationSearch({
     field: $("#destinationPointField"),
     map: map,
