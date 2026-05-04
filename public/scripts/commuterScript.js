@@ -215,8 +215,8 @@ let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
-let isStartPointOutBoundary = false;
-let isDestinationPointOutBoundary = false;
+let isStartPointWithinBoundary = false;
+let isDestinationPointWithinBoundary = false;
 
 let completeRouteInformation = null;
 let routesStepCoords = null;
@@ -263,15 +263,15 @@ if (start && destination) {
     addRouteNode(destinationPoint, "destination");
 
     if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointOutBoundary = true;
+        isStartPointWithinBoundary = true;
     } else {
-        isStartPointOutBoundary = false;
+        isStartPointWithinBoundary = false;
     }
 
     if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointOutBoundary = true;
+        isDestinationPointWithinBoundary = true;
     } else {
-        isDestinationPointOutBoundary = false;
+        isDestinationPointWithinBoundary = false;
     }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
@@ -313,6 +313,7 @@ $("#destinationPointField").on("input", () => {
 
 $("#calculateRouteButton").on("click", async () => {
     if(!destinationPoint) return;
+
     if(!startingPoint) {
         startingPoint = await getCurrentLocation();
         $("#startingPointField").val(startingPoint.name);
@@ -344,18 +345,42 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(destinationPoint, "destination");
 
     if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointOutBoundary = true;
+        isStartPointWithinBoundary = true;
     } else {
-        isStartPointOutBoundary = false;
+        isStartPointWithinBoundary = false;
     }
 
     if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointOutBoundary = true;
+        isDestinationPointWithinBoundary = true;
     } else {
-        isDestinationPointOutBoundary = false;
+        isDestinationPointWithinBoundary = false;
     }
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+
+
+    const gpsRequired = $("#startingPointField").val() !== "Your Location";
+    const outsideBoundary = !(isStartPointWithinBoundary && isDestinationPointWithinBoundary);
+    const bothIssues = gpsRequired && outsideBoundary;
+
+    if (bothIssues) {
+        await showNavigationPopup('Location Required & Outside Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                Your current location is required. Please set your starting point to <b class="text-[#2f7a33]">"Your location"</b> to enable navigation. Outside city boundary locations will not show route segments or directions.
+            </p>`);
+    } else if (gpsRequired) {
+        await showNavigationPopup('Current Location Required', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button 
+                if your starting point is not your current GPS location. Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+            </p>`);
+    } else if (outsideBoundary) {
+        await showNavigationPopup('Outside City Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                Jeepney route details are limited to Dasmariñas City. Areas outside the city will not show route segments or directions.
+            </p>`);
+    }
+
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
