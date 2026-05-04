@@ -45,16 +45,16 @@
     </script>
 </head>
 <body>
-    <div class="flex">
+    <div class="flex min-h-screen overflow-hidden">
 
         <!-- Overlay -->
         <div id="sidebarOverlay" 
             class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
-            onclick="closeSidebar()">
+            >
         </div>
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-92 h-screen overflow-y-auto fixed left-0 top-0 
+        <aside id="sidebar" class="w-[23rem] min-h-screen h-full overflow-y-auto fixed left-0 top-0 
                 bg-gradient-to-b from-[#35903A] to-[#133A15] text-white
                 z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
             <div class="px-12">            
@@ -287,7 +287,7 @@
         <div id="asideOverlay" class="hidden md:hidden fixed inset-0 bg-black/40 z-40"></div>
 
         <!-- Main Content -->
-        <main class="lg:ml-92 p-4 flex-1">
+        <main class="flex-1 lg:ml-[23rem] p-4 overflow-hidden">
             <!-- Header -->
             <header class="w-full top-0 z-50 bg-white flex items-center justify-between border-gray-300 border-b-1 px-6 py-4 ">
 
@@ -305,9 +305,9 @@
                 <div class="flex items-center gap-6">
 
                     <!-- Notification Icon -->
-                    <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
+                    <!-- <button class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition">
                         <i class="fas fa-bell text-gray-600"></i>
-                    </button>
+                    </button> -->
 
                     <!-- Divider  -->
                     <div class="w-px h-12 bg-gray-300"></div>
@@ -461,7 +461,7 @@
     <div id="rotateOverlay" 
         class="fixed inset-0 w-screen h-screen bg-black/90 text-white 
             flex flex-col items-center justify-center text-center 
-            z-[9999] hidden">
+            z-[99999] hidden">
 
         <div class="mb-4">
             <img src="../images/phone-rotate.png" 

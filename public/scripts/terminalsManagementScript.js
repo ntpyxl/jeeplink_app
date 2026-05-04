@@ -49,11 +49,17 @@ async function enterEditMode(terminal) {
     terminalEditor.clear();
     terminalRenderer.hide();
     terminalRenderer.displayTerminals({exceptTerminalId: editingTerminalId});
+    
+    const isMobile = window.innerWidth <= 768;
+    map.flyTo(
+        [terminalData.latitude, terminalData.longitude],
+        isMobile ? 14 : 17, { duration: 0.6 }
+    );
 
     terminalEditor.createNode(terminalData.latitude, terminalData.longitude)
 }
 
-function exitEditMode() {
+function exitEditMode(returnToTop = false) {
     editingTerminalId = null;
     terminalNameInput.val("");
     editTerminalFields.addClass("hidden");
@@ -66,6 +72,8 @@ function exitEditMode() {
         .removeClass("bg-yellow-400 text-black hover:bg-yellow-500 shadow-sm")
         .addClass("bg-[#35903A] text-white hover:bg-[#2f7a33]")
         .text("+ Add Terminal");
+
+    if(returnToTop) $("html, body").animate({ scrollTop: 0 }, 500);
 }
 
 $("#clearDrawnTerminal").on("click", () => {
@@ -130,13 +138,16 @@ $("#saveDrawnTerminal").on("click", async () => {
 });
 
 $("#cancelEditTerminal").on("click", () => {
-    exitEditMode();
+    exitEditMode(true);
 });
 
 $("#terminalsTableBody").on("click", ".edit-terminal-btn", function() {
     const terminalId = parseInt($(this).data("terminal-id"));
     const terminalData = terminalRenderer.terminals.find(terminal => terminal.id === terminalId);
     if (!terminalData) return;
+
+    const offset = 175;
+    $("html, body").animate({ scrollTop: Math.max(0, $("#map").offset().top - offset) }, 500);
 
     enterEditMode(terminalData);
 });

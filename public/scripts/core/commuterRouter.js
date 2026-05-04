@@ -22,6 +22,8 @@ export class CommuterRouter {
     }
 
     addNode({ node, index = null, type = null, name = null }) {
+        node.type = type;
+
         if (type === "start") {
             if (this.nodes[0]) {
                 this.nodeLayer.removeLayer(this.nodes[0].layer);
@@ -52,22 +54,70 @@ export class CommuterRouter {
         this.drawNode(node);
     }
 
-    drawNode(node) {
-        const marker = L.circleMarker(
-            [node.coordinates[1], node.coordinates[0]],
-            {
-                radius: 6,
-                color: "green",
-                fillColor: "orange",
-                fillOpacity: 1,
-                weight: 2,
-                pane: "nodePane"
-            }
-        ).addTo(this.nodeLayer);
+    // drawNode(node) {
+    //     const marker = L.circleMarker(
+    //         [node.coordinates[1], node.coordinates[0]],
+    //         {
+    //             radius: 6,
+    //             color: "green",
+    //             fillColor: "orange",
+    //             fillOpacity: 1,
+    //             weight: 2,
+    //             pane: "nodePane"
+    //         }
+    //     ).addTo(this.nodeLayer);
 
+    //     node.layer = marker;
+
+    //     if(this.addInteractability) this.addNodeInteractability(node, marker, this.map);
+    // }
+
+    drawNode(node) {
+        let marker;
+
+        if (node.type === "start") {
+            marker = L.marker(
+                [node.coordinates[1], node.coordinates[0]],
+                {
+                    icon: L.icon({
+                        iconUrl: "/images/starting-icon.png",
+                        iconSize: [52, 52],
+                        iconAnchor: [26, 52]
+                    })
+                }
+            );
+        } else if (node.type === "destination") {
+            marker = L.marker(
+                [node.coordinates[1], node.coordinates[0]],
+                {
+                    icon: L.icon({
+                        iconUrl: "/images/destination-icon.png",
+                        iconSize: [64, 64],
+                        iconAnchor: [32, 64]
+                    })
+                }
+            );
+        } else {
+            // default node (intermediate)
+            marker = L.circleMarker(
+                [node.coordinates[1], node.coordinates[0]],
+                {
+                    radius: 6,
+                    color: "green",
+                    fillColor: "orange",
+                    fillOpacity: 1,
+                    weight: 2,
+                    pane: "nodePane"
+                }
+            );
+        }
+
+        marker.addTo(this.nodeLayer);
         node.layer = marker;
 
-        if(this.addInteractability) this.addNodeInteractability(node, marker, this.map);
+        if (this.addInteractability) {
+            this.addNodeInteractability(node, marker, this.map);
+        }
     }
 
     async getAndDisplayRoutes() {
@@ -211,14 +261,14 @@ export class CommuterRouter {
             "mode": prevMode
         });
 
-        L.circleMarker(lastTo, {
-            radius: 5,
-            color: "#004F11",
-            fillColor: "#E9CD2D",
-            fillOpacity: 1,
-            weight: 2,
-            pane: "nodePane"
-        }).addTo(layerGroup);
+        // L.circleMarker(lastTo, {
+        //     radius: 5,
+        //     color: "#004F11",
+        //     fillColor: "#E9CD2D",
+        //     fillOpacity: 1,
+        //     weight: 2,
+        //     pane: "nodePane"
+        // }).addTo(layerGroup);
 
         this.routeLayers[type] = layerGroup;
 

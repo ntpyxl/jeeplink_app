@@ -1,5 +1,5 @@
 * {
-    font-family: 'Roboto', cursive;
+    font-family: 'Roboto', sans-serif;
 }
 
 :root {
@@ -9,6 +9,7 @@
 
 html, body {
     height: 100%;
+    overflow-x: hidden;
 }
 
 #map {
@@ -440,4 +441,14 @@ html, body {
     .fare-matrix-table-wrap-collapsed {
         display: none !important;
     }
+}
+
+.truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
 }

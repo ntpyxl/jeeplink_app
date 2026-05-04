@@ -56,6 +56,15 @@ function showFareInfo() {
     }).then(result => result.isConfirmed);
 }
 
+function showNavigationPopup(title, message) {
+    return jeeplinkSwal.fire({
+        title: title,
+        html: message,
+        confirmButtonText: "I understand",
+        allowOutsideClick: false
+    }).then(result => result.isConfirmed);
+}
+
 function showNotification({title = "", description = "", icon = "info"}) {
     return jeeplinkSwal.fire({
         toast: true,

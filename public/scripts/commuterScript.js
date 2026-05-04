@@ -86,14 +86,18 @@ const roadsPromise = fetch("../api/getBlobFile?filename=Dasma_LineStrings-AllRoa
 const pointsPromise = fetch("../api/getBlobFile?filename=Dasma_Points_LightWeight.geojson")
     .then(r => r.json());
 
+const boundaryPolygonPromise = fetch("../api/getBlobFile?filename=Dasma_Polygons-Boundary.geojson")
+    .then(r => r.json());
+
 const fareMatrixPromise = apiFetch("/getFareMatrix", {
     method: "GET",
     headers: { "Content-Type": "application/json" }
 });
 
-const [roadsGeoJSON, pointsGeoJSON, fareMatrix] = await Promise.all([
+const [roadsGeoJSON, pointsGeoJSON, boundaryGeoJson, fareMatrix] = await Promise.all([
     roadsPromise,
     pointsPromise,
+    boundaryPolygonPromise,
     fareMatrixPromise
 ]);
 setupNamedLocations(pointsGeoJSON);
@@ -211,6 +215,9 @@ let destinationPoint = null;
 let isStartingPointSelectedLocation = false;
 let isDestinationPointSelectedLocation = false;
 
+let isStartPointWithinBoundary = false;
+let isDestinationPointWithinBoundary = false;
+
 let completeRouteInformation = null;
 let routesStepCoords = null;
 let currentRoute = 0;
@@ -255,6 +262,18 @@ if (start && destination) {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
+    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
+        isStartPointWithinBoundary = true;
+    } else {
+        isStartPointWithinBoundary = false;
+    }
+
+    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
+        isDestinationPointWithinBoundary = true;
+    } else {
+        isDestinationPointWithinBoundary = false;
+    }
+
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
@@ -294,6 +313,7 @@ $("#destinationPointField").on("input", () => {
 
 $("#calculateRouteButton").on("click", async () => {
     if(!destinationPoint) return;
+
     if(!startingPoint) {
         startingPoint = await getCurrentLocation();
         $("#startingPointField").val(startingPoint.name);
@@ -324,7 +344,57 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
+    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
+        isStartPointWithinBoundary = true;
+    } else {
+        isStartPointWithinBoundary = false;
+    }
+
+    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
+        isDestinationPointWithinBoundary = true;
+    } else {
+        isDestinationPointWithinBoundary = false;
+    }
+
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+
+
+    const gpsRequired = $("#startingPointField").val() !== "Your Location";
+    const outsideBoundary = !(isStartPointWithinBoundary && isDestinationPointWithinBoundary);
+    const bothIssues = gpsRequired && outsideBoundary;
+
+    if (bothIssues) {
+        await showNavigationPopup('Navigation Unavailable & Outside Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+                
+                <br><br>
+
+                Pinned locations are also found outside city boundaries.
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
+            </p>`);
+    } else if (gpsRequired) {
+        await showNavigationPopup('Navigation Unavailable', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                
+                <br><br>
+
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+            </p>`);
+    } else if (outsideBoundary) {
+        await showNavigationPopup('Outside City Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                Pinned locations have been found outside city boundaries.
+                Jeepney route details are limited to Dasmariñas City.
+
+                <br><br>
+
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
+            </p>`);
+    }
+
     setActiveRoute(currentRoute)
     renderRoutes(completeRouteInformation);
 })
