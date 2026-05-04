@@ -364,20 +364,34 @@ $("#calculateRouteButton").on("click", async () => {
     const bothIssues = gpsRequired && outsideBoundary;
 
     if (bothIssues) {
-        await showNavigationPopup('Location Required & Outside Boundary', 
+        await showNavigationPopup('Navigation Unavailable & Outside Boundary', 
             `<p class="text-md text-gray-700 leading-relaxed">
-                Your current location is required. Please set your starting point to <b class="text-[#2f7a33]">"Your location"</b> to enable navigation. Outside city boundary locations will not show route segments or directions.
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+                
+                <br><br>
+
+                Pinned locations are also found outside city boundaries.
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
             </p>`);
     } else if (gpsRequired) {
-        await showNavigationPopup('Current Location Required', 
+        await showNavigationPopup('Navigation Unavailable', 
             `<p class="text-md text-gray-700 leading-relaxed">
-                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button 
-                if your starting point is not your current GPS location. Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                
+                <br><br>
+
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
             </p>`);
     } else if (outsideBoundary) {
         await showNavigationPopup('Outside City Boundary', 
             `<p class="text-md text-gray-700 leading-relaxed">
-                Jeepney route details are limited to Dasmariñas City. Areas outside the city will not show route segments or directions.
+                Pinned locations have been found outside city boundaries.
+                Jeepney route details are limited to Dasmariñas City.
+
+                <br><br>
+
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
             </p>`);
     }
 
