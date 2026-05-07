@@ -94,7 +94,7 @@ export function createRouteInformationCard(routeTitle, routeInformation, routeSt
                         </div>
 
                         <span class="text-[#E9CD2D] text-sm transition-transform duration-300 arrow">
-                            ▼
+                            ▲
                         </span>
                     </div>
 
