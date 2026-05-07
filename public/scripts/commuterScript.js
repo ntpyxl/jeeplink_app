@@ -276,6 +276,7 @@ if (start && destination) {
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
     setActiveRoute(currentRoute)
+    await checkNavigationWarnings();
     renderRoutes(completeRouteInformation);
 
     hidePageLoader();
@@ -358,44 +359,8 @@ $("#calculateRouteButton").on("click", async () => {
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
 
-
-    const gpsRequired = $("#startingPointField").val() !== "Your Location";
-    const outsideBoundary = !(isStartPointWithinBoundary && isDestinationPointWithinBoundary);
-    const bothIssues = gpsRequired && outsideBoundary;
-
-    if (bothIssues) {
-        await showNavigationPopup('Navigation Unavailable & Outside Boundary', 
-            `<p class="text-md text-gray-700 leading-relaxed">
-                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
-                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
-                
-                <br><br>
-
-                Pinned locations are also found outside city boundaries.
-                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
-            </p>`);
-    } else if (gpsRequired) {
-        await showNavigationPopup('Navigation Unavailable', 
-            `<p class="text-md text-gray-700 leading-relaxed">
-                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
-                
-                <br><br>
-
-                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
-            </p>`);
-    } else if (outsideBoundary) {
-        await showNavigationPopup('Outside City Boundary', 
-            `<p class="text-md text-gray-700 leading-relaxed">
-                Pinned locations have been found outside city boundaries.
-                Jeepney route details are limited to Dasmariñas City.
-
-                <br><br>
-
-                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
-            </p>`);
-    }
-
-    setActiveRoute(currentRoute)
+    setActiveRoute(currentRoute);
+    await checkNavigationWarnings();
     renderRoutes(completeRouteInformation);
 })
 
@@ -770,5 +735,43 @@ function stopAllTracking() {
     if (followRoute_stopSimulationFunction) {
         followRoute_stopSimulationFunction();
         followRoute_stopSimulationFunction = null;
+    }
+}
+
+async function checkNavigationWarnings() {
+    const gpsRequired = $("#startingPointField").val() !== "Your Location";
+    const outsideBoundary = !(isStartPointWithinBoundary && isDestinationPointWithinBoundary);
+    const bothIssues = gpsRequired && outsideBoundary;
+
+    if (bothIssues) {
+        await showNavigationPopup('Navigation Unavailable & Outside Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+                
+                <br><br>
+
+                Pinned locations are also found outside city boundaries.
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
+            </p>`);
+    } else if (gpsRequired) {
+        await showNavigationPopup('Navigation Unavailable', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                You cannot start navigation or use the <b class="text-[#2f7a33]">"Go now"</b> button if your starting point is not your current GPS location.
+                
+                <br><br>
+
+                Please use <b class="text-[#2f7a33]">"Your location"</b> as the starting point to enable navigation.
+            </p>`);
+    } else if (outsideBoundary) {
+        await showNavigationPopup('Outside City Boundary', 
+            `<p class="text-md text-gray-700 leading-relaxed">
+                Pinned locations have been found outside city boundaries.
+                Jeepney route details are limited to Dasmariñas City.
+
+                <br><br>
+
+                No road segments or information outside Dasmariñas City are supported, which may result in an inaccurate route information.
+            </p>`);
     }
 }
