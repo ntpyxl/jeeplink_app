@@ -17,6 +17,20 @@ showPageLoader([
     "Starting your journey..."
 ]);
 
+function checkIfPointsWithinBoundary() {
+    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
+        isStartPointWithinBoundary = true;
+    } else {
+        isStartPointWithinBoundary = false;
+    }
+
+    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
+        isDestinationPointWithinBoundary = true;
+    } else {
+        isDestinationPointWithinBoundary = false;
+    }
+}
+
 // TODO: Put into class since most scripts are just using the same shit for these
 const map = L.map("map", {
     renderer: L.canvas(),
@@ -249,6 +263,7 @@ if (!(start && destination)) {
 }
 
 if (start && destination) {
+    hidePageLoader();
     $("#goNow").addClass("pointer-events-none opacity-50 cursor-not-allowed");
 
     invokeLoadingState();
@@ -262,24 +277,12 @@ if (start && destination) {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointWithinBoundary = true;
-    } else {
-        isStartPointWithinBoundary = false;
-    }
-
-    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointWithinBoundary = true;
-    } else {
-        isDestinationPointWithinBoundary = false;
-    }
+    checkIfPointsWithinBoundary();
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
-    setActiveRoute(currentRoute)
+    setActiveRoute(currentRoute);
     await checkNavigationWarnings();
     renderRoutes(completeRouteInformation);
-
-    hidePageLoader();
 }
 
 const startingPointSearch = setupLocationSearch({
@@ -345,17 +348,7 @@ $("#calculateRouteButton").on("click", async () => {
     addRouteNode(startingPoint, "start");
     addRouteNode(destinationPoint, "destination");
 
-    if(turf.booleanPointInPolygon(turf.point(startingPoint.coords), boundaryGeoJson.features[0])) {
-        isStartPointWithinBoundary = true;
-    } else {
-        isStartPointWithinBoundary = false;
-    }
-
-    if(turf.booleanPointInPolygon(turf.point(destinationPoint.coords), boundaryGeoJson.features[0])) {
-        isDestinationPointWithinBoundary = true;
-    } else {
-        isDestinationPointWithinBoundary = false;
-    }
+    checkIfPointsWithinBoundary();
 
     ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
 
