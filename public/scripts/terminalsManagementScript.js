@@ -205,7 +205,7 @@ async function reloadTerminalsTableData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getTerminals/${pageNumber}`;
+        let url = `/getTerminals?page_number=${pageNumber}`;
 
         if (searchQuery) {
             url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;

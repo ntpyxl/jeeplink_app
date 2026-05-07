@@ -87,7 +87,7 @@ async function enterEditMode(route) {
     editingRoutetype = route.type;
     editingRouteParentRouteId = route.parent_route_id;
 
-    const jeepRouteData = await apiFetch(`/getJeepRoutesWithNodes/${editingRouteId}`, {
+    const jeepRouteData = await apiFetch(`/getJeepRoutesWithNodes?route_id=${editingRouteId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" }
     });
@@ -150,7 +150,7 @@ async function enterAddTempRouteMode(route) {
     editingRoutetype = route.type;
     editingRouteParentRouteId = route.parent_route_id;
 
-    const jeepRouteData = await apiFetch(`/getJeepRoutesWithNodes/${tempRouteParentId}`, {
+    const jeepRouteData = await apiFetch(`/getJeepRoutesWithNodes?route_id=${tempRouteParentId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" }
     });
@@ -484,7 +484,7 @@ async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getJeepRoutes/${pageNumber}`;
+        let url = `/getJeepRoutes?page=${pageNumber}`;
 
         if (searchQuery) {
             url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
