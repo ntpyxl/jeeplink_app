@@ -157,14 +157,15 @@ export class CommuterRouter {
         });
 
         const routeTypes = {
-            fastest: paths.fastestRoute,
-            cheapest: paths.cheapestRoute,
-            minimalTransfer: paths.minimalTransferRoute
+            fastest: { route: paths.fastestRoute, algorithm: "A* Algorithm" },
+            cheapest: { route: paths.cheapestRoute, algorithm: "A* Algorithm" },
+            minimalTransfer: { route: paths.minimalTransferRoute, algorithm: "Breadth-First Search Algorithm" }
         };
 
         const completeRouteInformation = {};
 
-        for (const [key, route] of Object.entries(routeTypes)) {
+        for (const [key, obj] of Object.entries(routeTypes)) {
+            const route = obj.route;
             if (!route) continue;
 
             const instructions = buildRouteInstructions(route.routePath);
@@ -173,6 +174,8 @@ export class CommuterRouter {
                 instructions,
                 this.fareMatrix.fareMatrixData
             );
+            
+            info.algorithm = obj.algorithm;
 
             completeRouteInformation[`${key}RouteInformation`] = {
                 routeInformation: info,
