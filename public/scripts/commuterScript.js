@@ -144,6 +144,14 @@ map.on("zoomend", () => {
     roadsLayer.setStyle({ weight });
 });
 
+L.geoJSON(boundaryGeoJson, {
+    style: {
+        color: "#ff2d2d",
+        weight: 3,
+        fillOpacity: 0.00
+    }
+}).addTo(map);
+
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const savedRouteRenderer = new SavedRouteRenderer({
