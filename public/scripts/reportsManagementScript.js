@@ -147,8 +147,7 @@ async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType 
         renderPagination();
     } catch (err) {
         console.error(err);
-        // TODO: showError() is not defined
-        showError("Failed to load Jeep Routes.");
+        showError("Failed to load Reports into table.");
     } finally {
         $("#tableLoading").addClass("hidden");
     }

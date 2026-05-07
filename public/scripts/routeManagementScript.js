@@ -484,7 +484,7 @@ async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getJeepRoutes?page=${pageNumber}`;
+        let url = `/getJeepRoutes?page_number=${pageNumber}`;
 
         if (searchQuery) {
             url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
@@ -508,8 +508,7 @@ async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
         return true;
     } catch (err) {
         console.error(err);
-        // TODO: showError() is not defined
-        showError("Failed to load Jeep Routes.");
+        showError("Failed to load Jeep Routes into table.");
         return false;
     } finally {
         $("#tableLoading").addClass("hidden");

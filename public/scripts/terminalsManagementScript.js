@@ -227,7 +227,6 @@ async function reloadTerminalsTableData(pageNumber = 1, searchQuery = null) {
         renderPagination();
     } catch (err) {
         console.error(err);
-        // TODO: showError() is not defined
         showError("Failed to load Jeep Terminals into table.");
     } finally {
         $("#tableLoading").addClass("hidden");
