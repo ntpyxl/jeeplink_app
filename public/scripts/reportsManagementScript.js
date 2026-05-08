@@ -112,8 +112,10 @@ async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType 
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getReports?page_number=${pageNumber}`;
+        let url = `/getReports`;
         const params = new URLSearchParams();
+
+        params.append("page_number", pageNumber);
 
         if (searchQuery) {
             params.append("search_query", searchQuery.trim());
