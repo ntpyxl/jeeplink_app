@@ -205,7 +205,7 @@ async function reloadTerminalsTableData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getTerminals/${pageNumber}`;
+        let url = `/getTerminals?page_number=${pageNumber}`;
 
         if (searchQuery) {
             url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
@@ -227,7 +227,6 @@ async function reloadTerminalsTableData(pageNumber = 1, searchQuery = null) {
         renderPagination();
     } catch (err) {
         console.error(err);
-        // TODO: showError() is not defined
         showError("Failed to load Jeep Terminals into table.");
     } finally {
         $("#tableLoading").addClass("hidden");

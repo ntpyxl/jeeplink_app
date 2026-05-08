@@ -89,12 +89,16 @@ export function createRouteInformationCard(routeTitle, routeInformation, routeSt
                                 <span class="text-white/70 text-[11px] sm:text-sm truncate">
                                     ${routeInformation.routeDistance} • ${routeInformation.jeepRidesCount} • ~${routeInformation.tripDurationFormatted}
                                 </span>
+
+                                <span class="text-white/60 text-[10px] sm:text-xs italic truncate">
+                                    This route was generated using the ${routeInformation.algorithm}
+                                </span>
                             </div>
 
                         </div>
 
                         <span class="text-[#E9CD2D] text-sm transition-transform duration-300 arrow">
-                            ▼
+                            ▲
                         </span>
                     </div>
 

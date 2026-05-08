@@ -53,10 +53,9 @@ export function renderDashboardReportsTable(reports, tableBody) {
 function formatType(type) {
     const types = {
         jeep_diverted: "Jeep Diverted",
-        other_issues: "Other Issues",
-        missing_jeepney: "Missing Jeepney",
-        incorrect_fares: "Incorrect Fares",
-        wrong_route: "Wrong Route"
+        road_hazard: "Hazards",
+        road_closure: "Closed Road",
+        other_issues: "Other Issues"
     };
 
     return types[type] || type;

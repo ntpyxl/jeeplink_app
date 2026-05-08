@@ -428,20 +428,29 @@
                 </div>
 
                 <!-- Issue Type -->
-                <div class="flex gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <button id="issueJeep"
                         aria-pressed="true"
                         data-category="jeep_diverted"
-                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-white
-                            bg-[#2E7D32] shadow-md cursor-pointer hover:bg-[#004F11] transition-all">
+                        class="issue-category-btn btn-active py-2 rounded-xl font-semibold border-2 border-[#2E7D32] cursor-pointer transition-all">
                         Jeep Diverted
                     </button>
-
+                    <button id="issueHazards"
+                        aria-pressed="false"
+                        data-category="road_hazard"
+                        class="issue-category-btn btn-inactive py-2 rounded-xl font-semibold border-2 border-[#2E7D32] cursor-pointer transition-all">
+                        Hazards
+                    </button>
+                    <button id="issueClosedRoad"
+                        aria-pressed="false"
+                        data-category="road_closure"
+                        class="issue-category-btn btn-inactive py-2 rounded-xl font-semibold border-2 border-[#2E7D32] cursor-pointer transition-all">
+                        Closed Road
+                    </button>
                     <button id="issueOther"
                         aria-pressed="false"
                         data-category="other_issues"
-                        class="issue-category-btn w-1/2 py-2 rounded-xl font-semibold text-[#004F11]
-                            border border-[#004F11] cursor-pointer hover:bg-[#004F11]/5 transition-all">
+                        class="issue-category-btn btn-inactive py-2 rounded-xl font-semibold border-2 border-[#2E7D32] cursor-pointer transition-all">
                         Other Issues
                     </button>
                 </div>

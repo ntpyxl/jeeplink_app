@@ -43,14 +43,14 @@ export class GraphHelper {
 
                 const edgeAB = {
                     to: bKey,
-                    weight: dist,
+                    distance: dist,
                     mode: "walk",
                     ...(feature.properties?.name && { road_name: feature.properties.name })
                 };
 
                 const edgeBA = {
                     to: aKey,
-                    weight: dist,
+                    distance: dist,
                     mode: "walk",
                     ...(feature.properties?.name && { road_name: feature.properties.name })
                 };
@@ -75,8 +75,8 @@ export class GraphHelper {
 
         // Store the neighbors using the EXACT string keys
         this.graph.set(key, [
-            { to: aKey, weight: distA, mode: "walk" },
-            { to: bKey, weight: distB, mode: "walk" }
+            { to: aKey, distance: distA, mode: "walk" },
+            { to: bKey, distance: distB, mode: "walk" }
         ]);
 
         return key;
