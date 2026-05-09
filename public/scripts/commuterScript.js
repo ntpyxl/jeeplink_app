@@ -80,6 +80,8 @@ function handleUserMarkerUpdate(location) {
     } else {
         userMarker.setLatLng(currentUserMarkerPosition);
     }
+
+    $("#submitReport").attr("data-user-location", currentUserMarkerPosition);
 }
 
 // Uncomment either one, but not both

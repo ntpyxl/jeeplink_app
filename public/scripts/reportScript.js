@@ -18,11 +18,19 @@ $(".issue-category-btn").on("click", function () {
 
 $("#submitReport").on("click", async () => {
     try {
+        const userPosition = $("#submitReport").data("user-location");
         const reportType = $(".issue-category-btn[aria-pressed='true']").data("category");
         const currentJeepRouteId = JSON.parse(localStorage.getItem("activeRoute_currentStep"))?.currentJeepRouteId ?? null;
+
+        let user_pos_latitude = null;
+        let user_pos_longitude = null;
         
         if(reportType === "jeep_diverted" && currentJeepRouteId == null) {
             throw new Error("You're currently not following any jeep route.")
+        }
+
+        if(userPosition) {
+            [user_pos_latitude, user_pos_longitude] = userPosition.split(",").map(Number);
         }
 
         if (!$("#reportDesc").val().trim()) {
@@ -37,7 +45,9 @@ $("#submitReport").on("click", async () => {
                 report_desc: $("#reportDesc").val(),
                 email: $("#reportEmail").val(),
                 report_type: reportType,
-                jeep_route_reported: currentJeepRouteId
+                jeep_route_reported: currentJeepRouteId,
+                user_position_latitude: user_pos_latitude ?? null,
+                user_position_longitude: user_pos_longitude ?? null
             })
         });
 
