@@ -112,8 +112,10 @@ async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType 
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getReports/${pageNumber}`;
+        let url = `/getReports`;
         const params = new URLSearchParams();
+
+        params.append("page_number", pageNumber);
 
         if (searchQuery) {
             params.append("search_query", searchQuery.trim());
@@ -147,8 +149,7 @@ async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType 
         renderPagination();
     } catch (err) {
         console.error(err);
-        // TODO: showError() is not defined
-        showError("Failed to load Jeep Routes.");
+        showError("Failed to load Reports into table.");
     } finally {
         $("#tableLoading").addClass("hidden");
     }
