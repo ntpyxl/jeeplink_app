@@ -220,30 +220,23 @@ $("#toggleCommute").on("click", function () {
     // ---------- ISSUE TYPE TOGGLE ----------
     $("#titleField").hide();
 
-    $("#issueJeep").on("click", function () {
-        $(this)
-            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
-            .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
-
-        $("#issueOther")
+    $(".issue-category-btn").on("click", function () {
+        // Reset all buttons
+        $(".issue-category-btn")
             .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
             .addClass("border text-[#004F11] hover:bg-[#2E7D32]/5");
 
-        $("#titleField").slideUp(150);
-
-        $("#descLabel").text("Description");
-    });
-
-    $("#issueOther").on("click", function () {
+        // Activate clicked button
         $(this)
-            .removeClass("border text-[#004F11] hover:bg-[#004F11]/5")
+            .removeClass("border text-[#004F11] hover:bg-[#2E7D32]/5")
             .addClass("bg-[#2E7D32] text-white hover:bg-[#004F11]");
 
-        $("#issueJeep")
-            .removeClass("bg-[#2E7D32] text-white hover:bg-[#004F11]")
-            .addClass("border text-[#004F11] hover:bg-[#004F11]/5");
-
-        $("#titleField").slideDown(150);
+        // Show title only for Other Issues
+        if ($(this).attr("id") === "issueOther") {
+            $("#titleField").slideDown(150);
+        } else {
+            $("#titleField").slideUp(150);
+        }
 
         $("#descLabel").text("Description");
     });
