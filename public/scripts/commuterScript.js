@@ -152,6 +152,19 @@ L.geoJSON(boundaryGeoJson, {
     }
 }).addTo(map);
 
+// Boundary glow
+L.geoJSON(boundaryGeoJson, {
+    style: {
+        color: "#ff2d2d",
+        weight: 14,
+        opacity: 0.18,
+        fillOpacity: 0,
+        lineCap: "round",
+        lineJoin: "round"
+    }
+}).addTo(map);
+
+
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const savedRouteRenderer = new SavedRouteRenderer({
