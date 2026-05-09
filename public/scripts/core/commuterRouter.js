@@ -138,6 +138,8 @@ export class CommuterRouter {
             })
         });
 
+        // TODO: Properly handle error here! User won't know unless network tab is opened!
+
         const { paths } = await response;
 
         this.allNodes = [];
