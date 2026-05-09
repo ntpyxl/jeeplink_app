@@ -45,6 +45,7 @@ export class GraphHelper {
                     to: bKey,
                     distance: dist,
                     mode: "walk",
+                    max_speed: feature.properties.maxspeed,
                     ...(feature.properties?.name && { road_name: feature.properties.name })
                 };
 
@@ -52,6 +53,7 @@ export class GraphHelper {
                     to: aKey,
                     distance: dist,
                     mode: "walk",
+                    max_speed: feature.properties.maxspeed,
                     ...(feature.properties?.name && { road_name: feature.properties.name })
                 };
 
@@ -74,6 +76,7 @@ export class GraphHelper {
         const distB = turf.distance(turf.point(coord), turf.point(b), { units: "meters" });
 
         // Store the neighbors using the EXACT string keys
+        // TODO: May cause issues if other properties are missing? (e.g. max_speed, name)
         this.graph.set(key, [
             { to: aKey, distance: distA, mode: "walk" },
             { to: bKey, distance: distB, mode: "walk" }
