@@ -181,10 +181,17 @@
                             keyboard_arrow_down
                         </span>
                     </summary>
-                    <div class="dropdown-content overflow-hidden">
+                    <!-- <div class="dropdown-content overflow-hidden">
                         <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
                             <p class="text-base sm:text-lg leading-relaxed">
                                 Go to the <a href="map.html" class="text-[#004F11] hover:text-black transition">"Map"</a> tab and type your starting point and destination in the search bar. Jeeplink will then display a list of different route options and you can choose one that suits your needs.
+                            </p>
+                        </div>
+                    </div> -->
+                    <div class="dropdown-content overflow-hidden">
+                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
+                            <p class="text-base sm:text-lg leading-relaxed">
+                                Visit the <a href="guide.html" class="font-semibold text-[#004F11]">Guide</a> section for step-by-step instructions on how to use JeepLink to find routes.
                             </p>
                         </div>
                     </div>
@@ -322,8 +329,51 @@
                     </div>
                 </details>
 
+                <!-- FAQ 9 -->
+                <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
+                    <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
+                        <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
+                            <div class="text-2xl sm:text-3xl">?</div>
+                            <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
+                                What is the A* algorithm shown in route suggestion?
+                            </span>
+                        </div>
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
+                            keyboard_arrow_down
+                        </span>
+                    </summary>
 
-                <!-- Add more FAQs as needed -->
+                    <div class="dropdown-content overflow-hidden">
+                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
+                            <p class="text-base sm:text-lg leading-relaxed">
+                                The A* (A-star) algorithm in JeepLink is a way for the system to find the best jeepney routes in Dasmariñas City. It checks different possible paths and compares both the travel distance and estimated fare. Because of this, the system can suggest the fastest and cheapest routes for commuters. 
+                        </div>
+                    </div>
+                </details>
+
+                <!-- FAQ 10 -->
+                <details class="group dropdown bg-white border-2 border-[#004F11]/80 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 open:shadow-lg">
+                    <summary class="flex justify-between items-center font-bold cursor-pointer p-4 sm:p-5 list-none">
+                        <div class="flex items-center gap-3 sm:gap-4 text-[#004F11]">
+                            <div class="text-2xl sm:text-3xl">?</div>
+                            <span class="text-lg sm:text-xl font-normal group-open:text-[#2E7D32] transition-colors">
+                                What is the BFS algorithm used for in JeepLink?
+                            </span>
+                        </div>
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl text-[#004F11] transition-all duration-300 group-open:text-[#2E7D32] dropdown-icon">
+                            keyboard_arrow_down
+                        </span>
+                    </summary>
+
+                    <div class="dropdown-content overflow-hidden">
+                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 ml-6 sm:ml-7 text-[#555]">
+                            <p class="text-base sm:text-lg leading-relaxed">
+                                The Breadth-First Search (BFS) algorithm in JeepLink is used to find routes with the least number of jeepney transfers. It checks all possible paths step by step and chooses the one that reaches the destination using the fewest changes of jeepney. This helps commuters travel in a simpler way with fewer transfers.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+
             </div>
         </section>
         <!-- End of FAQs -->
