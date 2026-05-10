@@ -408,10 +408,10 @@
     <!-- REPORT MODAL -->
     <div id="reportModal"
         class="fixed inset-0 flex items-start justify-center pt-50 md:pt-36
-                z-[9999] hidden">
+                z-[9999] hidden opacity-0 transition-opacity duration-300 ease-out">
 
         <!-- Prevent close when clicking inside -->
-        <div class="animate-[drop_0.25s_ease-out]" onclick="event.stopPropagation()">
+        <div id="reportModalContent" class="scale-95 opacity-0 -translate-y-3 transition-all duration-300 ease-out" onclick="event.stopPropagation()">
 
             <div class="w-[90vw] max-w-md bg-white shadow-2xl border border-gray-200 rounded-2xl p-5
                         flex flex-col gap-4">
@@ -439,7 +439,7 @@
                         aria-pressed="false"
                         data-category="road_hazard"
                         class="issue-category-btn btn-inactive py-2 rounded-xl font-semibold border-2 border-[#2E7D32] cursor-pointer transition-all">
-                        Hazards
+                        Road Hazards
                     </button>
                     <button id="issueClosedRoad"
                         aria-pressed="false"
@@ -574,6 +574,7 @@
             For a better experience, please rotate your device to portrait mode.
         </p>
     </div>
+
 
     <!-- Commuter Front End Script -->
     <script src="scripts/ui/commuterStylingScript.js" type="module"></script>

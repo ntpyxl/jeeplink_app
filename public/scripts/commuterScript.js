@@ -2,6 +2,7 @@ import { GraphHelper } from "./core/graphHelper.js";
 import { CommuterRouter } from "./core/commuterRouter.js";
 import { SavedRouteRenderer } from "./core/savedRouteRenderer.js";
 import { TerminalRenderer } from "./core/terminalRenderer.js";
+import { HazardRenderer } from "./core/hazardRenderer.js";
 import { setupLocationSearch, setupNamedLocations, getCurrentLocation } from "./core/search/locationSearchAutocomplete.js";
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
 import { snapToRoad } from "./helper/snapToRoadFunction.js";
@@ -80,6 +81,8 @@ function handleUserMarkerUpdate(location) {
     } else {
         userMarker.setLatLng(currentUserMarkerPosition);
     }
+
+    $("#submitReport").attr("data-user-location", currentUserMarkerPosition);
 }
 
 // Uncomment either one, but not both
@@ -152,6 +155,19 @@ L.geoJSON(boundaryGeoJson, {
     }
 }).addTo(map);
 
+// Boundary glow
+L.geoJSON(boundaryGeoJson, {
+    style: {
+        color: "#ff2d2d",
+        weight: 14,
+        opacity: 0.18,
+        fillOpacity: 0,
+        lineCap: "round",
+        lineJoin: "round"
+    }
+}).addTo(map);
+
+
 const graphHelper = new GraphHelper(roadsGeoJSON);
 // NOTE: graphHelper.graph.get(key) => [{ to, weight, coords }]
 const savedRouteRenderer = new SavedRouteRenderer({
@@ -160,6 +176,7 @@ const savedRouteRenderer = new SavedRouteRenderer({
     graphHelper: graphHelper
 });
 const terminalRenderer = new TerminalRenderer({ map: map })
+const hazardRenderer = new HazardRenderer({ map: map })
 const routeGenerated = new CommuterRouter({
     map: map,
     roadsGeoJSON: roadsGeoJSON,
@@ -167,6 +184,8 @@ const routeGenerated = new CommuterRouter({
     fareMatrix: fareMatrix,
     addInteractability: false
 });
+
+hazardRenderer.toggle();
 
 $("#toggleJeepRoutes").on("click", async () => {
     savedRouteRenderer.toggle();
@@ -694,7 +713,7 @@ async function followRoute() {
             updateHighlightedRouteStepRow(stepCoordIndex);
             localStorage.setItem("activeRoute_currentStep", JSON.stringify({
                 stepCoordIndex: stepCoordIndex,
-                currentJeepRouteId: jeepRidesIdList[stepCoordIndex]
+                currentJeepRouteId: jeepRidesIdList[stepCoordIndex - 1]
             }));
         }
 

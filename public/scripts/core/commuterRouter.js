@@ -139,6 +139,7 @@ export class CommuterRouter {
         });
 
         // TODO: Properly handle error here! User won't know unless network tab is opened!
+        // It's me from the future. I forgot what error to handle here!
 
         const { paths } = await response;
 
