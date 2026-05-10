@@ -700,7 +700,7 @@ async function followRoute() {
             updateHighlightedRouteStepRow(stepCoordIndex);
             localStorage.setItem("activeRoute_currentStep", JSON.stringify({
                 stepCoordIndex: stepCoordIndex,
-                currentJeepRouteId: jeepRidesIdList[stepCoordIndex]
+                currentJeepRouteId: jeepRidesIdList[stepCoordIndex - 1]
             }));
         }
 
