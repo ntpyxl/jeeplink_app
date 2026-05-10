@@ -191,12 +191,36 @@ $("#toggleCommute").on("click", function () {
 
     // OPEN
     function openReportModal() {
-        $("#reportModal").removeClass("hidden");
+        const modal = $("#reportModal");
+        const content = $("#reportModalContent");
+
+        modal.removeClass("hidden");
+
+        modal[0].offsetHeight;
+
+        modal.removeClass("opacity-0").addClass("opacity-100");
+
+        content
+            .removeClass("scale-95 opacity-0 -translate-y-3")
+            .addClass("scale-100 opacity-100 translate-y-0");   
     }
 
     // CLOSE
     function closeReportModal() {
-        $("#reportModal").addClass("hidden");
+        const modal = $("#reportModal");
+        const content = $("#reportModalContent");
+
+
+        modal.removeClass("opacity-100").addClass("opacity-0");
+
+        content
+            .removeClass("scale-100 opacity-100 translate-y-0")
+            .addClass("scale-95 opacity-0 -translate-y-3");
+
+
+        setTimeout(() => {
+            modal.addClass("hidden");
+        }, 320);
     }
 
     // Open button
@@ -206,8 +230,10 @@ $("#toggleCommute").on("click", function () {
     $("#cancelBtn").on("click", closeReportModal);
 
     // Click outside to close
-    $("#reportModal").on("click", function () {
-        closeReportModal();
+    $("#reportModal").on("click", function (e) {
+        if (e.target === this) {
+            closeReportModal();
+        }
     });
 
     // ESC key
