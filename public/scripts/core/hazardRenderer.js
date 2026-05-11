@@ -1,12 +1,15 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
 
 export class HazardRenderer {
-    constructor({ map }) {
+    constructor({ map, refreshInterval = 5000 }) {
         this.map = map;
 
-        this.hazards = null;
-        this.markers = [];
+        this.hazards = [];
+        this.markers = new Map(); // hazardId -> marker
         this.markerLayer = new L.LayerGroup().addTo(this.map);
+
+        this.refreshInterval = refreshInterval;
+        this.refreshTimer = null;
 
         // Custom Icon for hazard terminal
         this.hazardIcon = L.icon({
@@ -31,56 +34,110 @@ export class HazardRenderer {
             headers: { "Content-Type": "application/json" }
         });
 
-        this.hazards = hazards_data || [];
+        return hazards_data || [];
+    }
+
+    createMarker(hazard) {
+        const marker = L.marker(
+            [hazard.latitude, hazard.longitude],
+            { icon: this.hazardIcon }
+        ).addTo(this.markerLayer);
+
+        marker.bindPopup(`
+            <b>Road Hazard - Expect traffic!</b><br>
+            <b>${hazard.hazard_name}</b><br>
+            ID: ${hazard.id}
+        `);
+
+        marker.on("mouseover", () => {
+            marker.setIcon(this.hazardIconHover);
+        });
+
+        marker.on("mouseout", () => {
+            marker.setIcon(this.hazardIcon);
+        });
+
+        this.markers.set(hazard.id, marker);
+    }
+
+    removeMarker(hazardId) {
+        const marker = this.markers.get(hazardId);
+
+        if (!marker) return;
+        this.markerLayer.removeLayer(marker);
+        this.markers.delete(hazardId);
     }
 
     async displayHazards({ exceptHazardId = null } = {}) {
-        if (!this.hazards) {
-            await this.loadHazards();
-        }
+        const latestHazards = await this.loadHazards();
+        console.log("refresh display")
 
-        this.hazards.forEach((hazard) => {
-            if(exceptHazardId === hazard.id) return;
+        // Convert to maps for comparison
+        const latestMap = new Map();
+        latestHazards.forEach(h => latestMap.set(h.id, h));
 
-            const marker = L.marker(
-                [hazard.latitude, hazard.longitude],
-                { icon: this.hazardIcon }
-            ).addTo(this.markerLayer);
+        const currentMap = new Map();
+        this.hazards.forEach(h => currentMap.set(h.id, h));
 
-            marker.bindPopup(`
-                <b>Road Hazard - Expect traffic!</b><br>
-                <b>${hazard.hazard_name}</b><br>
-                ID: ${hazard.id}
-            `);
+        let hasChanges = false;
 
-            marker.on("mouseover", () => {
-                marker.setIcon(this.hazardIconHover);
-            });
+        // Add new hazards
+        latestHazards.forEach((hazard) => {
+            if (exceptHazardId === hazard.id) return;
 
-            marker.on("mouseout", () => {
-                marker.setIcon(this.hazardIcon);
-            });
-
-            this.markers.push(marker);
+            if (!currentMap.has(hazard.id)) {
+                this.createMarker(hazard);
+                hasChanges = true;
+            }
         });
+
+        // Remove deleted hazards
+        this.hazards.forEach((hazard) => {
+            if (!latestMap.has(hazard.id)) {
+                this.removeMarker(hazard.id);
+                hasChanges = true;
+            }
+        });
+
+        this.hazards = latestHazards;
+    }
+
+    startAutoRefresh(options = {}) {
+        // Prevent duplicate intervals
+        this.stopAutoRefresh();
+
+        // Initial render
+        this.displayHazards(options);
+
+        this.refreshTimer = setInterval(() => {
+            this.displayHazards(options);
+        }, this.refreshInterval);
+    }
+
+    stopAutoRefresh() {
+        if (this.refreshTimer) {
+            clearInterval(this.refreshTimer);
+            this.refreshTimer = null;
+        }
     }
 
     hide() {
+        this.stopAutoRefresh();
         this.markerLayer.clearLayers();
-        this.markers = [];
+        this.markers.clear();
     }
 
     toggle() {
-        if (this.markers.length > 0) {
+        if (this.markers.size > 0) {
             this.hide();
         } else {
-            this.displayHazards();
+            this.startAutoRefresh();
         }
     }
 
     reload() {
         this.hide();
-        this.hazards = null;
-        this.displayHazards();
+        this.hazards = [];
+        this.startAutoRefresh();
     }
 }
