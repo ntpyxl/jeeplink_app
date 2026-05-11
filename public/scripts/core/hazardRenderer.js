@@ -1,7 +1,7 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
 
 export class HazardRenderer {
-    constructor({ map, refreshInterval = 5000 }) {
+    constructor({ map, refreshInterval = 15000 }) {
         this.map = map;
 
         this.hazards = [];
@@ -70,7 +70,6 @@ export class HazardRenderer {
 
     async displayHazards({ exceptHazardId = null } = {}) {
         const latestHazards = await this.loadHazards();
-        console.log("refresh display")
 
         // Convert to maps for comparison
         const latestMap = new Map();
