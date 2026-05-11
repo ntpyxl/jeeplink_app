@@ -10,7 +10,7 @@ export class HazardRenderer {
 
         // Custom Icon for hazard terminal
         this.hazardIcon = L.icon({
-            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconUrl: "../../images/road-hazard.png",
             iconSize: [52, 52],
             iconAnchor: [26, 52],
             popupAnchor: [0, -30]
@@ -18,7 +18,7 @@ export class HazardRenderer {
 
         // Hover
         this.hazardIconHover = L.icon({
-            iconUrl: "../../images/jeep-terminal-pin.png",
+            iconUrl: "../../images/road-hazard.png",
             iconSize: [60, 60], 
             iconAnchor: [30, 60],
             popupAnchor: [0, -30]
