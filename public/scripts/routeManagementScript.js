@@ -484,12 +484,17 @@ async function reloadJeepRouteData(pageNumber = 1, searchQuery = null) {
     $("#tableLoading").removeClass("hidden");
 
     try {
-        let url = `/getJeepRoutes?page_number=${pageNumber}`;
+        let url = `/getJeepRoutes`;
+        const params = new URLSearchParams();
+
+        params.append("page_number", pageNumber);
 
         if (searchQuery) {
-            url += `?search_query=${encodeURIComponent(searchQuery.trim())}`;
-        } else {
-            $("#routeSearch").val("");
+            params.append("search_query", searchQuery.trim());
+        }
+
+        if (params.toString()) {
+            url += `?${params.toString()}`;
         }
 
         const { route_data, row_count, total_pages } = await apiFetch(url, {
