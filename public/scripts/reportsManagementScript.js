@@ -119,8 +119,6 @@ async function reloadReportsData(pageNumber = 1, searchQuery = null, reportType 
 
         if (searchQuery) {
             params.append("search_query", searchQuery.trim());
-        } else {
-            $("#routeSearch").val("");
         }
 
         if (reportType !== null) {
