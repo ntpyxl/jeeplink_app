@@ -10,6 +10,7 @@ export class ClosureRenderer {
 
         this.refreshInterval = refreshInterval;
         this.refreshTimer = null;
+        this.isStillRefreshing = false;
 
         // Custom Icon for closure terminal
         this.closureIcon = L.icon({
@@ -69,36 +70,43 @@ export class ClosureRenderer {
     }
 
     async displayClosures({ exceptHazardId = null } = {}) {
-        const latestClosures = await this.loadClosures();
+        if(this.isStillRefreshing) return;
+        this.isFetchingHazards = true;
 
-        // Convert to maps for comparison
-        const latestMap = new Map();
-        latestClosures.forEach(h => latestMap.set(h.id, h));
+        try {
+            const latestClosures = await this.loadClosures();
 
-        const currentMap = new Map();
-        this.closure.forEach(h => currentMap.set(h.id, h));
+            // Convert to maps for comparison
+            const latestMap = new Map();
+            latestClosures.forEach(h => latestMap.set(h.id, h));
 
-        let hasChanges = false;
+            const currentMap = new Map();
+            this.closure.forEach(h => currentMap.set(h.id, h));
 
-        // Add new closure
-        latestClosures.forEach((closure) => {
-            if (exceptHazardId === closure.id) return;
+            let hasChanges = false;
 
-            if (!currentMap.has(closure.id)) {
-                this.createMarker(closure);
-                hasChanges = true;
-            }
-        });
+            // Add new closure
+            latestClosures.forEach((closure) => {
+                if (exceptHazardId === closure.id) return;
 
-        // Remove deleted closure
-        this.closure.forEach((closure) => {
-            if (!latestMap.has(closure.id)) {
-                this.removeMarker(closure.id);
-                hasChanges = true;
-            }
-        });
+                if (!currentMap.has(closure.id)) {
+                    this.createMarker(closure);
+                    hasChanges = true;
+                }
+            });
 
-        this.closure = latestClosures;
+            // Remove deleted closure
+            this.closure.forEach((closure) => {
+                if (!latestMap.has(closure.id)) {
+                    this.removeMarker(closure.id);
+                    hasChanges = true;
+                }
+            });
+
+            this.closure = latestClosures;
+        } finally {
+            this.isFetchingHazards = false;
+        }
     }
 
     startAutoRefresh(options = {}) {

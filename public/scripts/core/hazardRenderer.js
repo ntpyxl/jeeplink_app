@@ -10,6 +10,7 @@ export class HazardRenderer {
 
         this.refreshInterval = refreshInterval;
         this.refreshTimer = null;
+        this.isStillRefreshing = false;
 
         // Custom Icon for hazard terminal
         this.hazardIcon = L.icon({
@@ -69,36 +70,43 @@ export class HazardRenderer {
     }
 
     async displayHazards({ exceptHazardId = null } = {}) {
-        const latestHazards = await this.loadHazards();
+        if (this.isFetchingHazards) return;
+        this.isFetchingHazards = true;
 
-        // Convert to maps for comparison
-        const latestMap = new Map();
-        latestHazards.forEach(h => latestMap.set(h.id, h));
+        try {
+            const latestHazards = await this.loadHazards();
 
-        const currentMap = new Map();
-        this.hazards.forEach(h => currentMap.set(h.id, h));
+            // Convert to maps for comparison
+            const latestMap = new Map();
+            latestHazards.forEach(h => latestMap.set(h.id, h));
 
-        let hasChanges = false;
+            const currentMap = new Map();
+            this.hazards.forEach(h => currentMap.set(h.id, h));
 
-        // Add new hazards
-        latestHazards.forEach((hazard) => {
-            if (exceptHazardId === hazard.id) return;
+            let hasChanges = false;
 
-            if (!currentMap.has(hazard.id)) {
-                this.createMarker(hazard);
-                hasChanges = true;
-            }
-        });
+            // Add new hazards
+            latestHazards.forEach((hazard) => {
+                if (exceptHazardId === hazard.id) return;
 
-        // Remove deleted hazards
-        this.hazards.forEach((hazard) => {
-            if (!latestMap.has(hazard.id)) {
-                this.removeMarker(hazard.id);
-                hasChanges = true;
-            }
-        });
+                if (!currentMap.has(hazard.id)) {
+                    this.createMarker(hazard);
+                    hasChanges = true;
+                }
+            });
 
-        this.hazards = latestHazards;
+            // Remove deleted hazards
+            this.hazards.forEach((hazard) => {
+                if (!latestMap.has(hazard.id)) {
+                    this.removeMarker(hazard.id);
+                    hasChanges = true;
+                }
+            });
+
+            this.hazards = latestHazards;
+        } finally {
+            this.isFetchingHazards = false;
+        }
     }
 
     startAutoRefresh(options = {}) {
