@@ -1,109 +1,109 @@
 import { apiFetch } from "./jeeplinkApiFetcher.js";
 
-export class HazardRenderer {
+export class ClosureRenderer {
     constructor({ map, refreshInterval = 15000 }) {
         this.map = map;
 
-        this.hazards = [];
-        this.markers = new Map(); // hazardId -> marker
+        this.closure = [];
+        this.markers = new Map(); // closureId -> marker
         this.markerLayer = new L.LayerGroup().addTo(this.map);
 
         this.refreshInterval = refreshInterval;
         this.refreshTimer = null;
         this.isStillRefreshing = false;
 
-        // Custom Icon for hazard terminal
-        this.hazardIcon = L.icon({
-            iconUrl: "../../images/road-hazard.png",
+        // Custom Icon for closure terminal
+        this.closureIcon = L.icon({
+            iconUrl: "../../images/road-closure.png",
             iconSize: [52, 52],
             iconAnchor: [26, 52],
             popupAnchor: [0, -30]
         });
 
         // Hover
-        this.hazardIconHover = L.icon({
-            iconUrl: "../../images/road-hazard.png",
+        this.closureIconHover = L.icon({
+            iconUrl: "../../images/road-closure.png",
             iconSize: [60, 60], 
             iconAnchor: [30, 60],
             popupAnchor: [0, -30]
         });
     }
 
-    async loadHazards() {
-        const { hazards_data } = await apiFetch(`/getHazards`, {
+    async loadClosures() {
+        const { closures_data } = await apiFetch(`/getClosures`, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
 
-        return hazards_data || [];
+        return closures_data || [];
     }
 
-    createMarker(hazard) {
+    createMarker(closure) {
         const marker = L.marker(
-            [hazard.latitude, hazard.longitude],
-            { icon: this.hazardIcon }
+            [closure.latitude, closure.longitude],
+            { icon: this.closureIcon }
         ).addTo(this.markerLayer);
 
         marker.bindPopup(`
-            <b>Road Hazard - Expect traffic!</b><br>
-            <b>${hazard.hazard_name}</b><br>
-            ID: ${hazard.id}
+            <b>Road Closure - Expect traffic and reroute!</b><br>
+            <b>${closure.closure_name}</b><br>
+            ID: ${closure.id}
         `);
 
         marker.on("mouseover", () => {
-            marker.setIcon(this.hazardIconHover);
+            marker.setIcon(this.closureIconHover);
         });
 
         marker.on("mouseout", () => {
-            marker.setIcon(this.hazardIcon);
+            marker.setIcon(this.closureIcon);
         });
 
-        this.markers.set(hazard.id, marker);
+        this.markers.set(closure.id, marker);
     }
 
-    removeMarker(hazardId) {
-        const marker = this.markers.get(hazardId);
+    removeMarker(closureId) {
+        const marker = this.markers.get(closureId);
 
         if (!marker) return;
         this.markerLayer.removeLayer(marker);
-        this.markers.delete(hazardId);
+        this.markers.delete(closureId);
     }
 
-    async displayHazards({ exceptHazardId = null } = {}) {
-        if (this.isFetchingHazards) return;
+    async displayClosures({ exceptHazardId = null } = {}) {
+        if(this.isStillRefreshing) return;
         this.isFetchingHazards = true;
 
         try {
-            const latestHazards = await this.loadHazards();
+            const latestClosures = await this.loadClosures();
 
             // Convert to maps for comparison
             const latestMap = new Map();
-            latestHazards.forEach(h => latestMap.set(h.id, h));
+            latestClosures.forEach(h => latestMap.set(h.id, h));
 
             const currentMap = new Map();
-            this.hazards.forEach(h => currentMap.set(h.id, h));
+            this.closure.forEach(h => currentMap.set(h.id, h));
 
             let hasChanges = false;
 
-            // Add new hazards
-            latestHazards.forEach((hazard) => {
-                if (exceptHazardId === hazard.id) return;
+            // Add new closure
+            latestClosures.forEach((closure) => {
+                if (exceptHazardId === closure.id) return;
 
-                if (!currentMap.has(hazard.id)) {
-                    this.createMarker(hazard);
+                if (!currentMap.has(closure.id)) {
+                    this.createMarker(closure);
                     hasChanges = true;
                 }
             });
 
-            // Remove deleted hazards
-            this.hazards.forEach((hazard) => {
-                if (!latestMap.has(hazard.id)) {
-                    this.removeMarker(hazard.id);
+            // Remove deleted closure
+            this.closure.forEach((closure) => {
+                if (!latestMap.has(closure.id)) {
+                    this.removeMarker(closure.id);
                     hasChanges = true;
                 }
             });
 
-            this.hazards = latestHazards;
+            this.closure = latestClosures;
         } finally {
             this.isFetchingHazards = false;
         }
@@ -114,10 +114,10 @@ export class HazardRenderer {
         this.stopAutoRefresh();
 
         // Initial render
-        this.displayHazards(options);
+        this.displayClosures(options);
 
         this.refreshTimer = setInterval(() => {
-            this.displayHazards(options);
+            this.displayClosures(options);
         }, this.refreshInterval);
     }
 
@@ -144,7 +144,7 @@ export class HazardRenderer {
 
     reload() {
         this.hide();
-        this.hazards = [];
+        this.closure = [];
         this.startAutoRefresh();
     }
 }
