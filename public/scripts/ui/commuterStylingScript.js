@@ -355,3 +355,42 @@ $("#toggleCommute").on("click", function () {
     checkOrientation();
 
 });
+
+// FARE MATRIX TOGGLE
+window.showFare = function (type, btn) {
+
+    // hide all PDFs
+    document.querySelectorAll('iframe').forEach(frame => {
+        frame.classList.add('hidden');
+    });
+
+    // show selected PDF
+    document.getElementById(type).classList.remove('hidden');
+
+    // reset buttons
+    document.querySelectorAll('.fare-btn').forEach(button => {
+        button.classList.remove('bg-[#2E7D32]', 'text-white');
+        button.classList.add('text-[#2E7D32]');
+    });
+
+    // activate clicked button
+    btn.classList.add('bg-[#2E7D32]', 'text-white');
+};
+
+$(document).ready(function () {
+
+    $(".fare-btn").on("click", function () {
+        const idMap = {
+            "btn-traditional": "traditional",
+            "btn-modern-ac": "modern_ac",
+            "btn-modern-nac": "modern_nac"
+        };
+
+        const type = idMap[this.id];
+
+        window.showFare(type, this); 
+    });
+
+    // DEFAULT CLICK
+    $("#btn-traditional").trigger("click");
+});
