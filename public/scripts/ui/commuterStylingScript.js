@@ -227,7 +227,7 @@ $("#toggleCommute").on("click", function () {
     $("#openReportModalBtn").on("click", openReportModal);
 
     // Cancel button
-    $("#cancelBtn").on("click", closeReportModal);
+    $("#cancelReportBtn").on("click", closeReportModal);
 
     // Click outside to close
     $("#reportModal").on("click", function (e) {
@@ -240,6 +240,54 @@ $("#toggleCommute").on("click", function () {
     $(document).on("keydown", function (e) {
         if (e.key === "Escape") {
             closeReportModal();
+        }
+    });
+
+    // ---------- MAP LEGEND MODAL ----------
+
+    // OPEN
+    function openLegendModal() {
+        const modal = $("#legendModal");
+        const content = $("#legendModalContent");
+
+        modal.removeClass("hidden");
+
+        modal[0].offsetHeight;
+
+        modal.removeClass("opacity-0").addClass("opacity-100");
+
+        content
+            .removeClass("scale-95 opacity-0 -translate-y-3")
+            .addClass("scale-100 opacity-100 translate-y-0");   
+    }
+
+    // CLOSE
+    function closeLegendModal() {
+        const modal = $("#legendModal");
+        const content = $("#legendModalContent");
+
+        modal.removeClass("opacity-100").addClass("opacity-0");
+
+        content
+            .removeClass("scale-100 opacity-100 translate-y-0")
+            .addClass("scale-95 opacity-0 -translate-y-3");
+
+
+        setTimeout(() => {
+            modal.addClass("hidden");
+        }, 320);
+    }
+
+    // Open button
+    $("#openLegendModalBtn").on("click", openLegendModal);
+
+    // Cancel button
+    $("#cancelLegendBtn").on("click", closeLegendModal);
+
+    // Click outside to close
+    $("#legendModal").on("click", function (e) {
+        if (e.target === this) {
+            closeLegendModal();
         }
     });
 
