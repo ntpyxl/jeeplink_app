@@ -423,7 +423,14 @@ function renderRoutes(routeInformation) {
         const routeSteps = instructions
             .map((step, i) => createRouteStepRow(step, i)[0].outerHTML)
             .join("");
-        const routePrices = createRouteTotalPrices(route.routeInformation.routeCost)[0].outerHTML;
+        // const routePrices = createRouteTotalPrices(route.routeInformation.routeCost)[0].outerHTML;
+        const isCheapestRoute =
+            route.routeInformation.title.toLowerCase().includes("cheapest");
+
+        const routePrices = createRouteTotalPrices(
+            route.routeInformation.routeCost,
+            isCheapestRoute
+        )[0].outerHTML;
         $("#routeSlider").append(createRouteInformationCard(route.routeInformation.title, route.routeInformation, routeSteps, routePrices));
     });
 
