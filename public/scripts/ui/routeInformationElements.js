@@ -21,14 +21,37 @@ export function createRouteStepRow(step, i) {
     `);
 }
 
-export function createRouteTotalPrices(routeCost) {
+export function createRouteTotalPrices(routeCost, showFareComputationButton = false) {
     return $(`
         <div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-700">
             <div class="flex items-center justify-between gap-3 mb-2">
-                <div class="font-medium text-gray-800">
-                    Total Fare 
+                <div class="flex items-center text-gray-800">
+                    <span class="font-medium">
+                        Total Fare
+                    </span>
+
                     <i class="fa-solid fa-circle-info fare-info-icon text-gray-400 hover:text-gray-600 transition-colors cursor-pointer ml-1"></i>
+
+                    ${
+                        showFareComputationButton
+                        ? `
+                            <button
+                                type="button"
+                                class="show-fare-computation-btn inline-flex items-center gap-0.5
+                                    rounded-full border border-[#004F11]/20
+                                    bg-[#004F11]/5 hover:bg-[#004F11]/10
+                                    px-2 py-1 text-[10px] font-semibold
+                                    text-[#004F11] transition-all duration-200 ml-2
+                                    cursor-pointer"
+                            >
+                                <i class="fa-solid fa-receipt text-[9px]"></i>
+                                Fare Breakdown
+                            </button>
+                        `
+                        : ""
+                    }
                 </div>
+
                 <div class="inline-flex rounded-full border border-gray-300 bg-white shadow-sm overflow-hidden">
                     <button type="button" class="price-toggle-btn active px-3 py-1 text-[11px] font-semibold text-[#004F11] bg-[#E9CD2D]/20 cursor-pointer" data-mode="regular">Regular</button>
                     <button type="button" class="price-toggle-btn px-3 py-1 text-[11px] font-semibold text-gray-500 cursor-pointer" data-mode="discounted">Discounted</button>
@@ -54,13 +77,9 @@ export function createRouteTotalPrices(routeCost) {
                     <div class="fare-value fare-value-discounted text-[#004F11] font-bold hidden">₱${routeCost.discounted.acModern}</div>
                 </div>
             </div>
+
         </div>
     `);
-
-    Element.find(".fare-info-icon").on("click", function () {
-        showFareInfo();
-    });
-
 }
 
 export function createRouteInformationCard(routeTitle, routeInformation, routeSteps, totalRidePrices) {

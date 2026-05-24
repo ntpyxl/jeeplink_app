@@ -281,8 +281,8 @@ $("#toggleCommute").on("click", function () {
     // Open button
     $("#openLegendModalBtn").on("click", openLegendModal);
 
-    // Cancel button
-    $("#cancelLegendBtn").on("click", closeLegendModal);
+    // Close button
+    $("#closeLegendBtn").on("click", closeLegendModal);
 
     // Click outside to close
     $("#legendModal").on("click", function (e) {
