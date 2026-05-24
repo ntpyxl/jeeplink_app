@@ -99,7 +99,6 @@ export class HazardRenderer {
             this.hazards.forEach((hazard) => {
                 if (!latestMap.has(hazard.id)) {
                     this.removeMarker(hazard.id);
-                    hasChanges = true;
                 }
             });
 

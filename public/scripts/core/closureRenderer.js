@@ -99,7 +99,6 @@ export class ClosureRenderer {
             this.closure.forEach((closure) => {
                 if (!latestMap.has(closure.id)) {
                     this.removeMarker(closure.id);
-                    hasChanges = true;
                 }
             });
 
