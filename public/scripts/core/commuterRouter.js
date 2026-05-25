@@ -166,6 +166,7 @@ export class CommuterRouter {
         };
 
         const completeRouteInformation = {};
+        const rawRouteInformation = {};
 
         for (const [key, obj] of Object.entries(routeTypes)) {
             const route = obj.route;
@@ -180,6 +181,10 @@ export class CommuterRouter {
             
             info.algorithm = obj.algorithm;
 
+            rawRouteInformation[`${key}RouteInformation`] = {
+                routeInformation: info,
+                [`${key}RouteInstructions`]: info
+            };
             completeRouteInformation[`${key}RouteInformation`] = {
                 routeInformation: info,
                 [`${key}RouteInstructions`]: formatInstructions(instructions, info.routeCost.individualRides, this.keyToName)
@@ -188,6 +193,7 @@ export class CommuterRouter {
         
         return {
             "completeRouteInformation": completeRouteInformation,
+            "rawRouteInformation": rawRouteInformation,
             "routesStepCoords": {
                 "fastestStepCoords": fastestStepCoords || null,
                 "cheapestStepCoords": cheapestStepCoords || null,
