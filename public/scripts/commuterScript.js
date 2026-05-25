@@ -459,7 +459,6 @@ function renderRoutes(routeInformation) {
 
 $(document).on("click", ".show-fare-computation-btn", function () {
     showFareBreakdown(rawRouteInformation);
-    console.log(rawRouteInformation)
 });
 
 // Toggle fare display between regular and discounted prices

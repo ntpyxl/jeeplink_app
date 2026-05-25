@@ -70,8 +70,8 @@ function showFareBreakdown(rawRouteInformation) {
     return jeeplinkSwal.fire({
         title: "Fare Breakdown",
         html: `
-            <p class="text-md text-gray-700 leading-relaxed mb-4">
-                This route was selected because it has the lowest estimated total fare among the available routes. The cheapest route is calculated with the traditional jeepney's regular commuter fare in mind.
+            <p class="text-sm text-gray-700 leading-relaxed mb-4">
+                This route was selected because it has the lowest estimated total fare among the available routes. The cheapest route is calculated with the traditional jeepney's regular commuter fare in mind. Check out the total fare comparisons of the other generated routes below.
             </p>
 
             <div class="overflow-x-auto">
