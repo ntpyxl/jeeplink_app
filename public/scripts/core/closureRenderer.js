@@ -71,7 +71,7 @@ export class ClosureRenderer {
 
     async displayClosures({ exceptHazardId = null } = {}) {
         if(this.isStillRefreshing) return;
-        this.isFetchingHazards = true;
+        this.isStillRefreshing = true;
 
         try {
             const latestClosures = await this.loadClosures();
@@ -83,15 +83,15 @@ export class ClosureRenderer {
             const currentMap = new Map();
             this.closure.forEach(h => currentMap.set(h.id, h));
 
-            let hasChanges = false;
+            const renderedIds = new Set(this.markers.keys());
 
             // Add new closure
             latestClosures.forEach((closure) => {
                 if (exceptHazardId === closure.id) return;
+                if (closure.times_reported < 3) return;
 
-                if (!currentMap.has(closure.id)) {
+                if (!renderedIds.has(closure.id)) {
                     this.createMarker(closure);
-                    hasChanges = true;
                 }
             });
 
@@ -99,13 +99,12 @@ export class ClosureRenderer {
             this.closure.forEach((closure) => {
                 if (!latestMap.has(closure.id)) {
                     this.removeMarker(closure.id);
-                    hasChanges = true;
                 }
             });
 
             this.closure = latestClosures;
         } finally {
-            this.isFetchingHazards = false;
+            this.isStillRefreshing = false;
         }
     }
 

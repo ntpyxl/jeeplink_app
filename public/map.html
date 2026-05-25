@@ -65,7 +65,7 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div class="absolute right-0 top-full w-auto min-w-[120px] pt-2
+                    <div class="absolute right-0 top-full w-auto min-w-[160px] pt-2
                                 opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                 transition duration-200">
 
@@ -78,6 +78,10 @@
                             <a href="faqs.html" 
                             class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
                             FAQs
+                            </a>
+                            <a href="fareMatrix.html" 
+                            class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">
+                            Fare Matrix
                             </a>
                         </div>
                     </div>
@@ -132,8 +136,10 @@
                 <a href="report.html" class="hover:text-black text-center transition">Report</a>
                 <a href="guide.html" class="hover:text-black text-center transition">Guide</a>
                 <a href="faqs.html" class="hover:text-black text-center transition">FAQs</a>
+                <a href="fareMatrix.html" class="hover:text-black text-center transition">Fare Matrix</a>
                 <a href="privacy.html" class="hover:text-black text-center transition">Privacy Policy</a>
                 <a href="terms.html" class="hover:text-black text-center transition">Terms of Service</a>
+                
             </div>
         </div>
     </nav>
@@ -151,6 +157,16 @@
                     <div id="mapControls" 
                         class="fixed right-4 z-[500] flex flex-col items-center gap-2 md:gap-3
                             bottom-4 md:bottom-10">
+
+                        <!-- Map Legend Button -->
+                        <button id="openLegendModalBtn"
+                            class="w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16
+                                bg-white rounded-xl shadow-md border-3 border-[#008026]
+                                flex items-center justify-center
+                                hover:bg-green-50 active:scale-95 transition-all cursor-pointer">
+                            
+                            <i class="fa-solid fa-circle-question text-[#008026]  text-lg md:text-xl lg:text-2xl"></i>
+                        </button>
 
                         <!-- Route Changed Button -->
                         <button id="openReportModalBtn"
@@ -484,10 +500,109 @@
                 </button>
 
                 <!-- Cancel -->
-                <button id="cancelBtn"
+                <button id="cancelReportBtn"
                     class="w-full py-2 rounded-xl font-medium text-gray-600
                         hover:bg-gray-100 transition border border-gray-300 cursor-pointer">
                     Cancel
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- LEGEND MODAL -->
+    <div id="legendModal"
+        class="fixed inset-0  flex items-start justify-center pt-50 md:pt-36
+                z-[9999] hidden opacity-0 transition-opacity duration-300 ease-out">
+
+        <!-- Prevent close when clicking inside -->
+        <div id="legendModalContent" class="scale-95 opacity-0 -translate-y-3 transition-all duration-300 ease-out" onclick="event.stopPropagation()">
+
+            <div class="w-[90vw] max-w-lg bg-white shadow-2xl border-3 border-[#2E7D32] rounded-2xl p-5 flex flex-col gap-4">
+
+                <!-- Header -->
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-center mx-auto text-xl md:text-3xl font-semibold text-gray-800">
+                        <i class="fa-solid fa-circle-question text-[#2E7D32] text-xl"></i> 
+                        LEGEND
+                    </h2>
+                </div>
+
+                <!-- Icon Legend Items -->
+                <div class="grid grid-cols-2">
+
+                    <!-- LEFT SIDE -->
+                    <div class="flex flex-col gap-3 mx-auto text-center">
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/current-location.png" alt="Current Location" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Current Location</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/starting.png" alt="Starting Point" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Starting Point</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/destination.png" alt="Destination" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Destination</span>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="flex flex-col gap-3 mx-auto text-center">
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/road-closure.png" alt="Road Closure" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Road Closure</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/road-hazard.png" alt="Road Hazard" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Road Hazard</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <img src="images/legend/jeep-terminal.png" alt="Terminal" class="w-7">
+                            <span class="text-sm md:text-lg text-gray-700">Terminal</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="text-gray-300">
+                
+                <div class="ms-3">
+                    <div class="flex items-center gap-3">
+                        <img src="images/legend/jeep-route-navigation.png" alt="Jeep Route Navigation" class="h-8 md:h-12">
+                        <span class="ms-2 text-sm md:text-lg text-gray-700">Jeep Route Navigation</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <img src="images/legend/walking-route.png" alt="Walking Route Navigation" class="h-8 md:h-12">
+                        <span class="ms-2 text-sm md:text-lg text-gray-700">Walk Route Navigation</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <img src="images/legend/border.png" alt="Dasmariñas Boundary" class="h-8 md:h-12">
+                        <span class="ms-2 text-sm md:text-lg text-gray-700">Dasmariñas Boundary</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <img src="images/legend/active-jeepney-route.png" alt="Active Jeepney Route" class="h-8 md:h-12">
+                        <span class="ms-2 text-sm md:text-lg text-gray-700">Active Jeepney Route</span>
+                    </div>
+                </div>
+
+
+                <!-- Close -->
+                <button id="closeLegendBtn"
+                    class="w-full py-2 rounded-xl font-medium text-white bg-[#2E7D32]
+                        hover:bg-[#004F11] hover:text-white transition border border-gray-300 cursor-pointer">
+                    Close
                 </button>
 
             </div>

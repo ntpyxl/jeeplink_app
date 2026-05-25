@@ -263,6 +263,7 @@ let isStartPointWithinBoundary = false;
 let isDestinationPointWithinBoundary = false;
 
 let completeRouteInformation = null;
+let rawRouteInformation = null;
 let routesStepCoords = null;
 let currentRoute = 0;
 let totalRoutes = 0;
@@ -380,7 +381,7 @@ $("#calculateRouteButton").on("click", async () => {
 
     checkIfPointsWithinBoundary();
 
-    ({ completeRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
+    ({ completeRouteInformation, rawRouteInformation, routesStepCoords } = await routeGenerated.getAndDisplayRoutes());
 
     setActiveRoute(currentRoute);
     await checkNavigationWarnings();
@@ -423,7 +424,14 @@ function renderRoutes(routeInformation) {
         const routeSteps = instructions
             .map((step, i) => createRouteStepRow(step, i)[0].outerHTML)
             .join("");
-        const routePrices = createRouteTotalPrices(route.routeInformation.routeCost)[0].outerHTML;
+        //const routePrices = createRouteTotalPrices(route.routeInformation.routeCost)[0].outerHTML;
+        const isCheapestRoute =
+            route.routeInformation.title.toLowerCase().includes("cheapest");
+
+        const routePrices = createRouteTotalPrices(
+            route.routeInformation.routeCost,
+            isCheapestRoute
+        )[0].outerHTML;
         $("#routeSlider").append(createRouteInformationCard(route.routeInformation.title, route.routeInformation, routeSteps, routePrices));
     });
 
@@ -448,6 +456,10 @@ function renderRoutes(routeInformation) {
         });
     }, 50);
 }
+
+$(document).on("click", ".show-fare-computation-btn", function () {
+    showFareBreakdown(rawRouteInformation);
+});
 
 // Toggle fare display between regular and discounted prices
 $(document).on("click", ".price-toggle-btn", function () {

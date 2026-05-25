@@ -56,6 +56,44 @@ function showFareInfo() {
     }).then(result => result.isConfirmed);
 }
 
+function showFareBreakdown(rawRouteInformation) {
+    const tableRows = Object.values(rawRouteInformation)
+        .map(routeInfo => `
+            <tr class="border-t">
+                <td class="px-4 py-2">${routeInfo.routeInformation.title}</td>
+                <td class="px-4 py-2">${routeInfo.routeInformation.routeDistance ?? "N/A"}</td>
+                <td class="px-4 py-2">₱ ${routeInfo.routeInformation.routeCost.regular.traditional ?? "N/A"}</td>
+            </tr>
+        `)
+        .join("");
+
+    return jeeplinkSwal.fire({
+        title: "Fare Breakdown",
+        html: `
+            <p class="text-sm text-gray-700 leading-relaxed mb-4">
+                This route was selected because it has the lowest estimated total fare among the available routes. The cheapest route is calculated with the traditional jeepney's regular commuter fare in mind. Check out the total fare comparisons of the other generated routes below.
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-left">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="px-4 py-2">Route</th>
+                            <th class="px-4 py-2">Total Distance</th>
+                            <th class="px-4 py-2">Total Fare Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+            `,
+        confirmButtonText: "Ok",
+        allowOutsideClick: false
+    }).then(result => result.isConfirmed);
+}
+
 function showNavigationPopup(title, message) {
     return jeeplinkSwal.fire({
         title: title,

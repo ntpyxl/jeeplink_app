@@ -1,4 +1,5 @@
 import { apiFetch } from "./core/jeeplinkApiFetcher.js";
+import { showPageLoader, hidePageLoader } from "./ui/commuterStylingScript.js";
 
 function selectIssue(button) {
     $(".issue-category-btn")
@@ -18,6 +19,13 @@ $(".issue-category-btn").on("click", function () {
 
 $("#submitReport").on("click", async () => {
     try {
+        $("#reportModal").addClass("hidden");
+        showPageLoader([
+            "Submitting your report...",
+            "Uploading issue details...",
+            "Processing information..."
+        ]);
+
         const userPosition = $("#submitReport").data("user-location");
         const reportType = $(".issue-category-btn[aria-pressed='true']").data("category");
         const currentJeepRouteId = JSON.parse(localStorage.getItem("activeRoute_currentStep"))?.currentJeepRouteId ?? null;
@@ -82,7 +90,7 @@ $("#submitReport").on("click", async () => {
             allowOutsideClick: false
         });
     } finally {
-        $("#reportModal").addClass("hidden");
+        hidePageLoader();
     }
 })
 

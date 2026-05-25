@@ -227,7 +227,7 @@ $("#toggleCommute").on("click", function () {
     $("#openReportModalBtn").on("click", openReportModal);
 
     // Cancel button
-    $("#cancelBtn").on("click", closeReportModal);
+    $("#cancelReportBtn").on("click", closeReportModal);
 
     // Click outside to close
     $("#reportModal").on("click", function (e) {
@@ -240,6 +240,54 @@ $("#toggleCommute").on("click", function () {
     $(document).on("keydown", function (e) {
         if (e.key === "Escape") {
             closeReportModal();
+        }
+    });
+
+    // ---------- MAP LEGEND MODAL ----------
+
+    // OPEN
+    function openLegendModal() {
+        const modal = $("#legendModal");
+        const content = $("#legendModalContent");
+
+        modal.removeClass("hidden");
+
+        modal[0].offsetHeight;
+
+        modal.removeClass("opacity-0").addClass("opacity-100");
+
+        content
+            .removeClass("scale-95 opacity-0 -translate-y-3")
+            .addClass("scale-100 opacity-100 translate-y-0");   
+    }
+
+    // CLOSE
+    function closeLegendModal() {
+        const modal = $("#legendModal");
+        const content = $("#legendModalContent");
+
+        modal.removeClass("opacity-100").addClass("opacity-0");
+
+        content
+            .removeClass("scale-100 opacity-100 translate-y-0")
+            .addClass("scale-95 opacity-0 -translate-y-3");
+
+
+        setTimeout(() => {
+            modal.addClass("hidden");
+        }, 320);
+    }
+
+    // Open button
+    $("#openLegendModalBtn").on("click", openLegendModal);
+
+    // Close button
+    $("#closeLegendBtn").on("click", closeLegendModal);
+
+    // Click outside to close
+    $("#legendModal").on("click", function (e) {
+        if (e.target === this) {
+            closeLegendModal();
         }
     });
 
@@ -306,4 +354,43 @@ $("#toggleCommute").on("click", function () {
     // Initial check
     checkOrientation();
 
+});
+
+// FARE MATRIX TOGGLE
+window.showFare = function (type, btn) {
+
+    // hide all PDFs
+    document.querySelectorAll('iframe').forEach(frame => {
+        frame.classList.add('hidden');
+    });
+
+    // show selected PDF
+    document.getElementById(type).classList.remove('hidden');
+
+    // reset buttons
+    document.querySelectorAll('.fare-btn').forEach(button => {
+        button.classList.remove('bg-[#2E7D32]', 'text-white');
+        button.classList.add('text-[#2E7D32]');
+    });
+
+    // activate clicked button
+    btn.classList.add('bg-[#2E7D32]', 'text-white');
+};
+
+$(document).ready(function () {
+
+    $(".fare-btn").on("click", function () {
+        const idMap = {
+            "btn-traditional": "traditional",
+            "btn-modern-ac": "modern_ac",
+            "btn-modern-nac": "modern_nac"
+        };
+
+        const type = idMap[this.id];
+
+        window.showFare(type, this); 
+    });
+
+    // DEFAULT CLICK
+    $("#btn-traditional").trigger("click");
 });

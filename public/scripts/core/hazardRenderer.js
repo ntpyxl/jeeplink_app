@@ -70,8 +70,8 @@ export class HazardRenderer {
     }
 
     async displayHazards({ exceptHazardId = null } = {}) {
-        if (this.isFetchingHazards) return;
-        this.isFetchingHazards = true;
+        if (this.isStillRefreshing) return;
+        this.isStillRefreshing = true;
 
         try {
             const latestHazards = await this.loadHazards();
@@ -83,15 +83,15 @@ export class HazardRenderer {
             const currentMap = new Map();
             this.hazards.forEach(h => currentMap.set(h.id, h));
 
-            let hasChanges = false;
+            const renderedIds = new Set(this.markers.keys());
 
             // Add new hazards
             latestHazards.forEach((hazard) => {
                 if (exceptHazardId === hazard.id) return;
+                if (hazard.times_reported < 3) return;
 
-                if (!currentMap.has(hazard.id)) {
+                if (!renderedIds.has(hazard.id)) {
                     this.createMarker(hazard);
-                    hasChanges = true;
                 }
             });
 
@@ -99,13 +99,12 @@ export class HazardRenderer {
             this.hazards.forEach((hazard) => {
                 if (!latestMap.has(hazard.id)) {
                     this.removeMarker(hazard.id);
-                    hasChanges = true;
                 }
             });
 
             this.hazards = latestHazards;
         } finally {
-            this.isFetchingHazards = false;
+            this.isStillRefreshing = false;
         }
     }
 
